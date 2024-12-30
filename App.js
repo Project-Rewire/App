@@ -1,20 +1,22 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { SafeAreaView } from 'react-native';
+import Splash from './app/screens/Splash';
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
+    <SafeAreaView>
+      {/* 
+      SafeAreaView make sure that the content is not covered by the notch
+      StatusBar's style set to auto, makes the status bar transparent
+      */}
       <StatusBar style="auto" />
-    </View>
+      <Splash />
+      {/* 
+      
+      Add components here. Comment and add your components.
+      After the login logic is implemented, all startup components will be logically combined here 
+      
+      */}
+    </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
