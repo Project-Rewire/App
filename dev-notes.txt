@@ -1,4 +1,4 @@
-Hii fellow developer!
+Hii fellow developers!
 
 Place your notes related to the app development, here.
 
@@ -38,6 +38,5 @@ Suggested File Structure
     │   │   └── login-provider.js
     │   ├── services
     │   │   └── login-service.js
-    │   └── Splash.js
     :
     :
