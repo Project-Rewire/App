@@ -1,0 +1,43 @@
+Hii fellow developer!
+
+Place your notes related to the app development, here.
+
+=====================================================
+
+Suggested Naming Convention
+````````````````````````````
+
+    Components:
+        Case   : PascalCase
+        Format : [FileName].js 
+        Eg: Splash.js
+
+    Services, Providers, and other:
+        Case   : kebab-case
+        Format : [name]-[context].[extension]
+        Eg: login-service.js
+    
+    It is suggested to use these file naming conventions to quickly identify the file type in context,
+        which will be helpful for everyone
+
+
+Suggested File Structure
+``````````````````````````
+
+    ├── App.js
+    ├── README.md
+    ├── app
+    │   ├── assets
+    │   │   ├── adaptive-icon.png
+    │   │   ├── rewire-icon.png
+    │   │   ├── rewire-logo.png
+    │   │   └── rewire-slogan-logo.png
+    │   ├── screens
+    │   │   └── Splash.js
+    │   ├── providers
+    │   │   └── login-provider.js
+    │   ├── services
+    │   │   └── login-service.js
+    │   └── Splash.js
+    :
+    :
