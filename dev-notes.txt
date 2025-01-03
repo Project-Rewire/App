@@ -38,13 +38,19 @@ Suggested Commit Messages Structure
 ```````````````````````````````````
   Message Tags
   ````````````
-    [Add]      Just adding files to the repo
-    [Feature]  Adding new functionality.
-    [Fix]      Bug fixes.
-    [Docs]     Documentation updates.
-    [Refactor] Code restructuring.
-    [Test]     Changes to tests.
-    [Chore]    Maintenance or setup tasks.
+┌────────────┬───────────────────────────────────┐
+│ [Add]      │ Just adding files to the codebase │
+├────────────┼───────────────────────────────────┤
+│ [Feature]  │ Major feature implementation      │
+├────────────┼───────────────────────────────────┤
+│ [Fix]      │ Bug fix                           │
+├────────────┼───────────────────────────────────┤
+│ [Docs]     │ Documentation update              │
+├────────────┼───────────────────────────────────┤
+│ [Refactor] │ Code refactor                     │
+├────────────┼───────────────────────────────────┤
+│ [Test]     │ Tests implementation or update    │
+└────────────┴───────────────────────────────────┘
 
   Format: <Tag> <Message>
 
