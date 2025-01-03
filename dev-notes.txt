@@ -1,15 +1,9 @@
-Hii fellow developers!
-
-Place your notes related to the app development, here.
-
-=====================================================
-
 Suggested Naming Convention
 ````````````````````````````
 
     Components:
         Case   : PascalCase
-        Format : [FileName].js 
+        Format : [FileName].js
         Eg: Splash.js
 
     Services, Providers, and other:
@@ -17,8 +11,7 @@ Suggested Naming Convention
         Format : [name]-[context].[extension]
         Eg: login-service.js
     
-    It is suggested to use these file naming conventions to quickly identify the file type in context,
-        which will be helpful for everyone
+    It is suggested to use these file naming conventions to quickly identify the file type and its context.
 
 
 Suggested File Structure
@@ -40,3 +33,22 @@ Suggested File Structure
     │   │   └── login-service.js
     :
     :
+
+Suggested Commit Messages Structure
+```````````````````````````````````
+  Message Tags
+  ````````````
+    [Add]      Just adding files to the repo
+    [Feature]  Adding new functionality.
+    [Fix]      Bug fixes.
+    [Docs]     Documentation updates.
+    [Refactor] Code restructuring.
+    [Test]     Changes to tests.
+    [Chore]    Maintenance or setup tasks.
+
+  Format: <Tag> <Message>
+
+____
+Note: None of the above are neither rules nor industry standards, and are just keep our codebase more organized and readable.
+
+If anyone have more suggestions related to the above context, please extend this document with them
