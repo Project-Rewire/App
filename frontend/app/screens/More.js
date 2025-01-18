@@ -10,8 +10,7 @@ export default function More() {
 
     return (
         <View style={styles.container}>
-            <Text>More Screen</Text>
-            <Button title="Settings" onPress={() => {navigate("Settings")}} />
+            <Button title="Settings" onPress={() => { navigate("Settings") }} />
         </View>
     );
 }
