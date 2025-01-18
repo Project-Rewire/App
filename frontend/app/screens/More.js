@@ -1,26 +1,28 @@
-import { useNavigation } from "@react-navigation/native";
-import { Button } from "react-native";
-import { Text, View, StyleSheet } from "react-native";
-
-// Sample Code
+import React from 'react';
+import { StyleSheet, View } from 'react-native';
+import SelectableList from '../fragments/selectable-list';
+import { useNavigation } from '@react-navigation/native';
 
 export default function More() {
-
     const { navigate } = useNavigation();
 
+    const MORE_OPTIONS = [
+        { id: 'm1', title: 'Settings', iconName: 'settings', iconLib: 'feather', callback: () => navigate('Settings') },
+        { id: 'm2', title: 'Profile', iconName: 'user', iconLib: 'feather', callback: () => console.log("Selected Profile") },
+        { id: 'm3', title: 'Help', iconName: 'help-circle', iconLib: 'feather', callback: () => console.log("Selected Profile") },
+    ];
+
     return (
-        <View style={styles.container}>
-            <Button title="Settings" onPress={() => { navigate("Settings") }} />
+        <View>
+            <SelectableList
+                data={MORE_OPTIONS}
+                titleProperty="title"
+                keyExtractorProperty="id"
+                iconNameProperty="iconName"
+                iconLibProperty="iconLib"
+                onSelectionCallbackProperty="callback"
+                underlayColor="#ccc"
+            />
         </View>
     );
 }
-
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        alignItems: "center",
-        justifyContent: "center",
-        gap: 8,
-    }
-});
