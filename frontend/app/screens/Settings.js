@@ -1,30 +1,23 @@
 import React from 'react';
-import { FlatList, TouchableHighlight } from 'react-native';
-import { ListItem, Icon } from '@rneui/themed';
+import SelectableList from '../fragments/selectable-list';
 
-const sampleCallback = console.log('Selected');
 const SETTINGS = [
-    { id: 's1', title: 'About', iconName: 'info', iconLib: 'feather', callback: sampleCallback },
-    { id: 's2', title: 'Privacy Policy', iconName: 'shield', iconLib: 'feather', callback: sampleCallback },
-    { id: 's3', title: 'Terms and Conditions', iconName: 'file-text', iconLib: 'feather', callback: sampleCallback },
+    { id: 's1', title: 'About', iconName: 'info', iconLib: 'feather', callback: () => console.log('Selected: About') },
+    { id: 's2', title: 'Privacy Policy', iconName: 'shield', iconLib: 'feather', callback: () => console.log('Selected: Privacy Policy') },
+    { id: 's3', title: 'Terms and Conditions', iconName: 'file-text', iconLib: 'feather', callback: () => console.log('Selected: Terms and Conditions') },
 ];
 
 export default function Settings() {
+
     return (
-        <FlatList
+        <SelectableList
             data={SETTINGS}
-            keyExtractor={(item) => item.id}
-            renderItem={({ item }) => (
-                <TouchableHighlight onPress={() => { console.log() }} underlayColor="#333">
-                    <ListItem bottomDivider>
-                        <Icon name={item.iconName} type={item.iconLib} />
-                        <ListItem.Content>
-                            <ListItem.Title>{item.title}</ListItem.Title>
-                        </ListItem.Content>
-                        <ListItem.Chevron />
-                    </ListItem>
-                </TouchableHighlight>
-            )}
+            titleProperty="title"
+            keyExtractorProperty="id"
+            iconNameProperty="iconName"
+            iconLibProperty="iconLib"
+            onSelectionCallbackProperty="callback"
+            underlayColor="#333"
         />
     );
 }
