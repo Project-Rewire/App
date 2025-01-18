@@ -9,7 +9,7 @@ export default function More() {
     const MORE_OPTIONS = [
         { id: 'm1', title: 'Settings', iconName: 'settings', iconLib: 'feather', callback: () => navigate('Settings') },
         { id: 'm2', title: 'Profile', iconName: 'user', iconLib: 'feather', callback: () => console.log("Selected Profile") },
-        { id: 'm3', title: 'Help', iconName: 'help-circle', iconLib: 'feather', callback: () => console.log("Selected Profile") },
+        { id: 'm3', title: 'Help', iconName: 'help-circle', iconLib: 'feather', callback: () => console.log("Selected Help") },
     ];
 
     return (
