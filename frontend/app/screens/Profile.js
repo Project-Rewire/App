@@ -1,40 +1,40 @@
 import React from 'react';
 
+import { useNavigation } from '@react-navigation/native';
 import { FlatList } from 'react-native';
 import { TouchableHighlight } from 'react-native';
 import { ListItem } from '@rneui/base';
 import { Icon } from '@rneui/base';
 
 
-export default function Settings() {
-
-    const SETTINGS = [
+export default function Profile() {
+    const PROFILE_OPTIONS = [
         {
-            id: 's1',
-            title: 'About',
-            iconName: 'info',
+            id: 'm1',
+            title: 'Settings',
+            iconName: 'settings',
             iconLib: 'feather',
-            callback: () => console.log('Selected: About')
+            callback: () => console.log("Selected Settings")
         },
         {
-            id: 's2',
-            title: 'Privacy Policy',
-            iconName: 'shield',
+            id: 'm2',
+            title: 'Profile',
+            iconName: 'user',
             iconLib: 'feather',
-            callback: () => console.log('Selected: Privacy Policy')
+            callback: () => console.log("Selected Profile")
         },
         {
-            id: 's3',
-            title: 'Terms and Conditions',
-            iconName: 'file-text',
+            id: 'm3',
+            title: 'Help',
+            iconName: 'help-circle',
             iconLib: 'feather',
-            callback: () => console.log('Selected: Terms and Conditions')
+            callback: () => console.log("Selected Help")
         },
     ];
 
     return (
         <FlatList
-            data={SETTINGS}
+            data={PROFILE_OPTIONS}
             keyExtractor={(item) => item.id}
             renderItem={({ item }) => (
                 <TouchableHighlight
@@ -53,5 +53,3 @@ export default function Settings() {
         />
     );
 }
-
-
