@@ -3,7 +3,7 @@ import { View, StyleSheet, Dimensions } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import { GiftedChat, Bubble, InputToolbar, Send } from "react-native-gifted-chat";
 
-import { useRebot } from "../../hooks/rebot/rebot-service"; // Fixed typo in "hooks"
+import { useRebot } from "../../hooks/rebot/rebot-service";
 
 export default function ReBot() {
     const { messages, setMessages } = useRebot();
@@ -18,7 +18,7 @@ export default function ReBot() {
         setMessages((previousMessages) =>
             GiftedChat.append(previousMessages, messages)
         );
-    }, [setMessages]); // Added setMessages as a dependency
+    }, [setMessages]);
 
     return (
         <View style={styles.container}>
@@ -28,7 +28,7 @@ export default function ReBot() {
                 user={{
                     _id: user._id,
                 }}
-                renderAvatar={() => null} // Fixed renderAvatar to properly return null
+                renderAvatar={() => null}
                 renderUsernameOnMessage={false}
                 renderBubble={renderBubble}
                 renderInputToolbar={renderInputToolBar}
