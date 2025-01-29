@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export function useRebot() {
     const [messages, setMessages] = useState([]);
@@ -7,11 +7,11 @@ export function useRebot() {
         setMessages([
             {
                 _id: 1,
-                text: 'Hello developer',
+                text: 'I am the sender',
                 createdAt: new Date(),
                 user: {
                     _id: 2,
-                    name: 'React Native',
+                    name: 'sample user',
                     avatar: 'https://placeimg.com/140/140/any',
                 },
             },
