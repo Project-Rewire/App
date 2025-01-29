@@ -1,13 +1,13 @@
 import React, { useCallback } from "react";
-import { View, StyleSheet, Dimensions } from "react-native";
-import Icon from "react-native-vector-icons/Ionicons";
-import { GiftedChat, Bubble, InputToolbar, Send } from "react-native-gifted-chat";
-
-import { useRebot } from "../../hooks/rebot/rebot-service";
+import { View } from "react-native";
+import { GiftedChat, Bubble, InputToolbar, Send, SystemMessage } from "react-native-gifted-chat";
+import { useRebot } from "../../hooks/rebot-service";
+import { Icon } from "../../fragments/icon";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function ReBot() {
     const { messages, setMessages } = useRebot();
-
+    const insets = useSafeAreaInsets();
     const user = {
         _id: 2,
         name: 'sample user',
@@ -21,7 +21,7 @@ export default function ReBot() {
     }, [setMessages]);
 
     return (
-        <View style={styles.container}>
+        <View style={{ flex: 1, marginBottom: insets.bottom }}>
             <GiftedChat
                 messages={messages}
                 onSend={(messages) => onSend(messages)}
@@ -30,28 +30,44 @@ export default function ReBot() {
                 }}
                 renderAvatar={() => null}
                 renderUsernameOnMessage={false}
+                alwaysShowSend={true}
+                isKeyboardInternallyHandled={true}
                 renderBubble={renderBubble}
                 renderInputToolbar={renderInputToolBar}
                 renderSend={renderSend}
+                renderSystemMessage={renderSystemMessage}
             />
         </View>
     );
 }
 
+const renderSystemMessage = (props) => {
+    return (
+        <SystemMessage
+            {...props}
+            textStyle={{
+                color: '#333',
+            }}
+        />
+    );
+};
+
 const renderInputToolBar = (props) => {
     return (
         <View style={{
-            backgroundColor: '#eee',
-            paddingHorizontal: 4,
-            paddingVertical: 8,
+            backgroundColor: 'transparent',
         }}>
             <InputToolbar
                 {...props}
                 containerStyle={{
+                    margin: 8,
                     borderTopWidth: 0,
-                    borderRadius: 32,
-                    backgroundColor: "#f2f8fc",
-                    paddingHorizontal: 8,
+                    borderRadius: 50,
+                    paddingHorizontal: 4,
+                    borderWidth: 1,
+                    borderTopWidth: 1,
+                    borderColor: '#ccc',
+                    borderTopColor: '#ccc',
                 }}
             />
         </View>
@@ -60,36 +76,40 @@ const renderInputToolBar = (props) => {
 
 const renderSend = (props) => {
     return (
-        <Send {...props}>
-            <View style={{ marginBottom: 11, marginRight: 10, borderWidth: 0 }}>
-                <Icon name="send" size={20} color="#0075FD" />
-            </View>
-        </Send>
+        <View>
+            <Send {...props} containerStyle={{ justifyContent: 'center' }}>
+                <Icon
+                    name="arrow-up-circle"
+                    type="ionicon"
+                    color="#333"
+                    size={40}
+                />
+            </Send>
+        </View>
     );
 };
 
 const renderBubble = (props) => {
     return (
-        <Bubble
-            {...props}
+        <Bubble {...props}
             wrapperStyle={{
-                left: {
-                    backgroundColor: "#f2f8fc",
-                    padding: 8,
-                    borderRadius: 24
-                },
                 right: {
-                    backgroundColor: "#1790bd",
-                    padding: 8,
-                    borderRadius: 24
+                    backgroundColor: "#2489d6",
+                    paddingVertical: 4,
+                    paddingHorizontal: 8,
+                    borderRadius: 20,
                 },
+                left: {
+                    backgroundColor: "#555",
+                    padding: 8,
+                    borderRadius: 20,
+                },
+            }}
+            textStyle={{
+                left: {
+                    color: '#fff'
+                }
             }}
         />
     );
 };
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-    },
-});

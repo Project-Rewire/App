@@ -7,7 +7,18 @@ export function useRebot() {
         setMessages([
             {
                 _id: 1,
-                text: 'I am the sender',
+                text: 'Receiver',
+                createdAt: new Date(),
+                user: {
+                    _id: 1,
+                    name: 'sample user',
+                    avatar: 'https://placeimg.com/140/140/any',
+                }
+            },
+            {
+
+                _id: 2,
+                text: 'Sender',
                 createdAt: new Date(),
                 user: {
                     _id: 2,
