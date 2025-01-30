@@ -51,7 +51,7 @@ const BottomTabGroup = () => {
 export default function App() {
   return (
     <SafeAreaView style={styles.safeArea}>
-      <StatusBar style="dark" />
+      <StatusBar style="auto" />
       <NavigationContainer>
         <BottomTabGroup />
       </NavigationContainer>
@@ -62,5 +62,6 @@ export default function App() {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
+    backgroundColor: "#fff",
   },
 });
