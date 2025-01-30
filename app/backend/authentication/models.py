@@ -1,7 +1,7 @@
 from django.db import models
 from connection import db
 
-userCollection = db["user"]
+userCollection = db["user1"]
 
 
 

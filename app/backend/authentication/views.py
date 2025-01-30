@@ -142,7 +142,66 @@ def activate(request, uidb64, token):
         return redirect('home')
     else:
         return render(request, 'activation_failed.html ')
-    
+
+
+def password_reset_request(request):
+    if request.method == "POST":
+        email = request.POST['email']
+        try:
+            user = User.objects.get(email=email)
+        except User.DoesNotExist:
+            messages.error(request, "No user found with this email")
+            return redirect('password_reset_request')
+
+        current_site = get_current_site(request)
+        email_subject = 'Reset your Password'
+        message = render_to_string('authentication/password_reset_email.html',{
+            'domain': current_site.domain,
+            'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+            'token': generate_token.make_token(user),
+        })
+        email = EmailMessage(
+            email_subject,
+            message,
+            settings.EMAIL_HOST_USER,
+            [user.email],
+        )
+        email.fail_silently = True
+        email.send()
+
+        messages.success(request, "A Password Reset link has been sent to your email")
+        return redirect('signIn')
+
+    return render(request, "authentication/password_reset_request.html")
+
+def password_reset_confirm(request, uidb64, token):
+    try:
+        uid = force_str(urlsafe_base64_decode(uidb64))
+        newUser = User.objects.get(pk=uid)
+    except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+        user = None
+
+    if user is not None and generate_token.check_token(newUser, token):
+        if request.method == "POST":
+            new_password = request.POST['new_password']
+            new_password_again = request.POST['confirm_password']
+
+            if new_password != new_password_again:
+                messages.error(request, "Passwords don't match")
+                return redirect(request.path)
+
+            user.set_password(new_password)
+            user.save()
+            messages.success(request, "Your password has been updated")
+            return redirect('signIn')
+
+        return render(request, "authentication/password_rest_form.html")
+    else:
+        messages.error(request, "Invalid or expired link")
+        return redirect('password_reset_request')
+
+
+
 
 
     
