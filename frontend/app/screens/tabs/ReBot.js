@@ -30,7 +30,7 @@ export default function ReBot() {
                 }}
                 renderAvatar={() => null}
                 renderUsernameOnMessage={false}
-                alwaysShowSend={true}
+                alwaysShowSend={false}
                 isKeyboardInternallyHandled={true}
                 renderBubble={renderBubble}
                 renderInputToolbar={renderInputToolBar}
@@ -62,7 +62,7 @@ const renderInputToolBar = (props) => {
                 containerStyle={{
                     margin: 8,
                     borderTopWidth: 0,
-                    borderRadius: 50,
+                    borderRadius: 10,
                     paddingHorizontal: 4,
                     borderWidth: 1,
                     borderTopWidth: 1,
@@ -79,10 +79,13 @@ const renderSend = (props) => {
         <View>
             <Send {...props} containerStyle={{ justifyContent: 'center' }}>
                 <Icon
-                    name="arrow-up-circle"
+                    name="send-outline"
                     type="ionicon"
-                    color="#333"
-                    size={40}
+                    color="#888"
+                    size={25}
+                    style={{
+                        padding: 4
+                    }}
                 />
             </Send>
         </View>
@@ -94,21 +97,30 @@ const renderBubble = (props) => {
         <Bubble {...props}
             wrapperStyle={{
                 right: {
-                    backgroundColor: "#2489d6",
+                    backgroundColor: "#ccc",
                     paddingVertical: 4,
                     paddingHorizontal: 8,
-                    borderRadius: 20,
+                    borderRadius: 12,
+                    borderEndEndRadius: 0,
                 },
                 left: {
-                    backgroundColor: "#555",
+                    backgroundColor: "#268a4a33",
                     padding: 8,
-                    borderRadius: 20,
+                    borderRadius: 12,
+                    borderTopStartRadius: 0,
                 },
             }}
             textStyle={{
                 left: {
-                    color: '#fff'
+                    color: '#000'
+                },
+                right: {
+                    color: '#000'
                 }
+            }}
+            timeTextStyle={{
+                left: { display: 'none' },
+                right: { display: 'none' }
             }}
         />
     );

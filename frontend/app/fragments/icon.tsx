@@ -27,11 +27,13 @@ export function Icon({
     name = "help-outline",
     size = 24,
     color = "black",
+    style,
 }: {
     type?: string;
     name?: string;
     size?: number;
     color?: string;
+    style?: object;
 }) {
     const IconComponent = iconLibraries[type];
 
@@ -40,5 +42,5 @@ export function Icon({
         return null;
     }
 
-    return <IconComponent name={name} size={size} color={color} />;
+    return <IconComponent name={name} size={size} color={color} style={[style]} />;
 }

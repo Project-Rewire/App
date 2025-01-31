@@ -42,8 +42,8 @@ const BottomTabGroup = () => {
     >
       <BottomTab.Screen name="Home" component={Home} />
       <BottomTab.Screen name="Tasks" component={Tasks} />
-      <BottomTab.Screen name="Community" component={Community} />
       <BottomTab.Screen name="ReBot" component={ReBot} />
+      <BottomTab.Screen name="Community" component={Community} />
     </BottomTab.Navigator>
   );
 }

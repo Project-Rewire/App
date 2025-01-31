@@ -7,7 +7,7 @@ export function useRebot() {
         setMessages([
             {
                 _id: 1,
-                text: 'Receiver',
+                text: 'Hi there! How can I assist you today? Feel free to ask anything!',
                 createdAt: new Date(),
                 user: {
                     _id: 1,
@@ -18,7 +18,7 @@ export function useRebot() {
             {
 
                 _id: 2,
-                text: 'Sender',
+                text: 'Hi Rebot!',
                 createdAt: new Date(),
                 user: {
                     _id: 2,
