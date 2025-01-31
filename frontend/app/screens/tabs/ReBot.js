@@ -5,7 +5,7 @@ import { useRebot } from "../../hooks/rebot-service";
 import { Icon } from "../../fragments/icon";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-export default function ReBot() {
+export default function Rebot() {
     const { messages, setMessages } = useRebot();
     const insets = useSafeAreaInsets();
     const user = {

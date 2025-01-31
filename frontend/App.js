@@ -11,7 +11,7 @@ import { Icon } from './app/fragments/icon';
 import Home from './app/screens/tabs/Home';
 import Tasks from './app/screens/tabs/Tasks';
 import Community from './app/screens/tabs/Community';
-import ReBot from './app/screens/tabs/ReBot';
+import Rebot from './app/screens/tabs/Rebot';
 
 const BottomTab = createBottomTabNavigator();
 
@@ -30,7 +30,7 @@ const BottomTabGroup = () => {
             iconName = focused ? "people" : "people-outline";
           } else if (route.name === "MoreStack") {
             iconName = focused ? "menu" : "menu-outline";
-          } else if (route.name === "ReBot") {
+          } else if (route.name === "Rebot") {
             iconName = focused ? "robot-happy" : "robot-happy-outline";
             iconLib = "materialcommunityicons";
           }
@@ -42,7 +42,7 @@ const BottomTabGroup = () => {
     >
       <BottomTab.Screen name="Home" component={Home} />
       <BottomTab.Screen name="Tasks" component={Tasks} />
-      <BottomTab.Screen name="ReBot" component={ReBot} />
+      <BottomTab.Screen name="Rebot" component={Rebot} />
       <BottomTab.Screen name="Community" component={Community} />
     </BottomTab.Navigator>
   );
