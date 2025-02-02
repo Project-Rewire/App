@@ -16,17 +16,17 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from rewireAdmin.views import getAllUsers, CreateUser, updateUser, deleteUser  
+from rewireAdmin.views import get_All_Users, create_User, update_User, delete_User  
 # from rest_framework_simplejwt.views import (TokenObtainPairView, TokenRefreshView)
 
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('viewUsers/', getAllUsers),
-    path('createUser', CreateUser),
-    path('updateUser/<int:id>', updateUser),
-    path('deleteUser/<int:id>', deleteUser),
+    path('view-Users/', get_All_Users),
+    path('create-User', create_User),
+    path('update-User/<int:id>', update_User),
+    path('delete-User/<int:id>', delete_User),
     # path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     # path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 ]

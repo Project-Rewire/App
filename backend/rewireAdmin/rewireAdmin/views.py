@@ -7,7 +7,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 # create new users
 @csrf_exempt
-def CreateUser(request):
+def create_User(request):
     if request.method == 'POST':
         data = json.loads(request.body)
         data['password'] = make_password(data['password'])
@@ -19,14 +19,14 @@ def CreateUser(request):
 
 # get all users
 @csrf_exempt
-def getAllUsers(request):
+def get_All_Users(request):
     users = User.objects.all()
     serializer = userSerializer(users, many=True)
     return JsonResponse(serializer.data, safe=False)
 
 # delete user by id 
 @csrf_exempt
-def deleteUser(request, id):
+def delete_User(request, id):
     try:
         user = User.objects.get(id=id)
     except User.DoesNotExist:
@@ -38,13 +38,16 @@ def deleteUser(request, id):
 
 # update user by id
 @csrf_exempt
-def updateUser(request, id):
+def update_User(request, id):
     try:
         user = User.objects.get(id=id)
     except User.DoesNotExist:
         return JsonResponse({'message': 'The user does not exist'}, status=404)
     
     if request.method == 'PUT':
+        if not request.body:
+            return JsonResponse({'message': 'No data provided'}, status=400)
+        
         data = json.loads(request.body)
 
         if 'password' in data:
