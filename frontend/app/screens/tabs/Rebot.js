@@ -1,12 +1,12 @@
 import React, { useCallback } from "react";
-import { View } from "react-native";
+import { View, ActivityIndicator } from "react-native";
 import { GiftedChat, Bubble, InputToolbar, Send, SystemMessage } from "react-native-gifted-chat";
 import { useRebot } from "../../hooks/rebot-service";
 import { Icon } from "../../fragments/icon";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function Rebot() {
-    const { messages, setMessages } = useRebot();
+    const { messages, setMessages, isLoading } = useRebot();
     const insets = useSafeAreaInsets();
     const user = {
         _id: 2,
@@ -21,7 +21,7 @@ export default function Rebot() {
     }, [setMessages]);
 
     return (
-        <View style={{ flex: 1, marginBottom: insets.bottom }}>
+        <View style={{ flex: 1, marginBottom: insets.bottom, backgroundColor: '#F8F9FA' }}>
             <GiftedChat
                 messages={messages}
                 onSend={(messages) => onSend(messages)}
@@ -30,12 +30,16 @@ export default function Rebot() {
                 }}
                 renderAvatar={() => null}
                 renderUsernameOnMessage={false}
-                alwaysShowSend={false}
+                alwaysShowSend={true}
                 isKeyboardInternallyHandled={true}
                 renderBubble={renderBubble}
                 renderInputToolbar={renderInputToolBar}
                 renderSend={renderSend}
                 renderSystemMessage={renderSystemMessage}
+                placeholder="Type your message here..."
+                isLoadingEarlier={isLoading}
+                renderLoading={() => <ActivityIndicator size="large" color="#268a4a" />}
+                isTyping={isLoading}
             />
         </View>
     );
@@ -56,18 +60,24 @@ const renderInputToolBar = (props) => {
     return (
         <View style={{
             backgroundColor: 'transparent',
+            marginHorizontal: 4,
         }}>
             <InputToolbar
                 {...props}
                 containerStyle={{
+                    backgroundColor: '#FFFFFF',
                     margin: 8,
                     borderTopWidth: 0,
-                    borderRadius: 10,
-                    paddingHorizontal: 4,
+                    borderRadius: 24,
+                    paddingHorizontal: 12,
                     borderWidth: 1,
-                    borderTopWidth: 1,
-                    borderColor: '#ccc',
-                    borderTopColor: '#ccc',
+                    borderColor: '#E9ECEF',
+                    shadowColor: '#000',
+                    shadowOffset: { width: 0, height: 1 },
+                    shadowOpacity: 0.1,
+                    shadowRadius: 2,
+                    elevation: 2,
+                    padding: 4
                 }}
             />
         </View>
@@ -76,19 +86,22 @@ const renderInputToolBar = (props) => {
 
 const renderSend = (props) => {
     return (
-        <View>
-            <Send {...props} containerStyle={{ justifyContent: 'center' }}>
-                <Icon
-                    name="send-outline"
-                    type="ionicon"
-                    color="#888"
-                    size={25}
-                    style={{
-                        padding: 4
-                    }}
-                />
-            </Send>
-        </View>
+        <Send {...props}
+            containerStyle={{
+                justifyContent: 'center',
+                padding: 4,
+            }}
+        >
+            <Icon
+                name="send"
+                type="ionicon"
+                color="#268a4a"
+                size={20}
+                style={{
+                    padding: 4
+                }}
+            />
+        </Send>
     );
 };
 
@@ -97,31 +110,38 @@ const renderBubble = (props) => {
         <Bubble {...props}
             wrapperStyle={{
                 right: {
-                    backgroundColor: "#ccc",
-                    paddingVertical: 4,
+                    backgroundColor: "#268a4a",
+                    paddingVertical: 8,
                     paddingHorizontal: 8,
-                    borderRadius: 12,
-                    borderEndEndRadius: 0,
+                    borderRadius: 16,
+                    borderBottomRightRadius: 4,
+                    shadowOffset: { width: 0, height: 1 },
+                    shadowColor: '#000',
+                    shadowRadius: 2,
+                    shadowOpacity: 0.1,
+                    elevation: 1,
                 },
                 left: {
-                    backgroundColor: "#268a4a33",
-                    padding: 8,
-                    borderRadius: 12,
-                    borderTopStartRadius: 0,
+                    backgroundColor: "#FFFFFF",
+                    padding: 12,
+                    borderRadius: 16,
+                    borderTopLeftRadius: 4,
+                    shadowColor: '#000',
+                    shadowOffset: { width: 0, height: 1 },
+                    shadowOpacity: 0.1,
+                    shadowRadius: 2,
+                    elevation: 1,
                 },
             }}
             textStyle={{
                 left: {
-                    color: '#000'
+                    color: '#212529'
                 },
                 right: {
-                    color: '#000'
+                    color: '#FFFFFF'
                 }
             }}
-            timeTextStyle={{
-                left: { display: 'none' },
-                right: { display: 'none' }
-            }}
+            renderTime={() => null}
         />
     );
 };
