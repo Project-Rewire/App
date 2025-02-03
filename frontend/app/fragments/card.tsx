@@ -1,47 +1,69 @@
-import { View, Text, StyleSheet } from "react-native";
+import React from "react";
+import {
+    Text,
+    View,
+    StyleSheet,
+    TouchableHighlight,
+} from "react-native";
 
-export function Card({ title, content }: { title: string, content: string[] }) {
+
+const Card = ({ style, onPress, children, ...props }) => {
+    const Container = onPress ? TouchableHighlight : View;
+    const containerProps = onPress
+        ? {
+            onPress,
+            underlayColor: "#f0f0f0",
+        }
+        : {};
+
     return (
-        <View style={styles.container}>
-            <Text style={styles.title}>{title}</Text>
-            <View style={styles.contentContainer}>
-                {content.map((item, index) => (
-                    <Text key={index} style={styles.contentText}>
-                        {item}
-                    </Text>
-                ))}
-            </View>
-        </View>
+        <Container
+            style={[styles.cardWrapper, style]}
+            {...containerProps}
+            {...props}
+        >
+            <View style={styles.card}>{children}</View>
+        </Container>
     );
-}
+};
+
+Card.Title = ({ children, style, ...props }) => (
+    <Text style={[styles.cardTitle, style]} {...props}>
+        {children}
+    </Text>
+);
+
+Card.Content = ({ children, style, ...props }) => (
+    <View style={[styles.cardContent, style]} {...props}>
+        {children}
+    </View>
+);
 
 const styles = StyleSheet.create({
-    container: {
-        backgroundColor: "#fff",
-        padding: 15,
-
-        shadowColor: "#666",
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.1,
-        shadowRadius: 4,
-        elevation: 5,
-
-        margin: 8,
-        marginBottom: 4,
-
+    cardWrapper: {
+        width: "100%",
+        marginBottom: 16,
+        backgroundColor: "white",
         borderRadius: 8,
+        // Default shadow for iOS
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.25,
+        padding: 16,
+        shadowRadius: 3.84,
+        // Default shadow for Android
+        elevation: 1,
     },
-    title: {
+    card: {
+    },
+    cardTitle: {
         fontSize: 18,
         fontWeight: "bold",
-        marginBottom: 10,
-    },
-    contentContainer: {
-        paddingLeft: 10,
-    },
-    contentText: {
-        fontSize: 14,
+        marginBottom: 8,
         color: "#333",
-        marginBottom: 5,
-    }
+    },
+    cardContent: {
+    },
 });
+
+export default Card;
