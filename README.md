@@ -5,5 +5,4 @@ ReWire is an mobile application that is designed to assist individuals in overco
 ## Features
 - Integrated AI ChatBot
 - Community platform
-- Therapists Booking
 - Emergency support system
