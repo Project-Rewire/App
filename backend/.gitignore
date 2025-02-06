@@ -1,0 +1,4 @@
+# This is the .gitignore file specific to backend
+
+# Adding migrations to gitignore to avoid potential migration conflicts
+migrations/
