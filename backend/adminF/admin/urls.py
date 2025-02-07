@@ -17,9 +17,12 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from .views import signup_step_one, signup_step_two, login_user, delete_user, update_user, forget_password, reset_password
+from rest_framework_simplejwt.views import (TokenObtainPairView, TokenRefreshView)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('signup/step-one', signup_step_one),
     path('signup/step-two', signup_step_two),
     path('login', login_user),

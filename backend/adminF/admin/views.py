@@ -1,5 +1,6 @@
 import json
 from django.http import JsonResponse
+from rest_framework.decorators import api_view
 from django.views.decorators.csrf import csrf_exempt
 from core.models import User
 from django.contrib.auth.hashers import make_password
@@ -9,7 +10,7 @@ from django.core.mail import send_mail
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
 
-
+@api_view(['POST'])
 @csrf_exempt
 def signup_step_one(request):
     if request.method == 'POST':
@@ -33,7 +34,8 @@ def signup_step_one(request):
             return JsonResponse({'error': 'Invalid data'}, status=400)
     else:
         return JsonResponse({'error': 'Invalid HTTP method'}, status=405)
-
+    
+@api_view(['POST'])
 @csrf_exempt
 def signup_step_two(request):
     if request.method == 'POST':
@@ -67,6 +69,7 @@ def signup_step_two(request):
     else:
         return JsonResponse({'error': 'Invalid HTTP method'}, status=405)
 
+@api_view(['POST'])
 @csrf_exempt
 def login_user(request):
     if request.method == 'POST':
@@ -87,7 +90,8 @@ def login_user(request):
             return JsonResponse({'error': 'Invalid JSON'}, status=400)
     else:
         return JsonResponse({'error': 'Invalid HTTP method'}, status=405)
-    
+
+@api_view(['DELETE']) 
 @csrf_exempt
 def delete_user(request):
     if request.method == 'DELETE':
@@ -108,6 +112,7 @@ def delete_user(request):
     else:
         return JsonResponse({'error': 'Invalid HTTP method'}, status=405)
 
+@api_view(['PUT'])
 @csrf_exempt
 def update_user(request):
     if request.method == 'PUT':
@@ -133,35 +138,8 @@ def update_user(request):
             return JsonResponse({'error': 'Invalid JSON'}, status=400)
     else:
         return JsonResponse({'error': 'Invalid HTTP method'}, status=405)
-    
-# @csrf_exempt
-# def forget_password(request):
-#     if request.method == 'POST':
-#         try:
-#             data = json.loads(request.body)
-#             email = data['email']
 
-#             if not User.objects.filter(email=email).exists():
-#                 return JsonResponse({'error': 'Email does not exist'}, status=404)
-    
-#             user = User.objects.filter(email=email).first()
-#             token = default_token_generator.make_token(user)
-#             uid = urlsafe_base64_encode(force_bytes(user.pk))
-#             reset_link = f"http://localhost:8000/reset_password/{uid}/{token}/"
-
-#             send_mail(
-#                 'Reset your password for rewire'
-#                 f'Click the link to reset your password {reset_link}',
-#                 'app.rewire@gmail.com',
-#                 [email],
-#                 fail_silently=False
-#             )
-#             return JsonResponse({'message': 'Password reset link sent to email'}, status=200)
-        
-#         except KeyError:
-#             return JsonResponse({'error': 'Invalid data'}, status=400)
-#         except json.JSONDecodeError:
-#             return JsonResponse({'error': 'Invalid JSON'}, status=400)
+@api_view(['POST'])    
 @csrf_exempt
 def forget_password(request):
     if request.method == 'POST':
@@ -192,7 +170,8 @@ def forget_password(request):
             return JsonResponse({'error': 'Invalid JSON'}, status=400)
     else:
         return JsonResponse({'error': 'Invalid HTTP method'}, status=405)
-        
+
+@api_view(['POST'])        
 @csrf_exempt
 def reset_password(request, uidb64, token):
     if request.method == 'POST':
@@ -213,4 +192,3 @@ def reset_password(request, uidb64, token):
             return JsonResponse({'error': 'Invalid data'}, status=400)
     else:
         return JsonResponse({'error': 'Invalid HTTP method'}, status=405)
-
