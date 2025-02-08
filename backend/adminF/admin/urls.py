@@ -1,5 +1,5 @@
 """
-URL configuration for rewireAdmin project.
+URL configuration for admin project.
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/5.1/topics/http/urls/
@@ -16,17 +16,19 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from rewireAdmin.views import get_All_Users, create_User, update_User, delete_User  
-# from rest_framework_simplejwt.views import (TokenObtainPairView, TokenRefreshView)
-
-
+from .views import signup_step_one, signup_step_two, login_user, delete_user, update_user, forget_password, reset_password
+from rest_framework_simplejwt.views import (TokenObtainPairView, TokenRefreshView)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('view-Users/', get_All_Users),
-    path('create-User', create_User),
-    path('update-User/<int:id>', update_User),
-    path('delete-User/<int:id>', delete_User),
-    # path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
-    # path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('signup/step-one', signup_step_one),
+    path('signup/step-two', signup_step_two),
+    path('login', login_user),
+    path('delete-user', delete_user),
+    path('update-user', update_user),
+    path('forget-password', forget_password),
+    path('reset-password', reset_password),
 ]
+
