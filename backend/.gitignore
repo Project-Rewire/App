@@ -1,5 +1,13 @@
 # This is the backend specific .gitignore file
 # Register files and folders that are specific to backend, to this file
 
+# python
+.venv/
+.env/
+.env
+
 # django
 migrations/
+
+# postgres data
+.pgdata/
