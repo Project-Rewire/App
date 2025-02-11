@@ -1,5 +1,31 @@
 # Development Guide
 
+## Running the Frontend
+
+## Prerequisites
+1. Make sure the latest version of `node` is installed:
+   ```bash
+   node -v
+   ```
+   You should see an output similar to the following:
+   ```bash
+   v22.13.1
+   ```
+2. Open IDE at the `App/frontend` directory.
+
+## Installing Dependencies
+- Install the required `node_modules`
+   ```bash
+   npm install
+   ```
+
+## Start the frontend
+- Run the following to start the frontend in the development mode:
+   ```bash
+   npm start
+   ```
+- Enter `w` for web view or enter `http://localhost:8081` in the browser.
+
 ## Running the Backend with Docker (Recommended)
 
 ### Prerequisites
