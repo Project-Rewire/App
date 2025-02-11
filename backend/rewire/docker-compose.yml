@@ -1,0 +1,24 @@
+services:
+  rewire:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: 'python manage.py runserver 0.0.0.0:8000'
+    ports:
+      - 8000:8000
+    volumes:
+      - .:/app
+    depends_on:
+      - db
+
+  db:
+    image: postgres:17
+    restart: always
+    environment:
+      - POSTGRES_USER=rewire
+      - POSTGRES_DB=rewire
+      - POSTGRES_PASSWORD=1SaV5YET3Yes5GqSEunk
+    volumes:
+      - .pgdata:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
