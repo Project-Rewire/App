@@ -1,18 +1,19 @@
 import React from 'react';
-
 import { SafeAreaView, StyleSheet } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
-
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer } from '@react-navigation/native';
-
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Icon } from './app/fragments/icon';
+import { useLogin } from "./app/hooks/login-service";
 
 import Home from './app/screens/tabs/Home';
 import Tasks from './app/screens/tabs/Tasks';
 import Community from './app/screens/tabs/Community';
 import Rebot from './app/screens/tabs/Rebot';
+import Welcome from './app/screens/welcome';
 
+const Stack = createNativeStackNavigator();
 const BottomTab = createBottomTabNavigator();
 
 const BottomTabGroup = () => {
@@ -49,11 +50,25 @@ const BottomTabGroup = () => {
 }
 
 export default function App() {
+  const { loggedIn } = useLogin();
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <StatusBar style="auto" />
       <NavigationContainer>
-        <BottomTabGroup />
+        {loggedIn ? (
+          <BottomTabGroup />
+        ) : (
+          <Stack.Navigator
+            initialRouteName="Welcome"
+            screenOptions={{
+              headerShown: false,
+            }}
+          >
+            <Stack.Screen name="Welcome" component={Welcome} />
+            <Stack.Screen name="MainApp" component={BottomTabGroup} />
+          </Stack.Navigator>
+        )}
       </NavigationContainer>
     </SafeAreaView>
   );
