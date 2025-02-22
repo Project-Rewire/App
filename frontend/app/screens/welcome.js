@@ -12,7 +12,7 @@ export default function Welcome({ navigation }) {
           resizeMode="contain"
         />
         
-        <Text style={styles.title}>WELCOME TO THE APP</Text>
+        <Text style={styles.title}>WELCOME TO REWIRE</Text>
         
         <Text style={styles.description}>
           Welcome! Rewire supports you in building better habits and staying motivated. Let's begin.

@@ -5,6 +5,8 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Icon } from './app/fragments/icon';
+import { useLogin } from "./app/hooks/login-service";
+
 import Home from './app/screens/tabs/Home';
 import Tasks from './app/screens/tabs/Tasks';
 import Community from './app/screens/tabs/Community';
@@ -48,19 +50,25 @@ const BottomTabGroup = () => {
 }
 
 export default function App() {
+  const { loggedIn } = useLogin();
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <StatusBar style="auto" />
       <NavigationContainer>
-        <Stack.Navigator
-          initialRouteName="Welcome"
-          screenOptions={{
-            headerShown: false
-          }}
-        >
-          <Stack.Screen name="Welcome" component={Welcome} />
-          <Stack.Screen name="MainApp" component={BottomTabGroup} />
-        </Stack.Navigator>
+        {loggedIn ? (
+          <BottomTabGroup />
+        ) : (
+          <Stack.Navigator
+            initialRouteName="Welcome"
+            screenOptions={{
+              headerShown: false,
+            }}
+          >
+            <Stack.Screen name="Welcome" component={Welcome} />
+            <Stack.Screen name="MainApp" component={BottomTabGroup} />
+          </Stack.Navigator>
+        )}
       </NavigationContainer>
     </SafeAreaView>
   );
