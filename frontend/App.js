@@ -12,6 +12,7 @@ import Tasks from './app/screens/tabs/Tasks';
 import Community from './app/screens/tabs/Community';
 import Rebot from './app/screens/tabs/Rebot';
 import Welcome from './app/screens/welcome';
+import Login from './app/screens/Login';
 
 const Stack = createNativeStackNavigator();
 const BottomTab = createBottomTabNavigator();
@@ -66,6 +67,7 @@ export default function App() {
             }}
           >
             <Stack.Screen name="Welcome" component={Welcome} />
+            <Stack.Screen name="Login" component={Login} />
             <Stack.Screen name="MainApp" component={BottomTabGroup} />
           </Stack.Navigator>
         )}
