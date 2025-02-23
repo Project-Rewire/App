@@ -13,6 +13,7 @@ import Community from './app/screens/tabs/Community';
 import Rebot from './app/screens/tabs/Rebot';
 import Welcome from './app/screens/welcome';
 import Login from './app/screens/Login';
+import ForgotPassword from './app/screens/ForgotPassword';
 
 const Stack = createNativeStackNavigator();
 const BottomTab = createBottomTabNavigator();
@@ -68,6 +69,7 @@ export default function App() {
           >
             <Stack.Screen name="Welcome" component={Welcome} />
             <Stack.Screen name="Login" component={Login} />
+            <Stack.Screen name="ForgotPassword" component={ForgotPassword}/>
             <Stack.Screen name="MainApp" component={BottomTabGroup} />
           </Stack.Navigator>
         )}
