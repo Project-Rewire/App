@@ -1,10 +1,12 @@
 """
 ASGI config for admin project.
+=============================
 
-It exposes the ASGI callable as a module-level variable named ``application``.
+Note:
+    If you want a separate frontend (different origin), perform one action out of following:
+    - Update the ALLOWED_HOSTS in settings with the new frontend url
+    - Remove the AllowedHostsOriginValidator wrapper
 
-For more information on this file, see
-https://docs.djangoproject.com/en/5.1/howto/deployment/asgi/
 """
 
 import os
@@ -25,6 +27,4 @@ application = ProtocolTypeRouter({
             URLRouter(websocket_urlpatterns)
         )
     ),
-    # Update ALLOWED_HOSTS in settings  
-    # or use 'websocket': AuthMiddlewareStack( URLRouter(websocket_urlpatterns)),
 })
