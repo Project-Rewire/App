@@ -81,6 +81,15 @@ TEMPLATES = [
 WSGI_APPLICATION = 'admin.wsgi.application'
 ASGI_APPLICATION = "admin.asgi.application"
 
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("redis", 6379)],
+        },
+    },
+}
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
