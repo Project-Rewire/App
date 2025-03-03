@@ -55,7 +55,7 @@ export default function Community() {
                 <View style={styles.createCommContainer}>
                     <Image source={require('../../assets/community-icon.png')}
                     style = {styles.CommunityImage}/>
-                    <Text>Create Community</Text>
+                    <Text style = {styles.commmunityText}>Create Community</Text>
                 </View>
             </Card>
         </View>
@@ -96,8 +96,14 @@ const styles = StyleSheet.create({
                 padding: 10,
             },
             CommunityImage: {
-                width: 40,
-                height: 40,
+                width: 50,
+                height: 50,
                 marginRight: 10,
-             }
+             },
+            commmunityText: {
+                color: "green",
+                fontSize: 18,
+                fontWeight: "bold",
+                paddingLeft: 5,
+            },
             });
