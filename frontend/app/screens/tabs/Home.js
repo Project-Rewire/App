@@ -9,7 +9,7 @@ const HomePage = () => {
         {/* Welcome Section */}
         <View style={styles.welcomeContainer}>
           <View style={styles.welcomeTextContainer}>
-            <Text style={styles.welcomeText}>Hi John,</Text>
+            <Text style={styles.welcomeText}>Hi Nidarsa,</Text>
             <Text style={styles.welcomeSubtext}>Welcome back!</Text>
           </View>
           <View style={styles.streakContainer}>
