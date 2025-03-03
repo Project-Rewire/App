@@ -19,7 +19,7 @@ export default function Community() {
             <Text style={styles.text}>Joined Community</Text>
             <Card onPress={() => console.log("Card Pressed")}>
                 <View style={styles.titleContainer}>
-                    <Image source={require('../../assets/rewire-logo.png')}
+                    <Image source={require('../../assets/habits.jpeg')}
                         style={styles.image} />
                     <Card.Title>Braking Habits</Card.Title>
                     
@@ -27,7 +27,7 @@ export default function Community() {
             </Card>
             <Card onPress={() => console.log("Card Pressed")}>
                 <View style={styles.titleContainer}>
-                    <Image source={require('../../assets/rewire-logo.png')}
+                    <Image source={require('../../assets/freedom.jpeg')}
                         style={styles.image} />
                     <Card.Title>Fight For Freedom</Card.Title>
                     
@@ -37,7 +37,7 @@ export default function Community() {
 
              <Card onPress={() => console.log("Card Pressed")}>
                 <View style={styles.titleContainer}>
-                    <Image source={require('../../assets/rewire-logo.png')}
+                    <Image source={require('../../assets/rise.png')}
                         style={styles.image} />
                     <Card.Title>Rise from Darkness</Card.Title>
                     
@@ -45,7 +45,7 @@ export default function Community() {
             </Card>
             <Card onPress={() => console.log("Card Pressed")}>
                 <View style={styles.titleContainer}>
-                    <Image source={require('../../assets/rewire-logo.png')}
+                    <Image source={require('../../assets/better future.jpeg')}
                         style={styles.image} />
                     <Card.Title>Better Future Together</Card.Title>
                     
