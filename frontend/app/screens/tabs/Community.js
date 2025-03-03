@@ -1,16 +1,37 @@
 import React from "react";
-import { View,} from "react-native";
+import { View, Image, StyleSheet} from "react-native";
 import Card from "../../fragments/card";
 
+// Main community card(ReWire Community)
 export default function Community() {
     return (
         <View style={{ padding: 10, borderRadius: 20 }}>
             <Card onPress={() => console.log("Card Pressed")}>
-                <View >
+                <View style = {styles.titleContainer}>
+                    <Image source = {require('../../assets/rewire-logo.png')}
+                    style = {styles.image}/>
                     <Card.Title>ReWire Community</Card.Title>
                 </View>
             </Card>
         </View>
     );
 }
+
+// Card stylesheet
+const styles = StyleSheet.create({
+    titleContainer: {
+        flexDirection: "row",
+        alignItems: "center",
+        gap: 30,
+        
+    },
+    image: {
+        width: 40,
+        height: 40,
+        borderRadius: 40,
+        borderColor: "green",
+        borderWidth: 2,  
+     },
+    });
+
 
