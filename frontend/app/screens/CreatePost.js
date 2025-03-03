@@ -23,15 +23,26 @@ const CreatePstscreen = () => {
     const [bodyText, setBodyText] = useState("");
     const [selectedImage, setSelectedImage] = useState (null);
     const [SelectCommunities, setSelectCommunities] = useState ([]); 
-    
+
     const titleInputRef = useRef(null);
     const router = useRouter();
 };
 
-const styles = styleSheet.create({
-    container: { flex: 1, backgroungColor: "#fff"},
-    header: {height: 60, justifyContent: "center", alignItems: "center"},
-    headerTitle: { fontSize: 18, fontWeight: "bold"},
-});
+const selectImage = async () => {
+    try {
+        const result =  await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.mediaTypeOption.Images,
+            allowsEditing: true,
+            aspect: [4,3],
+            quality: 1,
+        });
+
+        if (result.assets && result.assets.length > 0) {
+            setSelectedImage(result.assets[0].uri);
+        }
+    }catch (error) {
+        console.log("Error selecting Image:", error);
+    }
+};
 
 export default CreatePstscreen;
