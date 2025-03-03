@@ -4,6 +4,7 @@ import Card from "../../fragments/card";
 
 // Main community card(ReWire Community)
 export default function Community() {
+    
     return (
         <View style={{ padding: 10, borderRadius: 20 }}>
             <Text style={styles.text}>Main Community</Text>
@@ -47,6 +48,14 @@ export default function Community() {
                     <Image source={require('../../assets/rewire-logo.png')}
                         style={styles.image} />
                     <Card.Title>Better Future Together</Card.Title>
+                    
+                </View>
+            </Card>
+            <Card onPress={() => console.log("Card Pressed")}>
+                <View style={styles.titleContainer}>
+                    <Image source={require('../../assets/community-icon.png')}
+                        style={styles.image} />
+                    <Card.Title>Create community</Card.Title>
                     
                 </View>
             </Card>
