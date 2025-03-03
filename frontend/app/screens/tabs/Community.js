@@ -11,7 +11,7 @@ export default function Community() {
                 <Image source={require('../../assets/search-icon.png')} style={styles.searchIcon} />
                 <TextInput
                     style={styles.searchInput}
-                    placeholder="Search..."
+                    placeholder="Search communities..."
                     placeholderTextColor="grey"
                     onChangeText={(text) => console.log("Searching for:", text)}
                 />
@@ -73,6 +73,23 @@ export default function Community() {
 
 // Card stylesheet
 const styles = StyleSheet.create({
+    searchContainer: {
+        flexDirection: "row",
+        alignItems: "center",
+        backgroundColor: "#D9D9D6",
+        borderRadius: 30,
+        padding: 10,
+        marginBottom: 5,
+    },
+    searchIcon: {
+        width: 20,
+        height: 20,
+        marginRight: 10,
+    },
+    searchInput: {
+        flex: 1,
+        fontSize: 16,
+    },
    
     titleContainer: {
         flexDirection: "row",
