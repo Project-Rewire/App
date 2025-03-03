@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Image, StyleSheet, Text,} from "react-native";
+import { View, Image, StyleSheet, Text, TextInput } from "react-native";
 import Card from "../../fragments/card";
 
 // Main community card(ReWire Community)
@@ -7,6 +7,15 @@ export default function Community() {
     
     return (
         <View style={{ padding: 10, borderRadius: 20 }}>
+            <View style={styles.searchContainer}>
+                <Image source={require('../../assets/search-icon.png')} style={styles.searchIcon} />
+                <TextInput
+                    style={styles.searchInput}
+                    placeholder="Search..."
+                    placeholderTextColor="grey"
+                    onChangeText={(text) => console.log("Searching for:", text)}
+                />
+            </View>
             <Text style={styles.text}>Main Community</Text>
             <Card onPress={() => console.log("Card Pressed")}>
                 <View style={styles.titleContainer}>
@@ -64,6 +73,7 @@ export default function Community() {
 
 // Card stylesheet
 const styles = StyleSheet.create({
+   
     titleContainer: {
         flexDirection: "row",
         alignItems: "center",
@@ -83,27 +93,27 @@ const styles = StyleSheet.create({
         paddingBottom: 15,
         textAlign: "left",
      },
-        CreateCommCard: {
-            backgroundColor: '#D9D9D6',
-            padding: 10,
-            borderRadius: 30,
-            marginTop: 10,
-        },
-            createCommContainer:{
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "center",
-                padding: 10,
-            },
-            CommunityImage: {
-                width: 50,
-                height: 50,
-                marginRight: 10,
-             },
-            commmunityText: {
-                color: "green",
-                fontSize: 18,
-                fontWeight: "bold",
-                paddingLeft: 5,
-            },
-            });
+    CreateCommCard: {
+        backgroundColor: '#D9D9D6',
+        padding: 10,
+        borderRadius: 30,
+        marginTop: 10,
+    },
+    createCommContainer:{
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: 10,
+    },
+    CommunityImage: {
+        width: 50,
+        height: 50,
+        marginRight: 10,
+     },
+    commmunityText: {
+        color: "green",
+        fontSize: 18,
+        fontWeight: "bold",
+        paddingLeft: 5,
+    },
+});
