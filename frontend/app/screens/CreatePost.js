@@ -19,13 +19,13 @@ import {useRouter} from "expo-router";
 
 
 const CreatePstscreen = () => {
-    return (
-        <SafeAreaView style={Styles.container}>
-            <View Style={styles.header}>
-                <Text Style={style.headerTitle}> Create Post </Text> 
-            </View>
-        </SafeAreaView>
-    );
+    const [title, setTitle] = useState("");
+    const [bodyText, setBodyText] = useState("");
+    const [selectedImage, setSelectedImage] = useState (null);
+    const [SelectCommunities, setSelectCommunities] = useState ([]); 
+    
+    const titleInputRef = useRef(null);
+    const router = useRouter();
 };
 
 const styles = styleSheet.create({
