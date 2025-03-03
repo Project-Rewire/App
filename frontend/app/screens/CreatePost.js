@@ -45,4 +45,32 @@ const selectImage = async () => {
     }
 };
 
+const handlePost = () => {
+    if (!title.trim()) {
+        alert("Please enter a title for your post");
+        return;
+    }
+    if(!bodyText.trim()) {
+        alert("Please Enter content for your Post");
+        return;
+    }
+    if(selecteedCommunties.length === 0) {
+        alert("Please select at least one community");
+        return;
+    }
+
+    const post = {
+        title,
+        body: bodyText,
+        image: selectImage,
+        communtites: selecteedCommunties,
+        timestamp: new Date().toISOString(),
+    };
+
+    console.log("Create post: ", post);
+    alert("Post created successfully!");
+    router.back();
+
+}
+
 export default CreatePstscreen;
