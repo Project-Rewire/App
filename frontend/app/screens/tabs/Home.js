@@ -5,10 +5,6 @@ import { Ionicons, FontAwesome5, MaterialCommunityIcons } from '@expo/vector-ico
 const HomePage = () => {
   return (
     <SafeAreaView style={styles.container}>
-      {/* Header */}
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>HOME</Text>
-      </View>
 
       {/* Quote Section */}
       <View style={styles.quoteContainer}>
