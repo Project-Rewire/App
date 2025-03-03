@@ -1,5 +1,22 @@
-import React from "react";
-import { View, Text, SafeAreaView, StyleSheet } from "react-native";
+import React, { useState, useEffect, useRef} from "react";
+import { 
+    View, 
+    Text, 
+    TextInput,
+    TouchableOpacity,
+    StyleSheet,
+    Image,
+    KeyboardAvoidingView,
+    Platform,
+    ScrollView,
+    SafeAreaView,
+} from "react-native";
+
+
+import * as ImagePicker from "expo-image-picker";
+import {Ionicons} from "@expo/vector-icons";
+import {useRouter} from "expo-router";
+
 
 const CreatePstscreen = () => {
     return (
