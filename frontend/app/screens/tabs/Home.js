@@ -54,7 +54,7 @@ const HomePage = () => {
           <Text style={styles.progressTitle}>Daily Task</Text>
         </View>
       </View>
-
+////
       {/* Achievements Section */}
       <View style={styles.sectionLabel}>
         <Text style={styles.sectionLabelText}>Achievements</Text>
