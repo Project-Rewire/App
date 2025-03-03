@@ -1,115 +1,117 @@
 import React from 'react';
-import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, Image } from 'react-native';
+import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, Image, ScrollView } from 'react-native';
 import { Ionicons, FontAwesome5, MaterialCommunityIcons } from '@expo/vector-icons';
 
 const HomePage = () => {
   return (
     <SafeAreaView style={styles.container}>
-      {/* Quote Section - Enlarged */}
-      <View style={styles.quoteContainer}>
-        <Text style={styles.quoteText}>
-          "Your decision to kill your addiction will become a reality only if you 
-          believe and reinforce the fact that you have the capacity to do it."
-        </Text>
-        <Text style={styles.quoteAuthor}>Osho Maharaj</Text>
-      </View>
+      <ScrollView>
+        {/* Quote Section - Enlarged */}
+        <View style={styles.quoteContainer}>
+          <Text style={styles.quoteText}>
+            "Your decision to kill your addiction will become a reality only if you
+            believe and reinforce the fact that you have the capacity to do it."
+          </Text>
+          <Text style={styles.quoteAuthor}>Osho Maharaj</Text>
+        </View>
 
-      {/* Progress Section */}
-      <View style={styles.sectionLabel}>
-        <Text style={styles.sectionLabelText}>Your Progress</Text>
-      </View>
+        {/* Progress Section */}
+        <View style={styles.sectionLabel}>
+          <Text style={styles.sectionLabelText}>Your Progress</Text>
+        </View>
 
-      {/* Progress Cards */}
-      <View style={styles.progressCardsContainer}>
-        {/* Overall Progress Card */}
-        <View style={styles.progressCard}>
-          <View style={styles.progressCircleContainer}>
-            <View style={styles.progressCircle}>
-              <View style={styles.progressArc} />
-              <View style={styles.progressInnerCircle}>
-                <Ionicons name="person" size={16} color="#4A90E2" />
-                <Text style={styles.progressPercentage}>48%</Text>
-                <Text style={styles.progressStatus}>Good</Text>
+        {/* Progress Cards */}
+        <View style={styles.progressCardsContainer}>
+          {/* Overall Progress Card */}
+          <View style={styles.progressCard}>
+            <View style={styles.progressCircleContainer}>
+              <View style={styles.progressCircle}>
+                <View style={styles.progressArc} />
+                <View style={styles.progressInnerCircle}>
+                  <Ionicons name="person" size={16} color="#4A90E2" />
+                  <Text style={styles.progressPercentage}>48%</Text>
+                  <Text style={styles.progressStatus}>Good</Text>
+                </View>
               </View>
             </View>
+            <Text style={styles.progressTitle}>Overall Progress</Text>
+            <TouchableOpacity style={styles.detailsButton}>
+              <Text style={styles.detailsButtonText}>Details</Text>
+            </TouchableOpacity>
           </View>
-          <Text style={styles.progressTitle}>Overall Progress</Text>
-          <TouchableOpacity style={styles.detailsButton}>
-            <Text style={styles.detailsButtonText}>Details</Text>
+
+          {/* Daily Task Card */}
+          <View style={styles.progressCard}>
+            <View style={styles.progressCircleContainer}>
+              <View style={styles.progressCircle}>
+                <View style={styles.dailyProgressArc} />
+                <View style={styles.progressInnerCircle}>
+                  <Ionicons name="person" size={16} color="#4A90E2" />
+                  <Text style={styles.progressPercentage}>65%</Text>
+                  <Text style={styles.progressStatus}>Almost There</Text>
+                </View>
+              </View>
+            </View>
+            <Text style={styles.progressTitle}>Daily Task</Text>
+          </View>
+        </View>
+
+        {/* Achievements Section */}
+        <View style={styles.sectionLabel}>
+          <Text style={styles.sectionLabelText}>Achievements</Text>
+        </View>
+
+        {/* Achievement Cards */}
+        <View style={styles.achievementsContainer}>
+          {/* Task Completed Card */}
+          <View style={styles.achievementCard}>
+            <View style={styles.achievementIconContainer}>
+              <View style={[styles.achievementIcon, styles.goldIcon]}>
+                <MaterialCommunityIcons name="check-circle-outline" size={28} color="#FFD700" />
+              </View>
+            </View>
+            <Text style={styles.achievementTitle}>Task 07</Text>
+            <Text style={styles.achievementSubtitle}>Completed</Text>
+            <View style={styles.achievementBadge}>
+              <Text style={styles.achievementBadgeText}>Day 7 Gold</Text>
+            </View>
+          </View>
+
+          {/* Streak Card */}
+          <View style={styles.achievementCard}>
+            <View style={styles.achievementIconContainer}>
+              <View style={[styles.achievementIcon, styles.silverIcon]}>
+                <MaterialCommunityIcons name="trophy-outline" size={28} color="#C0C0C0" />
+              </View>
+            </View>
+            <Text style={styles.achievementTitle}>7 days</Text>
+            <Text style={styles.achievementSubtitle}>Streak</Text>
+            <View style={styles.achievementBadge}>
+              <Text style={styles.achievementBadgeText}>1st Streak</Text>
+            </View>
+          </View>
+
+          {/* Partially visible third card */}
+          <View style={[styles.achievementCard, styles.partialCard]} />
+        </View>
+
+        {/* Bottom Menu */}
+        <View style={styles.bottomMenu}>
+          <TouchableOpacity style={styles.menuItem}>
+            <View style={styles.reportButton}>
+              <FontAwesome5 name="clipboard-list" size={20} color="#666" />
+              <Text style={styles.menuItemText}>Your Report</Text>
+            </View>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.menuItem}>
+            <View style={styles.assistantButton}>
+              <FontAwesome5 name="robot" size={20} color="#4A90E2" />
+              <Text style={styles.menuItemText}>ReWire Assistant</Text>
+            </View>
           </TouchableOpacity>
         </View>
-
-        {/* Daily Task Card */}
-        <View style={styles.progressCard}>
-          <View style={styles.progressCircleContainer}>
-            <View style={styles.progressCircle}>
-              <View style={styles.dailyProgressArc} />
-              <View style={styles.progressInnerCircle}>
-                <Ionicons name="person" size={16} color="#4A90E2" />
-                <Text style={styles.progressPercentage}>65%</Text>
-                <Text style={styles.progressStatus}>Almost There</Text>
-              </View>
-            </View>
-          </View>
-          <Text style={styles.progressTitle}>Daily Task</Text>
-        </View>
-      </View>
-
-      {/* Achievements Section */}
-      <View style={styles.sectionLabel}>
-        <Text style={styles.sectionLabelText}>Achievements</Text>
-      </View>
-
-      {/* Achievement Cards */}
-      <View style={styles.achievementsContainer}>
-        {/* Task Completed Card */}
-        <View style={styles.achievementCard}>
-          <View style={styles.achievementIconContainer}>
-            <View style={[styles.achievementIcon, styles.goldIcon]}>
-              <MaterialCommunityIcons name="check-circle-outline" size={28} color="#FFD700" />
-            </View>
-          </View>
-          <Text style={styles.achievementTitle}>Task 07</Text>
-          <Text style={styles.achievementSubtitle}>Completed</Text>
-          <View style={styles.achievementBadge}>
-            <Text style={styles.achievementBadgeText}>Day 7 Gold</Text>
-          </View>
-        </View>
-
-        {/* Streak Card */}
-        <View style={styles.achievementCard}>
-          <View style={styles.achievementIconContainer}>
-            <View style={[styles.achievementIcon, styles.silverIcon]}>
-              <MaterialCommunityIcons name="trophy-outline" size={28} color="#C0C0C0" />
-            </View>
-          </View>
-          <Text style={styles.achievementTitle}>7 days</Text>
-          <Text style={styles.achievementSubtitle}>Streak</Text>
-          <View style={styles.achievementBadge}>
-            <Text style={styles.achievementBadgeText}>1st Streak</Text>
-          </View>
-        </View>
-
-        {/* Partially visible third card */}
-        <View style={[styles.achievementCard, styles.partialCard]} />
-      </View>
-
-      {/* Bottom Menu */}
-      <View style={styles.bottomMenu}>
-        <TouchableOpacity style={styles.menuItem}>
-          <View style={styles.reportButton}>
-            <FontAwesome5 name="clipboard-list" size={20} color="#666" />
-            <Text style={styles.menuItemText}>Your Report</Text>
-          </View>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.menuItem}>
-          <View style={styles.assistantButton}>
-            <FontAwesome5 name="robot" size={20} color="#4A90E2" />
-            <Text style={styles.menuItemText}>ReWire Assistant</Text>
-          </View>
-        </TouchableOpacity>
-      </View>
+      </ScrollView>
     </SafeAreaView>
   );
 };
