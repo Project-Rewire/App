@@ -17,7 +17,7 @@ export default function Community() {
                 />
             </View>
             <Text style={styles.text}>Main Community</Text>
-            <Card onPress={() => console.log("Card Pressed")}>
+            <Card onPress={() => console.log("Card Pressed")} style={styles.communitycard}>
                 <View style={styles.titleContainer}>
                     <Image source={require('../../assets/rewire-logo.png')}
                         style={styles.image} />
@@ -26,7 +26,7 @@ export default function Community() {
                 </View>
             </Card>
             <Text style={styles.text}>Joined Community</Text>
-            <Card onPress={() => console.log("Card Pressed")}>
+            <Card onPress={() => console.log("Card Pressed")} style={styles.communitycard}>
                 <View style={styles.titleContainer}>
                     <Image source={require('../../assets/habits.jpeg')}
                         style={styles.image} />
@@ -34,7 +34,7 @@ export default function Community() {
                     
                 </View>
             </Card>
-            <Card onPress={() => console.log("Card Pressed")}>
+            <Card onPress={() => console.log("Card Pressed")} style={styles.communitycard}>
                 <View style={styles.titleContainer}>
                     <Image source={require('../../assets/freedom.jpeg')}
                         style={styles.image} />
@@ -44,7 +44,7 @@ export default function Community() {
             </Card>
              <Text style={styles.text}>Suggestions</Text>
 
-             <Card onPress={() => console.log("Card Pressed")}>
+             <Card onPress={() => console.log("Card Pressed")} style={styles.communitycard}>
                 <View style={styles.titleContainer}>
                     <Image source={require('../../assets/rise.png')}
                         style={styles.image} />
@@ -52,7 +52,7 @@ export default function Community() {
                     
                 </View>
             </Card>
-            <Card onPress={() => console.log("Card Pressed")}>
+            <Card onPress={() => console.log("Card Pressed")}style={styles.communitycard}>
                 <View style={styles.titleContainer}>
                     <Image source={require('../../assets/better future.jpeg')}
                         style={styles.image} />
@@ -96,6 +96,10 @@ const styles = StyleSheet.create({
         alignItems: "center",
         gap: 30,     
     },
+
+    communitycard: {
+        borderRadius: 30,
+    },
     image: {
         width: 40,
         height: 40,
@@ -107,13 +111,13 @@ const styles = StyleSheet.create({
         color: "grey",
         fontSize: 14,
         paddingLeft: 5,
-        paddingBottom: 15,
+        paddingBottom: 10,
         textAlign: "left",
      },
     CreateCommCard: {
         backgroundColor: '#D9D9D6',
         padding: 10,
-        borderRadius: 30,
+        borderRadius: 45,
         marginTop: 10,
     },
     createCommContainer:{
