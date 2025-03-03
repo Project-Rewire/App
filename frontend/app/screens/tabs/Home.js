@@ -5,8 +5,7 @@ import { Ionicons, FontAwesome5, MaterialCommunityIcons } from '@expo/vector-ico
 const HomePage = () => {
   return (
     <SafeAreaView style={styles.container}>
-
-      {/* Quote Section */}
+      {/* Quote Section - Enlarged */}
       <View style={styles.quoteContainer}>
         <Text style={styles.quoteText}>
           "Your decision to kill your addiction will become a reality only if you 
@@ -111,9 +110,6 @@ const HomePage = () => {
           <Text style={styles.menuItemText}>ReWire Assistant</Text>
         </TouchableOpacity>
       </View>
-
-      
-    
     </SafeAreaView>
   );
 };
@@ -122,49 +118,40 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#F5F5F5',
-  },
-  header: {
-    height: 60,
-    backgroundColor: '#DDDDDD',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderBottomLeftRadius: 20,
-    borderBottomRightRadius: 20,
-  },
-  headerTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
+    paddingTop: 16, // Add padding to replace header spacing
   },
   quoteContainer: {
     backgroundColor: '#FFFFFF',
     margin: 16,
-    padding: 16,
-    borderRadius: 10,
+    padding: 20, // Increased padding
+    borderRadius: 15, // Slightly increased border radius
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
+    shadowOpacity: 0.15, // Slightly increased shadow
+    shadowRadius: 6, // Increased shadow radius
+    elevation: 3, // Increased elevation
   },
   quoteText: {
-    fontSize: 16,
+    fontSize: 18, // Increased font size
     fontWeight: '500',
     textAlign: 'center',
-    marginBottom: 8,
+    marginBottom: 12, // Increased margin
+    lineHeight: 26, // Added line height for better readability
   },
   quoteAuthor: {
-    fontSize: 14,
+    fontSize: 15, // Slightly increased font size
     color: '#888',
     textAlign: 'right',
   },
   sectionLabel: {
     paddingHorizontal: 16,
-    marginTop: 8,
+    marginTop: 20, // Increased margin
     marginBottom: 12,
   },
   sectionLabelText: {
-    fontSize: 16,
-    color: '#888',
+    fontSize: 17, // Increased font size
+    color: '#666', // Slightly darker color
+    fontWeight: '500', // Added some weight
   },
   progressCardsContainer: {
     flexDirection: 'row',
@@ -174,7 +161,7 @@ const styles = StyleSheet.create({
   progressCard: {
     width: '48%',
     backgroundColor: '#FFFFFF',
-    borderRadius: 10,
+    borderRadius: 12, // Slightly increased border radius
     padding: 16,
     alignItems: 'center',
     shadowColor: '#000',
@@ -184,7 +171,7 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   progressCircleContainer: {
-    marginBottom: 10,
+    marginBottom: 12, // Increased margin
   },
   progressCircle: {
     width: 80,
@@ -254,11 +241,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     paddingHorizontal: 16,
     justifyContent: 'flex-start',
+    marginTop: 8, // Added margin
   },
   achievementCard: {
     width: '30%',
     backgroundColor: '#FFFFFF',
-    borderRadius: 10,
+    borderRadius: 12, // Slightly increased border radius
     padding: 12,
     alignItems: 'center',
     marginRight: 10,
@@ -350,8 +338,6 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#666',
   },
-  
-  
 });
 
 export default HomePage;
