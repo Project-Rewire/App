@@ -98,16 +98,16 @@ const HomePage = () => {
       <View style={styles.bottomMenu}>
         <TouchableOpacity style={styles.menuItem}>
           <View style={styles.reportButton}>
-            <FontAwesome5 name="clipboard-list" size={22} color="#666" />
+            <FontAwesome5 name="clipboard-list" size={20} color="#666" />
+            <Text style={styles.menuItemText}>Your Report</Text>
           </View>
-          <Text style={styles.menuItemText}>Your Report</Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.menuItem}>
           <View style={styles.assistantButton}>
-            <FontAwesome5 name="robot" size={22} color="#4A90E2" />
+            <FontAwesome5 name="robot" size={20} color="#4A90E2" />
+            <Text style={styles.menuItemText}>ReWire Assistant</Text>
           </View>
-          <Text style={styles.menuItemText}>ReWire Assistant</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>
@@ -304,39 +304,39 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
   },
   menuItem: {
-    alignItems: 'center',
+    width: '45%', // Control the width of each button container
   },
   reportButton: {
-    width: 45,
-    height: 45,
-    borderRadius: 22.5,
-    backgroundColor: '#FFFFFF',
-    justifyContent: 'center',
+    flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 6,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 12, // Rounded rectangle corners
+    paddingVertical: 12,
+    paddingHorizontal: 15,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
+    shadowOpacity: 0.15,
     shadowRadius: 3,
-    elevation: 2,
+    elevation: 3,
   },
   assistantButton: {
-    width: 45,
-    height: 45,
-    borderRadius: 22.5,
-    backgroundColor: '#FFFFFF',
-    justifyContent: 'center',
+    flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 6,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 12, // Rounded rectangle corners
+    paddingVertical: 12,
+    paddingHorizontal: 15,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
+    shadowOpacity: 0.15,
     shadowRadius: 3,
-    elevation: 2,
+    elevation: 3,
   },
   menuItemText: {
-    fontSize: 12,
-    color: '#666',
+    fontSize: 15,
+    fontWeight: '500',
+    color: '#333',
+    marginLeft: 10, // Space between icon and text
   },
 });
 
