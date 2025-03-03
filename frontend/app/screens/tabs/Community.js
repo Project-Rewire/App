@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Image, StyleSheet, Text} from "react-native";
+import { View, Image, StyleSheet, Text,} from "react-native";
 import Card from "../../fragments/card";
 
 // Main community card(ReWire Community)
@@ -51,15 +51,13 @@ export default function Community() {
                     
                 </View>
             </Card>
-            <Card onPress={() => console.log("Card Pressed")}>
-                <View style={styles.titleContainer}>
+            <Card onPress={() => console.log("Create Community Pressed")} style={styles.CreateCommCard}>
+                <View style={styles.createCommContainer}>
                     <Image source={require('../../assets/community-icon.png')}
-                        style={styles.image} />
-                    <Card.Title>Create community</Card.Title>
-                    
+                    style = {styles.CommunityImage}/>
+                    <Text>Create Community</Text>
                 </View>
             </Card>
-             
         </View>
     );
 }
@@ -69,8 +67,7 @@ const styles = StyleSheet.create({
     titleContainer: {
         flexDirection: "row",
         alignItems: "center",
-        gap: 30,
-        
+        gap: 30,     
     },
     image: {
         width: 40,
@@ -86,6 +83,21 @@ const styles = StyleSheet.create({
         paddingBottom: 15,
         textAlign: "left",
      },
-    });
-
-
+        CreateCommCard: {
+            backgroundColor: '#D9D9D6',
+            padding: 10,
+            borderRadius: 30,
+            marginTop: 10,
+        },
+            createCommContainer:{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "center",
+                padding: 10,
+            },
+            CommunityImage: {
+                width: 40,
+                height: 40,
+                marginRight: 10,
+             }
+            });
