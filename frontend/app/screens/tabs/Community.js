@@ -1,20 +1,16 @@
-import { Text, View, StyleSheet } from "react-native";
-
-// Sample Code
+import React from "react";
+import { View,} from "react-native";
+import Card from "../../fragments/card";
 
 export default function Community() {
     return (
-        <View style={styles.container}>
-            <Text>Community Screen</Text>
+        <View style={{ padding: 10, borderRadius: 20 }}>
+            <Card onPress={() => console.log("Card Pressed")}>
+                <View >
+                    <Card.Title>ReWire Community</Card.Title>
+                </View>
+            </Card>
         </View>
     );
 }
 
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        alignItems: "center",
-        justifyContent: "center",
-    }
-});
