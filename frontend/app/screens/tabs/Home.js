@@ -14,7 +14,7 @@ const HomePage = () => {
           </View>
           <View style={styles.streakContainer}>
             <MaterialCommunityIcons name="fire" size={22} color="#FF7700" />
-            <Text style={styles.streakText}>7-day streak!</Text>
+            <Text style={styles.streakText}>5-day streak!</Text>
           </View>
         </View>
 
