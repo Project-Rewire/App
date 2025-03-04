@@ -17,7 +17,7 @@ import * as ImagePicker from "expo-image-picker";
 import {Ionicons} from "@expo/vector-icons";
 import {useRouter} from "expo-router";
 
-
+//State for handling title input, body text, storing selected images and select community.
 const CreatePstscreen = () => {
     const [title, setTitle] = useState("");
     const [bodyText, setBodyText] = useState("");
@@ -28,6 +28,7 @@ const CreatePstscreen = () => {
     const router = useRouter();
 };
 
+//Automatically frocuses on the title input when the component mounts.
 useEffect(()=> {
     setTimeout(()=> {
         if (titleInputRef.current) {
@@ -36,7 +37,7 @@ useEffect(()=> {
     }, 100);
 }, []);
 
-
+// function to select an image from the galary
 const selectImage = async () => {
     try {
         const result =  await ImagePicker.launchImageLibraryAsync({
@@ -54,6 +55,7 @@ const selectImage = async () => {
     }
 };
 
+// Function to handle the post submission
 const handlePost = () => {
     if (!title.trim()) {
         alert("Please enter a title for your post");
@@ -76,6 +78,7 @@ const handlePost = () => {
         timestamp: new Date().toISOString(),
     };
 
+    // creating post and navigating back after post creation.
     console.log("Create post: ", post);
     alert("Post created successfully!");
     router.back();
@@ -149,6 +152,7 @@ return (
         </SafeAreaView>
 );
 
+//Styling Componrnt for UI
 const styles = StyleSheet.create({
     container: { flex:1, backgroundColor: "#fff"},
     KeyboardAvoidingView: { flex: 1},
