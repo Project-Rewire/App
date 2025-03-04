@@ -10,6 +10,7 @@ services:
       - .:/app
     depends_on:
       - db
+      - redis
 
   db:
     image: postgres:17
@@ -22,3 +23,10 @@ services:
       - .pgdata:/var/lib/postgresql/data
     ports:
       - 5432:5432
+  
+  redis:
+    image: redis:7
+    container_name: redis
+    ports:
+      - "6379:6379"
+  
