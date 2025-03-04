@@ -14,6 +14,9 @@ import Rebot from './app/screens/tabs/Rebot';
 import Welcome from './app/screens/welcome';
 import Login from './app/screens/Login';
 import ForgotPassword from './app/screens/ForgotPassword';
+import SignupStepOne from './app/screens/signupStepOne';
+import SignupStepTwo from './app/screens/signupStepTwo';
+
 
 const Stack = createNativeStackNavigator();
 const BottomTab = createBottomTabNavigator();
@@ -70,6 +73,8 @@ export default function App() {
             <Stack.Screen name="Welcome" component={Welcome} />
             <Stack.Screen name="Login" component={Login} />
             <Stack.Screen name="ForgotPassword" component={ForgotPassword}/>
+            <Stack.Screen name="SignupStepOne" component={SignupStepOne} />
+            <Stack.Screen name="SignupStepTwo" component={SignupStepTwo} />
             <Stack.Screen name="MainApp" component={BottomTabGroup} />
           </Stack.Navigator>
         )}

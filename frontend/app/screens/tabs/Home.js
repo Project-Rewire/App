@@ -5,6 +5,7 @@ import { Ionicons, FontAwesome5, MaterialCommunityIcons } from '@expo/vector-ico
 const HomePage = () => {
   return (
     <SafeAreaView style={styles.container}>
+
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         {/* Welcome Section */}
         <View style={styles.welcomeContainer}>
