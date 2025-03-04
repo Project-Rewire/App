@@ -7,24 +7,46 @@ import {
   StyleSheet,
   Image,
   SafeAreaView,
+  CheckBox,
 } from 'react-native';
 
-const SignupStepOne = ({ navigation }) => {
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [username, setUsername] = useState('');
+const SignupStepTwo = ({ navigation, route }) => {
+  const { firstName, lastName, username } = route.params || {};
   
-  const handleNext = () => {
-    if (!firstName.trim() || !lastName.trim() || !username.trim()) {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [agreeToTerms, setAgreeToTerms] = useState(false);
+  
+  const handleSignup = async () => {
+    if (!email.trim() || !password.trim() || !confirmPassword.trim()) {
       return;
     }
     
-    // Navigate to step two with user data
-    navigation.navigate('SignupStepTwo', {
+    if (password !== confirmPassword) {
+      return;
+    }
+    
+    if (!agreeToTerms) {
+      return;
+    }
+    
+    // Combine data from both steps
+    const userData = {
       firstName,
       lastName,
-      username
-    });
+      username,
+      email,
+      password,
+    };
+    
+    try {
+    
+      console.log('User registration data:', userData);
+      
+    } catch (error) {
+      console.error('Signup failed:', error);
+    }
   };
 
   return (
@@ -44,41 +66,63 @@ const SignupStepOne = ({ navigation }) => {
       <View style={styles.inputsContainer}>
         <TextInput
           style={styles.input}
-          placeholder="Enter Your First Name"
-          value={firstName}
-          onChangeText={setFirstName}
+          placeholder="Enter Your Email"
+          value={email}
+          onChangeText={setEmail}
+          keyboardType="email-address"
+          autoCapitalize="none"
           placeholderTextColor="#B8B8B8"
         />
         
         <TextInput
           style={styles.input}
-          placeholder="Enter Your Last Name"
-          value={lastName}
-          onChangeText={setLastName}
+          placeholder="Password"
+          value={password}
+          onChangeText={setPassword}
+          secureTextEntry
           placeholderTextColor="#B8B8B8"
         />
         
         <TextInput
           style={styles.input}
-          placeholder="Enter Your Username"
-          value={username}
-          onChangeText={setUsername}
+          placeholder="Confirm Password"
+          value={confirmPassword}
+          onChangeText={setConfirmPassword}
+          secureTextEntry
           placeholderTextColor="#B8B8B8"
         />
+      </View>
+      
+      {/* Terms and Conditions Checkbox */}
+      <View style={styles.termsContainer}>
+        <TouchableOpacity
+          style={styles.checkbox}
+          onPress={() => setAgreeToTerms(!agreeToTerms)}
+        >
+          <View style={[
+            styles.checkboxInner,
+            agreeToTerms && styles.checkboxChecked
+          ]} />
+        </TouchableOpacity>
+        
+        <Text style={styles.termsText}>
+          By creating an account your agree to our{' '}
+          <Text style={styles.termsLink}>Term and Conditions</Text>
+        </Text>
       </View>
       
       {/* Progress Indicator */}
       <View style={styles.progressContainer}>
-        <View style={styles.progressIndicatorActive} />
         <View style={styles.progressIndicatorInactive} />
+        <View style={styles.progressIndicatorActive} />
       </View>
       
-      {/* Next Button */}
+      {/* Signup Button */}
       <TouchableOpacity 
-        style={styles.nextButton}
-        onPress={() => navigation.navigate('SignupStepTwo')}
+        style={styles.signupButton}
+        onPress={handleSignup}
       >
-        <Text style={styles.nextButtonText}>Next</Text>
+        <Text style={styles.signupButtonText}>Signup</Text>
       </TouchableOpacity>
       
       {/* Sign In Link */}
@@ -129,6 +173,36 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#333',
   },
+  termsContainer: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    marginBottom: 10,
+  },
+  checkbox: {
+    width: 20,
+    height: 20,
+    borderWidth: 1,
+    borderColor: '#E5E5E5',
+    marginRight: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  checkboxInner: {
+    width: 14,
+    height: 14,
+    backgroundColor: 'transparent',
+  },
+  checkboxChecked: {
+    backgroundColor: '#16837D',
+  },
+  termsText: {
+    flex: 1,
+    fontSize: 14,
+    color: '#333',
+  },
+  termsLink: {
+    color: '#16837D',
+  },
   progressContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
@@ -149,7 +223,7 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     marginHorizontal: 5,
   },
-  nextButton: {
+  signupButton: {
     backgroundColor: '#16837D',
     height: 55,
     borderRadius: 8,
@@ -157,7 +231,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 15,
   },
-  nextButtonText: {
+  signupButtonText: {
     color: '#fff',
     fontSize: 18,
     fontWeight: 'bold',
@@ -186,4 +260,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SignupStepOne;
+export default SignupStepTwo;
