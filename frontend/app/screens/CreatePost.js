@@ -71,6 +71,74 @@ const handlePost = () => {
     alert("Post created successfully!");
     router.back();
 
-}
+};
+
+return (
+
+    <SafeAreaView style={style.containers}>
+        <KeyboardAvoidingView behavour={Platform.os === "ios" ? "Padding" : "height"} style={StyleSheet.KeyboardAvoidingView}>
+
+            {/*Header Section */}
+            <View style={StyleSheet.header}>
+                <Text style={StyleSheet.headerTitle}>Create Post</Text>
+            </View> 
+
+            <ScrollView style={style.ScrollView}>
+                {/*title Input Section */}
+                <TextInput
+                    ref={titleInputRef}
+                    style={StyleSheet.titleInput}
+                    placeholder="Title"
+                    value={title}
+                    onChangeText={setTitle}
+                    maxLength={100}
+                />
+
+                {/* Body Text Input Section */}
+                <TextInput
+                    style={styles.bodyInput}
+                    placeholder="Write your post here..."
+                    value={bodyText}
+                    onChangeText={setBodyText}
+                    multiline
+                    textAlignVertical="top"
+                />
+
+
+                {/* Image Preview Section (only visible if an image is selected) */}
+                {selectedImage && (
+                    <View style={styles.imagePreviewContainer}>
+                        <Image source={{ uri: selectedImage }} style={styles.imagePreview} />
+                        {/* Remove Image Button */}
+                        <TouchableOpacity style={styles.removeImageButton} onPress={() => setSelectedImage(null)}>
+                            <Ionicons name="close-circle" size={24} color="#FF4D4D" />
+                        </TouchableOpacity>
+                    </View>
+                )}
+
+                {/* Add Image Button */}
+                <TouchableOpacity style= {styles.addImageButton} onPress= {selectImage}>
+                    <Ionicons name= "image-outline" size={24} color= "#4E8DF5"/>
+                    <Text style= {styles.addImageText}>Add Image</Text>
+                </TouchableOpacity>
+            </ScrollView>
+
+            {/* Submit Button Section */}
+            <View style={styles.footer}>
+                <TouchableOpacity
+                style={[
+                    styles.postButton,
+                    !title.trim() || !bodyText.trim() || selectedCommunities.length === 0 ? styles.postButtonDisabled : {},
+                  ]}
+                  onPress={handlePost}
+                  disabled={!title.trim() || !bodyText.trim() || selectedCommunities.length === 0}
+
+                >
+                    <Text style={styles.postButtonText}>Post</Text>
+                </TouchableOpacity>
+            </View>
+        </SafeAreaView>
+);
+
 
 export default CreatePstscreen;
