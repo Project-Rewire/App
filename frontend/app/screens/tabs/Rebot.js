@@ -1,11 +1,74 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import { View, ActivityIndicator } from "react-native";
 import { GiftedChat, Bubble, InputToolbar, Send, SystemMessage } from "react-native-gifted-chat";
 import { useRebot } from "../../hooks/rebot-service";
 import { Icon } from "../../fragments/icon";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { StyleSheet } from "react-native";
+import { Image } from "react-native";
+import { Text } from "react-native";
+import { Button } from "react-native";
+
+
 
 export default function Rebot() {
+    const [chatStarted, setChatStarted] = useState(false);
+
+    if (chatStarted) {
+        return <ChatInterface />;
+    }
+
+    const styles = StyleSheet.create({
+        container: {
+            flex: 1,
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: 20,
+            backgroundColor: '#f5f5f5',
+        },
+        title: {
+            fontSize: 24,
+            fontWeight: 'bold',
+            marginVertical: 20,
+            color: '#333',
+        },
+        robotIcon: {
+            width: "70%",
+            height: 70,
+            marginBottom: 20,
+        },
+        button: {
+            backgroundColor: '#4a90e2',
+            paddingHorizontal: 30,
+            paddingVertical: 12,
+            borderRadius: 8,
+            marginTop: 10,
+        },
+        buttonText: {
+            fontSize: 16,
+            fontWeight: '600',
+        }
+    });
+
+    return (
+        <View style={styles.container}>
+            <Image
+                style={styles.robotIcon}
+                source={require('../../assets/robot.png')}
+                resizeMode="contain"
+            />
+            <Text style={styles.title}>Start a chat!</Text>
+            <Button
+                title="Start"
+                buttonStyle={styles.button}
+                titleStyle={styles.buttonText}
+                onPress={() => setChatStarted(true)}
+            />
+        </View>
+    );
+}
+
+function ChatInterface() {
     const { messages, setMessages, isLoading } = useRebot();
     const insets = useSafeAreaInsets();
     const user = {
@@ -44,6 +107,8 @@ export default function Rebot() {
         </View>
     );
 }
+
+
 
 const renderSystemMessage = (props) => {
     return (
