@@ -21,9 +21,9 @@ export default function ProfilePage() {
             />
           </motion.div>
           <Text className="text-2xl font-extrabold text-gray-900">John Doe</Text>
-          <Text className="text-gray-600 text-sm">johndoe@example.com</Text>
+          <Text className="text-gray-600 text-sm">nidarsa123@example.com</Text>
           <Text className="text-center text-gray-700 mt-3 px-4">
-            Passionate about tech and design. Love to explore new trends and innovations.
+            Passionate about tech and design. Love  to  explore  new  trends  and  innovations.
           </Text>
           <View className="flex-row mt-6 space-x-3">
             <Button className="px-5 py-3 bg-blue-600 text-white rounded-xl shadow-md transition-transform transform active:scale-95">
