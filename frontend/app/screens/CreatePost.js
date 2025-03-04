@@ -28,6 +28,15 @@ const CreatePstscreen = () => {
     const router = useRouter();
 };
 
+useEffect(()=> {
+    setTimeout(()=> {
+        if (titleInputRef.current) {
+            titleInputRef.current,focus();
+        }
+    }, 100);
+}, []);
+
+
 const selectImage = async () => {
     try {
         const result =  await ImagePicker.launchImageLibraryAsync({
