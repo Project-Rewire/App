@@ -140,5 +140,35 @@ return (
         </SafeAreaView>
 );
 
+const styles = StyleSheet.create({
+    container: { flex:1, backgroundColor: "#fff"},
+    KeyboardAvoidingView: { flex: 1},
+
+    header: { height: 60, borderBottomWidth: 1, borderBottomColor: "#E0E0E0", justifyContent: "center", alignItems: "center", paddingHorizontal: 20 },
+    headerTitle: {fontsize: 18, fontWeight: "bold"},
+
+    scrollview: {flex: 1, padding: 16},
+
+    titleInput: {borderWidth: 1, borderColor: "#E0E0E0", borderRadius: 8, padding: 12, fontSize: 16, margingBottom: 16},
+
+    bodyInput: {borderWidth:1, borderColor: "#E0E0E0", borderRadius: 8, padding: 12, fontSize: 16, minHeight: 150, MarinBottom: 16},
+
+    addImageButton: {flexDirection: "row", alignItems: "center", backgroundColor: "#F6F8FA", borderradius: 8, padding: 12, marginBottom: 16},
+    addImageText: {margineLeft: 8, color: "#4E8Df5" },
+
+    imagePreviewContainer: {marginBottom: 16, position: "relative"},
+    imagePreview: {width: "100", height: 200, borderRadius: 8},
+
+    removeImageButton: {position: "absolute", top: 8, right: 8},
+
+    footer: {padding:16, borderTopWidth: 1, bordertopColor: "E0E0E0", alignItems: "flex-end"},
+
+    postButton: { backgroundColor: "#4E8DF5", borderRadius: 8, paddingVertical: 10, paddingHorizontal: 24 },
+    postButtonDisabled: { backgroundColor: "#BDBDBD" },
+    postButtonText: { color: "white", fontWeight: "bold", fontSize: 16 },
+
+
+});
+
 
 export default CreatePstscreen;
