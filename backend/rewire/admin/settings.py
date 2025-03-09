@@ -30,14 +30,14 @@ SECRET_KEY = 'django-insecure-m=#y3m1kzyqd%=*3am642-hf0p3f4!7%26*sx&m&&54%&7&3@v
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = ["*"]
 
 # Application definition
 
 INSTALLED_APPS = [
     'daphne',
     'rebot',
+    'questionnaire',
     'aiprofile',
     'django.contrib.admin',
     'django.contrib.auth',
