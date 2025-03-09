@@ -6,6 +6,7 @@ import {
   Text,
   TextInput,
   ScrollView,
+  TouchableOpacity,
 } from "react-native";
 import Card from "../../fragments/card";
 
@@ -60,9 +61,53 @@ export default function Community() {
     setSuggestedCommunities([...suggestedCommunities, community]);
   };
 
+  // Recreating card ui to mach the community components.
+  const communityCard = (item, section) => (
+    <Card
+      key={item.id}
+      onPress={() => console.log(item.name + " Card Pressed")}
+      style={styles.communitycard}
+      >
+      <View style={styles.cardRow}>
+        <View style={styles.leftContent}>
+        <Image
+          source={item.image}
+          style={styles.avatar}/>
+        <View style={styles.textBox}>
+        <Card.Title>{item.name}</Card.Title>
+        {item.members && <Text style={styles.members}>{item.members} members</Text>}
+        </View>
+      </View>
+      {section !== 'mainCommunity' && (
+          <TouchableOpacity
+            style={[
+              styles.button,
+              section === 'joinedCommunities' ? styles.greenBorder : styles.greenButton
+            ]}
+            onPress={(e) => {
+              e.stopPropagation();
+              section === 'joinedCommunities' 
+                ? handleLeaveCommunity(item)
+                : handleJoinCommunity(item);
+            }}>
+            <Text 
+              style={[
+                styles.buttonText, 
+                section === 'joinedCommunities' ? styles.greenText : styles.whiteText
+              ]}
+            >
+              {section === 'joinedCommunities' ? 'Joined' : 'Join'}
+            </Text>
+            </TouchableOpacity>
+            )}
+            </View>
+          </Card>
+        );
   return (
-    <View style={{ flex: 1, borderRadius: 20 }}>
+    <View style={styles.container}>
       <ScrollView style={{ flex: 1 }}>
+
+        //search bar
         <View style={styles.searchContainer}>
           <Image
             source={require("../../assets/search-icon.png")}
@@ -75,51 +120,18 @@ export default function Community() {
             onChangeText={(text) => console.log("Searching for:", text)}
           />
         </View>
-        <Text style={styles.text}>Main Community</Text>
-        <Card
-          onPress={() => console.log("Card Pressed")}
-          style={styles.communitycard}
-        >
-          <View style={styles.titleContainer}>
-            <Image
-              source={require("../../assets/rewire-logo.png")}
-              style={styles.image}
-            />
-            <Card.Title>ReWire Community</Card.Title>
-          </View>
-        </Card>
-        <Text style={styles.text}>Joined Community</Text>
-        {joinedCommunities.map((community, index) => (
-          <Card
-            key={index}
-            onPress={() => handleLeaveCommunity(community)}
-            style={styles.communitycard}
-          >
-            <View style={styles.titleContainer}>
-              <Image
-                source={community.image}
-                style={styles.image}
-              />
-              <Card.Title>{community.name}</Card.Title>
-            </View>
-          </Card>
-        ))}
-        <Text style={styles.text}>Suggestions</Text>
-        {suggestedCommunities.map((community, index) => (
-          <Card
-            key={index}
-            onPress={() => handleJoinCommunity(community)}
-            style={styles.communitycard}
-          >
-            <View style={styles.titleContainer}>
-              <Image
-                source={community.image}
-                style={styles.image}
-              />
-              <Card.Title>{community.name}</Card.Title>
-            </View>
-          </Card>
-        ))}
+        <Text style={styles.heading}>Main Community</Text>
+        {communityCard(maincommunity[0], 'mainCommunity')}
+
+        <Text style={styles.heading}>Joined Community</Text>
+        {joinedCommunities.map((item) => 
+          communityCard(item, 'joinedCommunities')
+        )}
+
+        <Text style={styles.heading}>Suggestions</Text>
+        {suggestedCommunities.map((item) => 
+          communityCard(item, 'suggestedCommunities')
+        )}
         <Card
           onPress={() => console.log("Create Community Pressed")}
           style={styles.CreateCommCard}
@@ -137,15 +149,20 @@ export default function Community() {
   );
 }
 
-// Card stylesheet
 const styles = StyleSheet.create({
-  searchContainer: {
+  container: {
+    flex: 1,
+    borderRadius: 20,
+    backgroundColor: "#ffffff",
+  },
+  searchBar: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#D9D9D6",
+    backgroundColor: "#fff",
     borderRadius: 30,
     padding: 10,
-    marginBottom: 5,
+    marginBottom: 16,
+    marginTop: 5,
   },
   searchIcon: {
     width: 20,
@@ -156,48 +173,92 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 16,
   },
-
-  titleContainer: {
+   heading: {
+    color: "#333",
+    fontSize: 16,
+    fontWeight: "500",
+    paddingLeft: 5,
+    paddingVertical: 10,
+  },
+  card: {
+    borderRadius: 15,
+    marginBottom: 10,
+    backgroundColor: "#fff",
+    padding: 12,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.2,
+    shadowRadius: 2,
+    elevation: 2,
+  },
+  cardRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  leftContent: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 30,
+    flex: 1,
   },
-
-  communitycard: {
-    borderRadius: 30,
-  },
-  image: {
+  avatar: {
     width: 40,
     height: 40,
     borderRadius: 40,
-    borderColor: "green",
+    borderColor: "#4CAF50",
     borderWidth: 2,
   },
-  text: {
+  textBox: {
+    marginLeft: 15,
+  },
+  members: {
     color: "grey",
-    fontSize: 14,
-    paddingLeft: 5,
-    paddingBottom: 10,
-    textAlign: "left",
+    fontSize: 12,
+    marginTop: -5,
   },
-  CreateCommCard: {
-    backgroundColor: "#D9D9D6",
-    padding: 10,
-    borderRadius: 45,
+  button: {
+    paddingVertical: 6,
+    paddingHorizontal: 15,
+    borderRadius: 20,
+    borderWidth: 1,
+  },
+  
+  greenButton: {
+    backgroundColor: "#4CAF50",
+    borderColor: "#4CAF50",
+  },
+  
+  greenBorder: {
+    backgroundColor: "transparent",
+    borderColor: "#4CAF50",
+  },
+  buttonText: {
+    fontWeight: "bold",
+    fontSize: 12,
+  },
+  whiteText: {
+    color: "#fff",
+  },
+  greenText: {
+    color: "#4CAF50",
+  },
+  createCard: {
+    backgroundColor: "#D9D9D6", 
     marginTop: 10,
+    marginBottom: 20,
   },
-  createCommContainer: {
+  createContent: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
     padding: 10,
   },
-  CommunityImage: {
+  createIcon: {
     width: 50,
     height: 50,
     marginRight: 10,
   },
-  commmunityText: {
+  createText: {
     color: "green",
     fontSize: 18,
     fontWeight: "bold",
