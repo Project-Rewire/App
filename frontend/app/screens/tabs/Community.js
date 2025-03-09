@@ -13,8 +13,9 @@ import Card from "../../fragments/card";
 export default function Community() {
 
   //some dummy data
-  const [communities, setCommunities] = useState([
+  const [maincommunity, setMainCommunity] = useState([
     {
+      id: "0000",
       name: 'ReWire Community',
       image: require("../../assets/rewire-logo.png"),
     },
@@ -22,11 +23,13 @@ export default function Community() {
   
     const [joinedCommunities, setJoinedCommunities] = useState([
       {
+        id: "0001",
         name: 'Braking Habits',
         image: require("../../assets/habits.jpeg"),
         members: 100,
       },
       {
+        id: "0002",
         name: 'Fight For Freedom',
         image: require("../../assets/freedom.jpeg"),
         members: 67
@@ -35,11 +38,13 @@ export default function Community() {
   
     const [suggestedCommunities, setSuggestedCommunities] = useState([
       {
+        id: "0003",
         name: 'Rise from Darkness',
         image: require("../../assets/rise.png"),
         members: 45,
       },
       {
+        id: "0004",
         name: 'Better Future Together',
         image: require("../../assets/better future.jpeg"),
         members: 23,
@@ -47,11 +52,11 @@ export default function Community() {
     ]);
   const handleJoinCommunity= (community) => {
     setJoinedCommunities([...joinedCommunities, community]);
-    setSuggestedCommunities(suggestedCommunities.filter(c => c.name !== community.name));
+    setSuggestedCommunities(suggestedCommunities.filter(c => c.id !== community.id));
   };
 
   const handleLeaveCommunity = (community) => {
-    setJoinedCommunities(joinedCommunities.filter(c => c.name !== community.name));
+    setJoinedCommunities(joinedCommunities.filter(c => c.id !== community.id));
     setSuggestedCommunities([...suggestedCommunities, community]);
   };
 
