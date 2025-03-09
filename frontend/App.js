@@ -10,7 +10,6 @@ import { useLogin } from "./app/hooks/login-service";
 import Home from './app/screens/tabs/Home';
 import Tasks from './app/screens/tabs/Tasks';
 import Community from './app/screens/tabs/Community';
-import Rebot from './app/screens/tabs/Rebot';
 import Welcome from './app/screens/welcome';
 import Login from './app/screens/Login';
 import ForgotPassword from './app/screens/ForgotPassword';
@@ -70,9 +69,21 @@ function BottomTabNavigator() {
           }
           return <Icon name={iconName} type={iconLib} size={size} color={color} />;
         },
-        tabBarActiveTintColor: '#1B7377',
-        tabBarInactiveTintColor: '#666',
+        tabBarActiveTintColor: "#fff",
+        tabBarInactiveTintColor: "#eee",
+        tabBarShowLabel: false,
+        tabBarPressColor: "transparent", // removes ripple on android
+        tabBarStyle: {
+          backgroundColor: "#094f47",
+        },
+
         headerShown: true,
+        headerShadowVisible: false,
+        headerTitleAlign: "center",
+        headerTitleStyle: {
+          fontSize: 24,
+          color: "#094f47",
+        },
       })}
     >
       <BottomTabStack.Screen name="Home" component={Home} />
