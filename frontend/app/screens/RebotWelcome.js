@@ -27,22 +27,24 @@ export default function RebotWelcome() {
                 </View>
 
                 {/* Title */}
-                <Text style={styles.title}>Rebot</Text>
+                {/* <Text style={styles.title}>Rebot</Text> */}
 
                 {/* Action buttons */}
-                <TouchableOpacity
-                    style={styles.newConversationButton}
-                    onPress={handleNewConversation}
-                >
-                    <Text style={styles.newConversationText}>New Conversation</Text>
-                </TouchableOpacity>
+                <View style={styles.actionButtons}>
+                    <TouchableOpacity
+                        style={styles.newConversationButton}
+                        onPress={handleNewConversation}
+                    >
+                        <Text style={styles.newConversationText}>New Conversation</Text>
+                    </TouchableOpacity>
 
-                <TouchableOpacity
-                    style={styles.previousButton}
-                    onPress={handlePreviousConversations}
-                >
-                    <Text style={styles.previousText}>Previous Conversations</Text>
-                </TouchableOpacity>
+                    <TouchableOpacity
+                        style={styles.previousButton}
+                        onPress={handlePreviousConversations}
+                    >
+                        <Text style={styles.previousText}>Previous Conversations</Text>
+                    </TouchableOpacity>
+                </View>
             </View>
         </View>
     );
@@ -61,7 +63,7 @@ const styles = StyleSheet.create({
     },
     illustrationContainer: {
         width: '100%',
-        height: "50%",
+        height: "45%",
         alignItems: 'center',
         justifyContent: 'center',
     },
@@ -72,11 +74,18 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 28,
         fontWeight: 'bold',
-        color: '#176B87',
-        marginBottom: 40,
+        color: '#16837D',
+        marginBottom: 30,
+    },
+    actionButtons: {
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        gap: 4,
+        width: "100%"
     },
     newConversationButton: {
-        backgroundColor: '#176B87',
+        backgroundColor: '#16837D',
         width: '100%',
         height: 50,
         borderRadius: 8,
@@ -96,7 +105,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     previousText: {
-        color: '#176B87',
+        color: '#16837D',
         fontSize: 16,
         fontWeight: '500',
     },
