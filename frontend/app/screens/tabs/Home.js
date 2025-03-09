@@ -1,28 +1,91 @@
-import React from 'react';
-import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, ScrollView } from 'react-native';
+import React, { useState, useCallback } from 'react';
+import { 
+  View, 
+  Text, 
+  StyleSheet, 
+  SafeAreaView, 
+  TouchableOpacity, 
+  ScrollView, 
+  RefreshControl,
+  Animated,
+  Platform
+} from 'react-native';
 import { Ionicons, FontAwesome5, MaterialCommunityIcons } from '@expo/vector-icons';
+import * as Haptics from 'expo-haptics';
 
 const HomePage = () => {
+  const [refreshing, setRefreshing] = useState(false);
+  const [progressAnim] = useState(new Animated.Value(0));
+  const [userName] = useState('John'); // Replace with actual user name from context/redux
+
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+    if (hour < 12) return 'Good Morning';
+    if (hour < 17) return 'Good Afternoon';
+    return 'Good Evening';
+  };
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    // Simulate data refresh
+    setTimeout(() => {
+      setRefreshing(false);
+      // Trigger success haptic
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+    }, 1500);
+  }, []);
+
+  const handleButtonPress = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+  };
+
+  // Animate progress on mount
+  React.useEffect(() => {
+    Animated.timing(progressAnim, {
+      toValue: 0.48, // 48% progress
+      duration: 1000,
+      useNativeDriver: false,
+    }).start();
+  }, []);
+
+  const progressRotation = progressAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: ['0deg', '360deg'],
+  });
+
   return (
     <SafeAreaView style={styles.container}>
-
-      <ScrollView contentContainerStyle={styles.scrollContainer}>
-        {/* Welcome Section */}
-        <View style={styles.welcomeContainer}>
-          <View style={styles.welcomeTextContainer}>
-            <Text style={styles.welcomeText}>Hi Nidarsa,</Text>
-            <Text style={styles.welcomeSubtext}>Welcome back!</Text>
-          </View>
-          <View style={styles.streakContainer}>
-            <MaterialCommunityIcons name="fire" size={22} color="#FF7700" />
-            <Text style={styles.streakText}>5-day streak!</Text>
-          </View>
+      <ScrollView 
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+      >
+        {/* Greeting Section */}
+        <View style={styles.greetingContainer}>
+          <Text style={styles.greeting}>{getGreeting()}, {userName}</Text>
+          <Text style={styles.date}>{new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}</Text>
         </View>
 
-        {/* Quote Section */}
+        {/* Quick Actions */}
+        <View style={styles.quickActions}>
+          <TouchableOpacity style={styles.quickActionButton} onPress={handleButtonPress}>
+            <Ionicons name="medical" size={24} color="#4A90E2" />
+            <Text style={styles.quickActionText}>Emergency</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.quickActionButton} onPress={handleButtonPress}>
+            <Ionicons name="chatbubble-ellipses" size={24} color="#4A90E2" />
+            <Text style={styles.quickActionText}>Chat Now</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.quickActionButton} onPress={handleButtonPress}>
+            <Ionicons name="calendar" size={24} color="#4A90E2" />
+            <Text style={styles.quickActionText}>Schedule</Text>
+          </TouchableOpacity>
+        </View>
+
+        {/* Quote Section - Enlarged */}
         <View style={styles.quoteContainer}>
           <Text style={styles.quoteText}>
-            "Your decision to kill your addiction will become a reality only if you 
+            "Your decision to kill your addiction will become a reality only if you
             believe and reinforce the fact that you have the capacity to do it."
           </Text>
           <Text style={styles.quoteAuthor}>Osho Maharaj</Text>
@@ -41,6 +104,7 @@ const HomePage = () => {
               <View style={styles.progressCircle}>
                 <View style={styles.progressArc} />
                 <View style={styles.progressInnerCircle}>
+                  <Ionicons name="person" size={16} color="#4A90E2" />
                   <Text style={styles.progressPercentage}>48%</Text>
                   <Text style={styles.progressStatus}>Good</Text>
                 </View>
@@ -58,6 +122,7 @@ const HomePage = () => {
               <View style={styles.progressCircle}>
                 <View style={styles.dailyProgressArc} />
                 <View style={styles.progressInnerCircle}>
+                  <Ionicons name="person" size={16} color="#4A90E2" />
                   <Text style={styles.progressPercentage}>65%</Text>
                   <Text style={styles.progressStatus}>Almost There</Text>
                 </View>
@@ -105,10 +170,8 @@ const HomePage = () => {
           {/* Partially visible third card */}
           <View style={[styles.achievementCard, styles.partialCard]} />
         </View>
-      </ScrollView>
 
-      {/* Bottom Menu - Fixed at bottom */}
-      <View style={styles.bottomMenuContainer}>
+        {/* Bottom Menu */}
         <View style={styles.bottomMenu}>
           <TouchableOpacity style={styles.menuItem}>
             <View style={styles.reportButton}>
@@ -124,9 +187,7 @@ const HomePage = () => {
             </View>
           </TouchableOpacity>
         </View>
-
-       
-      </View>
+      </ScrollView>
     </SafeAreaView>
   );
 };
@@ -135,81 +196,79 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#F5F5F5',
+    paddingTop: 16,
   },
-  scrollContainer: {
-    flexGrow: 1,
-    paddingBottom: 130, // Add padding to account for fixed bottom menu
-  },
-  // Welcome Section Styles
-  welcomeContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+  greetingContainer: {
     paddingHorizontal: 16,
     paddingVertical: 12,
-    marginTop: 8,
   },
-  welcomeTextContainer: {
-    flex: 1,
-  },
-  welcomeText: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    color: '#333',
-  },
-  welcomeSubtext: {
-    fontSize: 16,
-    color: '#666',
-    marginTop: 2,
-  },
-  streakContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#FFF3E0',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 20,
-  },
-  streakText: {
-    fontSize: 14,
+  greeting: {
+    fontSize: 24,
     fontWeight: '600',
-    color: '#FF7700',
-    marginLeft: 6,
+    color: '#333',
+    marginBottom: 4,
   },
-  // Quote Section
+  date: {
+    fontSize: 14,
+    color: '#666',
+  },
+  quickActions: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    marginBottom: 8,
+  },
+  quickActionButton: {
+    alignItems: 'center',
+    backgroundColor: '#FFFFFF',
+    padding: 12,
+    borderRadius: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
+    width: '30%',
+  },
+  quickActionText: {
+    marginTop: 8,
+    fontSize: 12,
+    color: '#333',
+    fontWeight: '500',
+  },
   quoteContainer: {
     backgroundColor: '#FFFFFF',
     margin: 16,
-    padding: 20,
-    borderRadius: 15,
+    padding: 20, 
+    borderRadius: 15, 
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.15,
-    shadowRadius: 6,
-    elevation: 3,
+    shadowOpacity: 0.15, 
+    shadowRadius: 6, 
+    elevation: 3, 
   },
   quoteText: {
-    fontSize: 18,
+    fontSize: 18, 
     fontWeight: '500',
     textAlign: 'center',
-    marginBottom: 12,
-    lineHeight: 26,
-    color: '#333',
+    marginBottom: 12, 
+    lineHeight: 26, 
   },
   quoteAuthor: {
-    fontSize: 15,
+    fontSize: 15, 
     color: '#888',
     textAlign: 'right',
   },
   sectionLabel: {
     paddingHorizontal: 16,
-    marginTop: 20,
+    marginTop: 20, 
     marginBottom: 12,
   },
   sectionLabelText: {
-    fontSize: 17,
-    color: '#666',
-    fontWeight: '500',
+    fontSize: 17, 
+    color: '#666', 
+    fontWeight: '500', 
   },
   progressCardsContainer: {
     flexDirection: 'row',
@@ -219,7 +278,7 @@ const styles = StyleSheet.create({
   progressCard: {
     width: '48%',
     backgroundColor: '#FFFFFF',
-    borderRadius: 12,
+    borderRadius: 12, 
     padding: 16,
     alignItems: 'center',
     shadowColor: '#000',
@@ -229,7 +288,7 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   progressCircleContainer: {
-    marginBottom: 12,
+    marginBottom: 12, 
   },
   progressCircle: {
     width: 80,
@@ -272,50 +331,50 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   progressPercentage: {
-    fontSize: 16,
-    fontWeight: 'bold',
+    fontSize: 18,
+    fontWeight: '600',
     color: '#333',
+    marginTop: 4,
   },
   progressStatus: {
     fontSize: 12,
     color: '#666',
+    marginTop: 2,
   },
   progressTitle: {
     fontSize: 16,
     color: '#333',
-    marginBottom: 10,
+    marginTop: 8,
   },
   detailsButton: {
-    backgroundColor: '#E8F0F7',
+    backgroundColor: '#F0F0F0',
+    paddingHorizontal: 16,
     paddingVertical: 6,
-    paddingHorizontal: 20,
-    borderRadius: 20,
+    borderRadius: 15,
+    marginTop: 12,
   },
   detailsButtonText: {
     color: '#4A90E2',
     fontSize: 14,
+    fontWeight: '500',
   },
   achievementsContainer: {
     flexDirection: 'row',
     paddingHorizontal: 16,
-    justifyContent: 'flex-start',
     marginTop: 8,
   },
   achievementCard: {
-    width: '30%',
+    width: '31%',
     backgroundColor: '#FFFFFF',
     borderRadius: 12,
     padding: 12,
+    marginRight: 8,
     alignItems: 'center',
-    marginRight: 10,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 2,
-  },
-  partialCard: {
-    opacity: 0.5,
   },
   achievementIconContainer: {
     marginBottom: 8,
@@ -326,87 +385,78 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#FFF9E6',
   },
   goldIcon: {
-    backgroundColor: '#FFF9E6',
+    backgroundColor: 'rgba(255, 215, 0, 0.1)',
   },
   silverIcon: {
-    backgroundColor: '#F5F5F5',
+    backgroundColor: 'rgba(192, 192, 192, 0.1)',
   },
   achievementTitle: {
-    fontSize: 14,
-    fontWeight: 'bold',
+    fontSize: 15,
+    fontWeight: '600',
     color: '#333',
   },
   achievementSubtitle: {
-    fontSize: 12,
+    fontSize: 13,
     color: '#666',
-    marginBottom: 6,
+    marginTop: 2,
   },
   achievementBadge: {
-    backgroundColor: '#F5F5F5',
-    paddingVertical: 4,
+    backgroundColor: '#F0F0F0',
     paddingHorizontal: 8,
+    paddingVertical: 4,
     borderRadius: 10,
+    marginTop: 8,
   },
   achievementBadgeText: {
-    fontSize: 10,
-    color: '#888',
+    fontSize: 12,
+    color: '#666',
   },
-  // Bottom Menu Container to hold both buttons and navigation
-  bottomMenuContainer: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    backgroundColor: '#F5F5F5',
+  partialCard: {
+    opacity: 0.5,
   },
   bottomMenu: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
+    justifyContent: 'space-between',
     paddingHorizontal: 16,
-    paddingTop: 16,
-    paddingBottom: 16,
+    paddingVertical: 20,
+    marginTop: 16,
   },
   menuItem: {
-    width: '48%',
+    flex: 1,
+    marginHorizontal: 8,
   },
   reportButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
     backgroundColor: '#FFFFFF',
+    padding: 12,
     borderRadius: 12,
-    paddingVertical: 12,
-    paddingHorizontal: 15,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.15,
-    shadowRadius: 3,
-    elevation: 3,
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
   },
   assistantButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
     backgroundColor: '#FFFFFF',
+    padding: 12,
     borderRadius: 12,
-    paddingVertical: 12,
-    paddingHorizontal: 15,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.15,
-    shadowRadius: 3,
-    elevation: 3,
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
   },
   menuItemText: {
-    fontSize: 15,
-    fontWeight: '500',
+    marginLeft: 8,
+    fontSize: 14,
     color: '#333',
-    marginLeft: 10,
+    fontWeight: '500',
   },
-  
 });
 
 export default HomePage;
