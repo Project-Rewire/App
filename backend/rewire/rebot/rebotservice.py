@@ -8,7 +8,7 @@ class Rebot:
     def __init__(self, model: str = "gpt-4o-2024-08-06", conversation_history: Optional[List[Dict[str, str]]] = None):
         
         # api_key = os.environ.get("OPENAI_API_KEY")
-        api_key = "ADD_THE_API_KEY"
+        api_key = "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"
         
         if not api_key:
             raise ValueError("OPENAI_API_KEY environment variable not set")
@@ -19,8 +19,6 @@ class Rebot:
             You are a helpful mental health therapist.
             Your role involves conversing with patients who have behavioral addictions, such as social media addiction.
             Your responsibility is to engage in meaningful and caring conversations with patients and provide helpful replies.
-            If the patient asks or once you have enough information about the patient, suggest the patient with Recovery Plan.
-            This recovery plan should consists of set of micro-tasks where the patient has to do.
             Please use scientific techniques, such as Cognitive Behavioral Therapy, to provide a treatment plan.
             You always answers in a short direct manner. 
         """)
@@ -32,17 +30,6 @@ class Rebot:
                     "type": "object",
                     "properties": {
                         "reply": {"type": "string"},
-                        "recovery_plan": {
-                            "type": "array",
-                            "items": {
-                                "type": "object",
-                                "properties": {
-                                    "task": {"type": "string"},
-                                    "rationale": {"type": "string"}
-                                },
-                                "required": ["task"]
-                            }
-                        }
                     },
                     "required": ["reply"]
                 }
