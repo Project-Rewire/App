@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   View,
   Image,
@@ -11,6 +11,50 @@ import Card from "../../fragments/card";
 
 // Main community card(ReWire Community)
 export default function Community() {
+
+  //some dummy data
+  const [communities, setCommunities] = useState([
+    {
+      name: 'ReWire Community',
+      image: require("../../assets/rewire-logo.png"),
+    },
+    ]);
+  
+    const [joinedCommunities, setJoinedCommunities] = useState([
+      {
+        name: 'Braking Habits',
+        image: require("../../assets/habits.jpeg"),
+        members: 100,
+      },
+      {
+        name: 'Fight For Freedom',
+        image: require("../../assets/freedom.jpeg"),
+        members: 67
+      },
+    ]);
+  
+    const [suggestedCommunities, setSuggestedCommunities] = useState([
+      {
+        name: 'Rise from Darkness',
+        image: require("../../assets/rise.png"),
+        members: 45,
+      },
+      {
+        name: 'Better Future Together',
+        image: require("../../assets/better future.jpeg"),
+        members: 23,
+      },
+    ]);
+  const handleJoinCommunity= (community) => {
+    setJoinedCommunities([...joinedCommunities, community]);
+    setSuggestedCommunities(suggestedCommunities.filter(c => c.name !== community.name));
+  };
+
+  const handleLeaveCommunity = (community) => {
+    setJoinedCommunities(joinedCommunities.filter(c => c.name !== community.name));
+    setSuggestedCommunities([...suggestedCommunities, community]);
+  };
+
   return (
     <View style={{ flex: 1, borderRadius: 20 }}>
       <ScrollView style={{ flex: 1 }}>
@@ -40,68 +84,37 @@ export default function Community() {
           </View>
         </Card>
         <Text style={styles.text}>Joined Community</Text>
-        <Card
-          onPress={() => console.log("Card Pressed")}
-          style={styles.communitycard}
-        >
-          <View style={styles.titleContainer}>
-            <Image
-              source={require("../../assets/habits.jpeg")}
-              style={styles.image}
-            />
-            <Card.Title>Braking Habits</Card.Title>
-          </View>
-        </Card>
-        <Card
-          onPress={() => console.log("Card Pressed")}
-          style={styles.communitycard}
-        >
-          <View style={styles.titleContainer}>
-            <Image
-              source={require("../../assets/freedom.jpeg")}
-              style={styles.image}
-            />
-            <Card.Title>Fight For Freedom</Card.Title>
-          </View>
-        </Card>
+        {joinedCommunities.map((community, index) => (
+          <Card
+            key={index}
+            onPress={() => handleLeaveCommunity(community)}
+            style={styles.communitycard}
+          >
+            <View style={styles.titleContainer}>
+              <Image
+                source={community.image}
+                style={styles.image}
+              />
+              <Card.Title>{community.name}</Card.Title>
+            </View>
+          </Card>
+        ))}
         <Text style={styles.text}>Suggestions</Text>
-
-        <Card
-          onPress={() => console.log("Card Pressed")}
-          style={styles.communitycard}
-        >
-          <View style={styles.titleContainer}>
-            <Image
-              source={require("../../assets/rise.png")}
-              style={styles.image}
-            />
-            <Card.Title>Rise from Darkness</Card.Title>
-          </View>
-        </Card>
-        <Card
-          onPress={() => console.log("Card Pressed")}
-          style={styles.communitycard}
-        >
-          <View style={styles.titleContainer}>
-            <Image
-              source={require("../../assets/better future.jpeg")}
-              style={styles.image}
-            />
-            <Card.Title>Better Future Together</Card.Title>
-          </View>
-        </Card>
-        <Card
-          onPress={() => console.log("Card Pressed")}
-          style={styles.communitycard}
-        >
-          <View style={styles.titleContainer}>
-            <Image
-              source={require("../../assets/better future.jpeg")}
-              style={styles.image}
-            />
-            <Card.Title>Better Future Together</Card.Title>
-          </View>
-        </Card>
+        {suggestedCommunities.map((community, index) => (
+          <Card
+            key={index}
+            onPress={() => handleJoinCommunity(community)}
+            style={styles.communitycard}
+          >
+            <View style={styles.titleContainer}>
+              <Image
+                source={community.image}
+                style={styles.image}
+              />
+              <Card.Title>{community.name}</Card.Title>
+            </View>
+          </Card>
+        ))}
         <Card
           onPress={() => console.log("Create Community Pressed")}
           style={styles.CreateCommCard}
