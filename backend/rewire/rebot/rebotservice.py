@@ -8,7 +8,7 @@ class Rebot:
     def __init__(self, model: str = "gpt-4o-2024-08-06", conversation_history: Optional[List[Dict[str, str]]] = None):
         
         # api_key = os.environ.get("OPENAI_API_KEY")
-        api_key = "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"
+        api_key = "REAL_OPENAI_API_KEY"
         
         if not api_key:
             raise ValueError("OPENAI_API_KEY environment variable not set")
