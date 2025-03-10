@@ -57,33 +57,70 @@ const HomePage = () => {
     <SafeAreaView style={styles.container}>
       <ScrollView 
         refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          <RefreshControl 
+            refreshing={refreshing} 
+            onRefresh={onRefresh} 
+            accessibilityLabel="Pull down to refresh content"
+            accessibilityHint="Updates your progress and achievements"
+          />
         }
+        accessibilityLabel="Home page content"
       >
         {/* Greeting Section */}
         <View style={styles.greetingContainer}>
-          <Text style={styles.greeting}>{getGreeting()}, {userName}</Text>
-          <Text style={styles.date}>{new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}</Text>
+          <Text style={styles.greeting} accessibilityRole="header">
+            {getGreeting()}, {userName}
+          </Text>
+          <Text style={styles.date} accessibilityLabel={`Today is ${new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}`}>
+            {new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}
+          </Text>
         </View>
 
         {/* Quick Actions */}
-        <View style={styles.quickActions}>
-          <TouchableOpacity style={styles.quickActionButton} onPress={handleButtonPress}>
+        <View style={styles.quickActions} accessibilityRole="menubar">
+          <TouchableOpacity 
+            style={styles.quickActionButton} 
+            onPress={handleButtonPress}
+            accessibilityLabel="Emergency help"
+            accessibilityHint="Access immediate emergency support"
+            accessibilityRole="button"
+            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+          >
             <Ionicons name="medical" size={24} color="#4A90E2" />
             <Text style={styles.quickActionText}>Emergency</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.quickActionButton} onPress={handleButtonPress}>
+          
+          <TouchableOpacity 
+            style={styles.quickActionButton} 
+            onPress={handleButtonPress}
+            accessibilityLabel="Chat now"
+            accessibilityHint="Start a conversation with a support specialist"
+            accessibilityRole="button"
+            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+          >
             <Ionicons name="chatbubble-ellipses" size={24} color="#4A90E2" />
             <Text style={styles.quickActionText}>Chat Now</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.quickActionButton} onPress={handleButtonPress}>
+          
+          <TouchableOpacity 
+            style={styles.quickActionButton} 
+            onPress={handleButtonPress}
+            accessibilityLabel="Schedule"
+            accessibilityHint="View or schedule your appointments"
+            accessibilityRole="button"
+            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+          >
             <Ionicons name="calendar" size={24} color="#4A90E2" />
             <Text style={styles.quickActionText}>Schedule</Text>
           </TouchableOpacity>
         </View>
 
         {/* Quote Section - Enlarged */}
-        <View style={styles.quoteContainer}>
+        <View 
+          style={styles.quoteContainer}
+          accessibilityLabel="Motivational quote"
+          accessibilityRole="text"
+        >
           <Text style={styles.quoteText}>
             "Your decision to kill your addiction will become a reality only if you
             believe and reinforce the fact that you have the capacity to do it."
@@ -93,15 +130,28 @@ const HomePage = () => {
 
         {/* Progress Section */}
         <View style={styles.sectionLabel}>
-          <Text style={styles.sectionLabelText}>Your Progress</Text>
+          <Text 
+            style={styles.sectionLabelText} 
+            accessibilityRole="header"
+          >
+            Your Progress
+          </Text>
         </View>
 
         {/* Progress Cards */}
-        <View style={styles.progressCardsContainer}>
+        <View style={styles.progressCardsContainer} accessibilityRole="group" accessibilityLabel="Progress tracking cards">
           {/* Overall Progress Card */}
-          <View style={styles.progressCard}>
+          <View 
+            style={styles.progressCard}
+            accessibilityLabel="Overall Progress Card"
+          >
             <View style={styles.progressCircleContainer}>
-              <View style={styles.progressCircle}>
+              <View 
+                style={styles.progressCircle}
+                accessibilityLabel="Progress circle showing 48 percent completion"
+                accessibilityRole="progressbar"
+                accessibilityValue={{ min: 0, max: 100, now: 48 }}
+              >
                 <View style={styles.progressArc} />
                 <View style={styles.progressInnerCircle}>
                   <Ionicons name="person" size={16} color="#4A90E2" />
@@ -111,15 +161,29 @@ const HomePage = () => {
               </View>
             </View>
             <Text style={styles.progressTitle}>Overall Progress</Text>
-            <TouchableOpacity style={styles.detailsButton}>
+            <TouchableOpacity 
+              style={styles.detailsButton}
+              accessibilityLabel="View progress details"
+              accessibilityHint="Shows detailed information about your overall progress"
+              accessibilityRole="button"
+              hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+            >
               <Text style={styles.detailsButtonText}>Details</Text>
             </TouchableOpacity>
           </View>
 
           {/* Daily Task Card */}
-          <View style={styles.progressCard}>
+          <View 
+            style={styles.progressCard}
+            accessibilityLabel="Daily Task Progress Card"
+          >
             <View style={styles.progressCircleContainer}>
-              <View style={styles.progressCircle}>
+              <View 
+                style={styles.progressCircle}
+                accessibilityLabel="Daily task progress showing 65 percent completion"
+                accessibilityRole="progressbar"
+                accessibilityValue={{ min: 0, max: 100, now: 65 }}
+              >
                 <View style={styles.dailyProgressArc} />
                 <View style={styles.progressInnerCircle}>
                   <Ionicons name="person" size={16} color="#4A90E2" />
@@ -134,13 +198,25 @@ const HomePage = () => {
 
         {/* Achievements Section */}
         <View style={styles.sectionLabel}>
-          <Text style={styles.sectionLabelText}>Achievements</Text>
+          <Text 
+            style={styles.sectionLabelText}
+            accessibilityRole="header"
+          >
+            Achievements
+          </Text>
         </View>
 
         {/* Achievement Cards */}
-        <View style={styles.achievementsContainer}>
+        <View 
+          style={styles.achievementsContainer} 
+          accessibilityRole="group" 
+          accessibilityLabel="Your achievements"
+        >
           {/* Task Completed Card */}
-          <View style={styles.achievementCard}>
+          <View 
+            style={styles.achievementCard}
+            accessibilityLabel="Task 7 completed achievement, gold medal"
+          >
             <View style={styles.achievementIconContainer}>
               <View style={[styles.achievementIcon, styles.goldIcon]}>
                 <MaterialCommunityIcons name="check-circle-outline" size={28} color="#FFD700" />
@@ -154,7 +230,10 @@ const HomePage = () => {
           </View>
 
           {/* Streak Card */}
-          <View style={styles.achievementCard}>
+          <View 
+            style={styles.achievementCard}
+            accessibilityLabel="7 day streak achievement, silver medal"
+          >
             <View style={styles.achievementIconContainer}>
               <View style={[styles.achievementIcon, styles.silverIcon]}>
                 <MaterialCommunityIcons name="trophy-outline" size={28} color="#C0C0C0" />
@@ -168,19 +247,34 @@ const HomePage = () => {
           </View>
 
           {/* Partially visible third card */}
-          <View style={[styles.achievementCard, styles.partialCard]} />
+          <View 
+            style={[styles.achievementCard, styles.partialCard]}
+            accessibilityLabel="More achievements available"
+          />
         </View>
 
         {/* Bottom Menu */}
-        <View style={styles.bottomMenu}>
-          <TouchableOpacity style={styles.menuItem}>
+        <View style={styles.bottomMenu} accessibilityRole="menubar">
+          <TouchableOpacity 
+            style={styles.menuItem}
+            accessibilityLabel="Your Report"
+            accessibilityHint="View your progress reports and statistics"
+            accessibilityRole="button"
+            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+          >
             <View style={styles.reportButton}>
               <FontAwesome5 name="clipboard-list" size={20} color="#666" />
               <Text style={styles.menuItemText}>Your Report</Text>
             </View>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.menuItem}>
+          <TouchableOpacity 
+            style={styles.menuItem}
+            accessibilityLabel="ReWire Assistant"
+            accessibilityHint="Get help from your virtual assistant"
+            accessibilityRole="button"
+            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+          >
             <View style={styles.assistantButton}>
               <FontAwesome5 name="robot" size={20} color="#4A90E2" />
               <Text style={styles.menuItemText}>ReWire Assistant</Text>
@@ -222,7 +316,7 @@ const styles = StyleSheet.create({
   quickActionButton: {
     alignItems: 'center',
     backgroundColor: '#FFFFFF',
-    padding: 12,
+    padding: 16, // Increased from 12 to 16 for larger touch target
     borderRadius: 12,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
@@ -230,10 +324,11 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 2,
     width: '30%',
+    minHeight: 88, // Ensure minimum height for touch target
   },
   quickActionText: {
     marginTop: 8,
-    fontSize: 12,
+    fontSize: 14, // Increased from 12 to 14 for better readability
     color: '#333',
     fontWeight: '500',
   },
@@ -254,10 +349,11 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: 12, 
     lineHeight: 26, 
+    color: '#333', // Ensure good contrast
   },
   quoteAuthor: {
     fontSize: 15, 
-    color: '#888',
+    color: '#666', // Darkened from #888 for better contrast
     textAlign: 'right',
   },
   sectionLabel: {
@@ -266,9 +362,9 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   sectionLabelText: {
-    fontSize: 17, 
-    color: '#666', 
-    fontWeight: '500', 
+    fontSize: 18, // Increased from 17 for better visibility 
+    color: '#555', // Darkened from #666 for better contrast 
+    fontWeight: '600', // Increased from 500 for better emphasis
   },
   progressCardsContainer: {
     flexDirection: 'row',
@@ -286,6 +382,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 2,
+    minHeight: 180, // Ensure minimum height for touch target
   },
   progressCircleContainer: {
     marginBottom: 12, 
@@ -349,9 +446,11 @@ const styles = StyleSheet.create({
   detailsButton: {
     backgroundColor: '#F0F0F0',
     paddingHorizontal: 16,
-    paddingVertical: 6,
+    paddingVertical: 8, // Increased from 6 to 8 for larger touch target
     borderRadius: 15,
     marginTop: 12,
+    minWidth: 90, // Ensure minimum width for touch target
+    alignItems: 'center',
   },
   detailsButtonText: {
     color: '#4A90E2',
@@ -375,6 +474,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 2,
+    minHeight: 140, // Ensure minimum height
   },
   achievementIconContainer: {
     marginBottom: 8,
@@ -431,25 +531,27 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#FFFFFF',
-    padding: 12,
+    padding: 16, // Increased from 12 to 16 for larger touch target
     borderRadius: 12,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 2,
+    minHeight: 55, // Ensure minimum height
   },
   assistantButton: {
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#FFFFFF',
-    padding: 12,
+    padding: 16, // Increased from 12 to 16 for larger touch target
     borderRadius: 12,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 2,
+    minHeight: 55, // Ensure minimum height
   },
   menuItemText: {
     marginLeft: 8,
