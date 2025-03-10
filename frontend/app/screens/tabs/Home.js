@@ -115,7 +115,7 @@ const HomePage = () => {
           </TouchableOpacity>
         </View>
 
-        {/* Quote Section - Enlarged */}
+        {/* Quote Section b- Enlarged */}
         <View 
           style={styles.quoteContainer}
           accessibilityLabel="Motivational quote"
