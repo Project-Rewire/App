@@ -10,20 +10,47 @@ import { useLogin } from "./app/hooks/login-service";
 import Home from './app/screens/tabs/Home';
 import Tasks from './app/screens/tabs/Tasks';
 import Community from './app/screens/tabs/Community';
-import Rebot from './app/screens/tabs/Rebot';
 import Welcome from './app/screens/welcome';
 import Login from './app/screens/Login';
 import ForgotPassword from './app/screens/ForgotPassword';
 import SignupStepOne from './app/screens/signupStepOne';
 import SignupStepTwo from './app/screens/signupStepTwo';
+import RebotWelcome from './app/screens/RebotWelcome';
+import RebotChatInterface from './app/screens/RebotChatInterface';
 
-
-const Stack = createNativeStackNavigator();
-const BottomTab = createBottomTabNavigator();
-
-const BottomTabGroup = () => {
+const LoginStack = createNativeStackNavigator();
+function LoginNavigator() {
   return (
-    <BottomTab.Navigator
+    <LoginStack.Navigator
+      initialRouteName="Welcome"
+      screenOptions={{
+        headerShown: false,
+      }}
+    >
+      <LoginStack.Screen name="Welcome" component={Welcome} />
+      <LoginStack.Screen name="Login" component={Login} />
+      <LoginStack.Screen name="ForgotPassword" component={ForgotPassword} />
+      <LoginStack.Screen name="SignupStepOne" component={SignupStepOne} />
+      <LoginStack.Screen name="SignupStepTwo" component={SignupStepTwo} />
+      <LoginStack.Screen name="MainApp" component={BottomTabNavigator} />
+    </LoginStack.Navigator>
+  )
+}
+
+const RebotStack = createNativeStackNavigator();
+function RebotNavigator() {
+  return (
+    <RebotStack.Navigator screenOptions={{ headerShown: false }}>
+      <RebotStack.Screen name="RebotWelcome" component={RebotWelcome} />
+      <RebotStack.Screen name="RebotChatInterface" component={RebotChatInterface} />
+    </RebotStack.Navigator>
+  );
+}
+
+const BottomTabStack = createBottomTabNavigator();
+function BottomTabNavigator() {
+  return (
+    <BottomTabStack.Navigator
       screenOptions={({ route }) => ({
         tabBarIcon: ({ color, focused, size }) => {
           let iconName;
@@ -42,17 +69,34 @@ const BottomTabGroup = () => {
           }
           return <Icon name={iconName} type={iconLib} size={size} color={color} />;
         },
-        tabBarActiveTintColor: '#000',
-        tabBarInactiveTintColor: '#666',
+        tabBarActiveTintColor: "#fff",
+        tabBarInactiveTintColor: "#eee",
+        tabBarShowLabel: false,
+        tabBarPressColor: "transparent", // removes ripple on android
+        tabBarStyle: {
+          backgroundColor: "#094f47",
+        },
+
+        headerShown: true,
+        headerShadowVisible: false,
+        headerTitleAlign: "center",
+        headerTitleStyle: {
+          fontSize: 24,
+          color: "#094f47",
+        },
       })}
     >
-      <BottomTab.Screen name="Home" component={Home} />
-      <BottomTab.Screen name="Tasks" component={Tasks} />
-      <BottomTab.Screen name="Rebot" component={Rebot} />
-      <BottomTab.Screen name="Community" component={Community} />
-    </BottomTab.Navigator>
+      <BottomTabStack.Screen name="Home" component={Home} />
+      <BottomTabStack.Screen name="Tasks" component={Tasks} />
+      <BottomTabStack.Screen name="Rebot" component={RebotNavigator} />
+      <BottomTabStack.Screen name="Community" component={Community} />
+    </BottomTabStack.Navigator>
   );
 }
+
+
+/*  App Start Point
+   ----------------  */
 
 export default function App() {
   const { loggedIn } = useLogin();
@@ -61,31 +105,12 @@ export default function App() {
     <SafeAreaView style={styles.safeArea}>
       <StatusBar style="auto" />
       <NavigationContainer>
-        {loggedIn ? (
-          <BottomTabGroup />
-        ) : (
-          <Stack.Navigator
-            initialRouteName="Welcome"
-            screenOptions={{
-              headerShown: false,
-            }}
-          >
-            <Stack.Screen name="Welcome" component={Welcome} />
-            <Stack.Screen name="Login" component={Login} />
-            <Stack.Screen name="ForgotPassword" component={ForgotPassword}/>
-            <Stack.Screen name="SignupStepOne" component={SignupStepOne} />
-            <Stack.Screen name="SignupStepTwo" component={SignupStepTwo} />
-            <Stack.Screen name="MainApp" component={BottomTabGroup} />
-          </Stack.Navigator>
-        )}
+        {loggedIn ? <BottomTabNavigator /> : <LoginNavigator />}
       </NavigationContainer>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: "#fff",
-  },
+  safeArea: { flex: 1, backgroundColor: "#fff" }
 });
