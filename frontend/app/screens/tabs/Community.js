@@ -9,9 +9,12 @@ import {
   TouchableOpacity,
 } from "react-native";
 import Card from "../../fragments/card";
+import { useNavigation} from "@react-navigation/native";
 
 // Main community card(ReWire Community)
 export default function Community() {
+
+  const navigation = useNavigation();
 
   //some dummy data
   const [maincommunity, setMainCommunity] = useState([
@@ -46,6 +49,12 @@ export default function Community() {
       },
       {
         id: "0004",
+        name: 'Better Future Together',
+        image: require("../../assets/better future.jpeg"),
+        members: 23,
+      },
+      {
+        id: "0005",
         name: 'Better Future Together',
         image: require("../../assets/better future.jpeg"),
         members: 23,
@@ -105,10 +114,10 @@ export default function Community() {
         );
   return (
     <View style={styles.container}>
-      <ScrollView style={{ flex: 1 }}>
+      <ScrollView style={{ flex: 1 }} contentContainerStyle={styles.scrollContent}>
 
-        //search bar
-        <View style={styles.searchContainer}>
+        {/* Search bar */}
+        <View style={styles.searchBar}>
           <Image
             source={require("../../assets/search-icon.png")}
             style={styles.searchIcon}
@@ -120,6 +129,8 @@ export default function Community() {
             onChangeText={(text) => console.log("Searching for:", text)}
           />
         </View>
+
+        {/* Communities */}
         <Text style={styles.heading}>Main Community</Text>
         {communityCard(maincommunity[0], 'mainCommunity')}
 
@@ -132,18 +143,23 @@ export default function Community() {
         {suggestedCommunities.map((item) => 
           communityCard(item, 'suggestedCommunities')
         )}
-        <Card
-          onPress={() => console.log("Create Community Pressed")}
-          style={styles.CreateCommCard}
+
+        {/* Create Community card */}
+        <TouchableOpacity
+        onPress={() => {
+          console.log("Create Community pressed");
+          navigation.navigate("CreateCommunity");
+        }}
+          style={styles.CreateCard}
         >
-          <View style={styles.createCommContainer}>
+          <View style={styles.createContent}>
             <Image
               source={require("../../assets/community-icon.png")}
-              style={styles.CommunityImage}
+              style={styles.createIcon}
             />
-            <Text style={styles.commmunityText}>Create Community</Text>
+            <Text style={styles.createText}>Create Community</Text>
           </View>
-        </Card>
+        </TouchableOpacity>
       </ScrollView>
     </View>
   );
@@ -158,11 +174,12 @@ const styles = StyleSheet.create({
   searchBar: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#fff",
-    borderRadius: 30,
+    backgroundColor: "#D9D9D6",
+    borderRadius: 15,
     padding: 10,
     marginBottom: 16,
     marginTop: 5,
+    marginVertical: 10,
   },
   searchIcon: {
     width: 20,
@@ -173,7 +190,7 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 16,
   },
-   heading: {
+  heading: {
     color: "#333",
     fontSize: 16,
     fontWeight: "500",
@@ -222,12 +239,10 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     borderWidth: 1,
   },
-  
   greenButton: {
     backgroundColor: "#4CAF50",
     borderColor: "#4CAF50",
   },
-  
   greenBorder: {
     backgroundColor: "transparent",
     borderColor: "#4CAF50",
@@ -263,5 +278,26 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "bold",
     paddingLeft: 5,
+  },
+  scrollContent: {
+    paddingHorizontal: 16,
+  },
+  communitycard: {
+    marginBottom: 10,
+    borderRadius: 15,
+    padding: 12,
+    backgroundColor: "#fff",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.2,
+    shadowRadius: 2,
+    elevation: 2,
+  },
+  CreateCard: {
+    backgroundColor: "#f0f0f0", 
+    marginTop: 10,
+    marginBottom: 20,
+    borderRadius: 15,
+    padding: 12,
   },
 });
