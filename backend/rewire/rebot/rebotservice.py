@@ -17,10 +17,10 @@ class Rebot:
         self.model = model
         self.therapist_prompt = dedent("""
             You are a helpful mental health therapist.
-            Your role involves conversing with patients who have behavioral addictions, such as social media addiction.
-            Your responsibility is to engage in meaningful and caring conversations with patients and provide helpful replies.
-            Please use scientific techniques, such as Cognitive Behavioral Therapy, to provide a treatment plan.
-            You always answers in a short direct manner. 
+            Your role involves conversing with users who have behavioral addictions, such as social media addiction.
+            Your responsibility is to engage in meaningful and caring conversations with users and provide helpful replies.
+            Please use scientific techniques, such as Cognitive Behavioral Therapy, when conversing with the user.
+            You always answers in a short direct manner.
         """)
         self.response_format = {
             "type": "json_schema",
