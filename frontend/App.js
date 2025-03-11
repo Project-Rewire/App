@@ -17,6 +17,8 @@ import SignupStepOne from './app/screens/signupStepOne';
 import SignupStepTwo from './app/screens/signupStepTwo';
 import RebotWelcome from './app/screens/RebotWelcome';
 import RebotChatInterface from './app/screens/RebotChatInterface';
+import { ThemeProvider, useThemeToggle } from './app/theme-context';
+import { Avatar } from '@rneui/base';
 
 const LoginStack = createNativeStackNavigator();
 function LoginNavigator() {
@@ -69,21 +71,18 @@ function BottomTabNavigator() {
           }
           return <Icon name={iconName} type={iconLib} size={size} color={color} />;
         },
-        tabBarActiveTintColor: "#fff",
-        tabBarInactiveTintColor: "#eee",
         tabBarShowLabel: false,
-        tabBarPressColor: "transparent", // removes ripple on android
+        tabBarPressColor: "transparent",
         tabBarStyle: {
-          backgroundColor: "#094f47",
+          padding: 16
         },
 
         headerShown: true,
         headerShadowVisible: false,
         headerTitleAlign: "center",
         headerTitleStyle: {
-          fontSize: 24,
-          color: "#094f47",
-        },
+          fontSize: 20,
+        }
       })}
     >
       <BottomTabStack.Screen name="Home" component={Home} />
@@ -98,19 +97,24 @@ function BottomTabNavigator() {
 /*  App Start Point
    ----------------  */
 
-export default function App() {
+function AppContent() {
   const { loggedIn } = useLogin();
+  const { theme } = useThemeToggle();
 
   return (
-    <SafeAreaView style={styles.safeArea}>
-      <StatusBar style="auto" />
-      <NavigationContainer>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
+      <StatusBar style={theme.dark ? 'light' : 'dark'} />
+      <NavigationContainer theme={theme}>
         {loggedIn ? <BottomTabNavigator /> : <LoginNavigator />}
       </NavigationContainer>
     </SafeAreaView>
   );
 }
 
-const styles = StyleSheet.create({
-  safeArea: { flex: 1, backgroundColor: "#fff" }
-});
+export default function App() {
+  return (
+    <ThemeProvider>
+      <AppContent />
+    </ThemeProvider>
+  );
+}
