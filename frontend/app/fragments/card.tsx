@@ -6,22 +6,18 @@ import {
     TouchableHighlight,
 } from "react-native";
 
-
 const Card = ({ style, onPress, children, ...props }) => {
     const Container = onPress ? TouchableHighlight : View;
     const containerProps = onPress
         ? {
             onPress,
             underlayColor: "#f0f0f0",
+            activeOpacity: 0.9, // Added for better feedback
         }
         : {};
 
     return (
-        <Container
-            style={[styles.cardWrapper, style]}
-            {...containerProps}
-            {...props}
-        >
+        <Container style={[styles.cardWrapper, style]} {...containerProps} {...props}>
             <View style={styles.card}>{children}</View>
         </Container>
     );
@@ -43,18 +39,12 @@ const styles = StyleSheet.create({
     cardWrapper: {
         width: "100%",
         marginBottom: 16,
-        backgroundColor: "white",
-        borderRadius: 8,
-        // Default shadow for iOS
-        shadowColor: "#000",
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.25,
-        padding: 16,
-        shadowRadius: 3.84,
-        // Default shadow for Android
-        elevation: 1,
+        borderRadius: 16,
+        borderWidth: 1,
+        borderColor: "rgba(0, 0, 0, 0.1)",
     },
     card: {
+        padding: 16, // Moved padding here to prevent TouchableHighlight padding issues
     },
     cardTitle: {
         fontSize: 18,
@@ -62,8 +52,7 @@ const styles = StyleSheet.create({
         marginBottom: 8,
         color: "#333",
     },
-    cardContent: {
-    },
+    cardContent: {},
 });
 
 export default Card;
