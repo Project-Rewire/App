@@ -1,6 +1,6 @@
 import React from 'react';
 import { Icon } from './app/fragments/icon';
-import { useLogin } from "./app/hooks/login-service";
+import { useLogin } from './app/hooks/login-service';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -17,6 +17,10 @@ import SignupStepOne from './app/screens/signupStepOne';
 import SignupStepTwo from './app/screens/signupStepTwo';
 import ForgotPassword from './app/screens/ForgotPassword';
 import RebotChatInterface from './app/screens/RebotChatInterface';
+import Settings from './app/screens/Settings';
+import About from './app/screens/About';
+import PrivacyPolicy from './app/screens/PrivacyPolicy';
+import TermsAndConditions from './app/screens/TermsAndConditions';
 
 export default function App() {
   return (
@@ -31,35 +35,18 @@ function AppContent() {
   const { theme } = useThemeToggle();
 
   return (
-    <SafeAreaView style={{
-      flex: 1,
-      backgroundColor: "#fff",
-      paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0
-    }}>
+    <SafeAreaView
+      style={{
+        flex: 1,
+        backgroundColor: theme.backgroundColor,
+        paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
+      }}
+    >
       <NavigationContainer theme={theme}>
         {loggedIn ? <BottomTabNavigator /> : <LoginNavigator />}
       </NavigationContainer>
     </SafeAreaView>
   );
-}
-
-const LoginStack = createNativeStackNavigator();
-function LoginNavigator() {
-  return (
-    <LoginStack.Navigator
-      initialRouteName="Welcome"
-      screenOptions={{
-        headerShown: false,
-      }}
-    >
-      <LoginStack.Screen name="Welcome" component={Welcome} />
-      <LoginStack.Screen name="Login" component={Login} />
-      <LoginStack.Screen name="ForgotPassword" component={ForgotPassword} />
-      <LoginStack.Screen name="SignupStepOne" component={SignupStepOne} />
-      <LoginStack.Screen name="SignupStepTwo" component={SignupStepTwo} />
-      <LoginStack.Screen name="MainApp" component={BottomTabNavigator} />
-    </LoginStack.Navigator>
-  )
 }
 
 const BottomTabStack = createBottomTabNavigator();
@@ -69,40 +56,77 @@ function BottomTabNavigator() {
       screenOptions={({ route }) => ({
         tabBarIcon: ({ color, focused, size }) => {
           let iconName;
-          let iconLib = "ionicon";
-          if (route.name === "Home") {
-            iconName = focused ? "home" : "home-outline";
-          } else if (route.name === "Tasks") {
-            iconName = focused ? "file-tray-full" : "file-tray-full-outline";
-          } else if (route.name === "Community") {
-            iconName = focused ? "people" : "people-outline";
-          } else if (route.name === "MoreStack") {
-            iconName = focused ? "menu" : "menu-outline";
-          } else if (route.name === "Rebot") {
-            iconName = focused ? "robot-happy" : "robot-happy-outline";
-            iconLib = "materialcommunityicons";
+          let iconLib = 'ionicon';
+
+          switch (route.name) {
+            case 'HomeNavigator':
+              iconName = focused ? 'home' : 'home-outline';
+              break;
+            case 'Tasks':
+              iconName = focused ? 'file-tray-full' : 'file-tray-full-outline';
+              break;
+            case 'Community':
+              iconName = focused ? 'people' : 'people-outline';
+              break;
+            case 'Rebot':
+              iconName = focused ? 'robot-happy' : 'robot-happy-outline';
+              iconLib = 'materialcommunityicons';
+              break;
+            default:
+              iconName = 'menu';
           }
+
           return <Icon name={iconName} type={iconLib} size={size} color={color} />;
         },
         tabBarShowLabel: true,
-        tabBarPressColor: "transparent",
-        tabBarStyle: {
-          padding: 16
-        },
-
+        tabBarPressColor: 'transparent',
         headerShown: false,
         headerShadowVisible: false,
-        headerTitleAlign: "center",
-        headerTitleStyle: {
-          fontSize: 20,
-        }
+        headerTitleAlign: 'center',
+        headerTitleStyle: { fontSize: 20 },
       })}
     >
-      <BottomTabStack.Screen name="Home" component={Home} />
+      <BottomTabStack.Screen name="HomeNavigator" component={HomeNavigator} />
       <BottomTabStack.Screen name="Tasks" component={Tasks} />
       <BottomTabStack.Screen name="Rebot" component={RebotNavigator} />
       <BottomTabStack.Screen name="Community" component={Community} />
     </BottomTabStack.Navigator>
+  );
+}
+
+const LoginStack = createNativeStackNavigator();
+function LoginNavigator() {
+  return (
+    <LoginStack.Navigator initialRouteName="Welcome" screenOptions={{ headerShown: false }}>
+      <LoginStack.Screen name="Welcome" component={Welcome} />
+      <LoginStack.Screen name="Login" component={Login} />
+      <LoginStack.Screen name="ForgotPassword" component={ForgotPassword} />
+      <LoginStack.Screen name="SignupStepOne" component={SignupStepOne} />
+      <LoginStack.Screen name="SignupStepTwo" component={SignupStepTwo} />
+      <LoginStack.Screen name="MainApp" component={BottomTabNavigator} />
+    </LoginStack.Navigator>
+  );
+}
+
+const HomeStack = createNativeStackNavigator();
+function HomeNavigator() {
+  return (
+    <HomeStack.Navigator screenOptions={{ headerShown: false }}>
+      <HomeStack.Screen name="Home" component={Home} />
+      <HomeStack.Screen name="SettingsNavigator" component={SettingsNavigator} />
+    </HomeStack.Navigator>
+  );
+}
+
+const SettingsStack = createNativeStackNavigator();
+function SettingsNavigator() {
+  return (
+    <SettingsStack.Navigator screenOptions={{ headerShown: false }}>
+      <SettingsStack.Screen name="Settings" component={Settings} />
+      <SettingsStack.Screen name="About" component={About} />
+      <SettingsStack.Screen name="PrivacyPolicy" component={PrivacyPolicy} />
+      <SettingsStack.Screen name="TermsAndConditions" component={TermsAndConditions} />
+    </SettingsStack.Navigator>
   );
 }
 

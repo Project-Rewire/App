@@ -1,14 +1,14 @@
 import { ImageBackground, ScrollView, Text, View } from "react-native";
 import Card from "../../fragments/card";
 import { useTheme } from "@react-navigation/native";
-import { useThemeToggle } from "../../hooks/theme-service";
 import { Avatar } from "@rneui/themed";
 import useQuotes from "../../hooks/quote-service";
+import { useNavigation } from "@react-navigation/native";
 
 export default function Home() {
   const { quote } = useQuotes();
   const { colors } = useTheme();
-  const { toggleTheme } = useThemeToggle();
+  const navigation = useNavigation();
 
   const getGreeting = () => {
     const hour = new Date().getHours();
@@ -46,7 +46,7 @@ export default function Home() {
             titleStyle={{
               color: colors.text
             }}
-            onPress={toggleTheme}
+            onPress={() => navigation.navigate('SettingsNavigator', { screen: 'Settings' })}
           />
         </View>
 
