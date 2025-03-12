@@ -1,22 +1,22 @@
 import React from 'react';
-import { SafeAreaView, Platform, StatusBar } from 'react-native';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Icon } from './app/fragments/icon';
 import { useLogin } from "./app/hooks/login-service";
+import { NavigationContainer } from '@react-navigation/native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { ThemeProvider, useThemeToggle } from './app/hooks/theme-service';
+import { SafeAreaView, Platform, StatusBar } from 'react-native';
 
 import Home from './app/screens/tabs/Home';
-import Tasks from './app/screens/tabs/Tasks';
-import Community from './app/screens/tabs/Community';
-import Welcome from './app/screens/welcome';
 import Login from './app/screens/Login';
-import ForgotPassword from './app/screens/ForgotPassword';
+import Tasks from './app/screens/tabs/Tasks';
+import Welcome from './app/screens/welcome';
+import Community from './app/screens/tabs/Community';
+import RebotWelcome from './app/screens/RebotWelcome';
 import SignupStepOne from './app/screens/signupStepOne';
 import SignupStepTwo from './app/screens/signupStepTwo';
-import RebotWelcome from './app/screens/RebotWelcome';
+import ForgotPassword from './app/screens/ForgotPassword';
 import RebotChatInterface from './app/screens/RebotChatInterface';
-import { ThemeProvider, useThemeToggle } from './app/hooks/theme-service';
 
 export default function App() {
   return (
