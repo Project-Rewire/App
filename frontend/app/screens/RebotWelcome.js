@@ -14,68 +14,44 @@ export default function RebotWelcome() {
     };
 
     return (
-        <View style={styles.container}>
-            <View style={styles.content}>
+        <View style={{ flex: 1, padding: 16, alignItems: 'center', justifyContent: 'space-evenly' }}>
 
-                {/* Illustration container */}
-                <View style={styles.illustrationContainer}>
-                    <Image
-                        source={require('../assets/chatbot-healthcare-vector.png')}
-                        style={styles.illustration}
-                        resizeMode="contain"
-                    />
-                </View>
+            {/* Illustration container */}
+            <Image
+                source={require('../assets/chatbot-healthcare-vector-v2.png')}
+                resizeMode="contain"
+                style={{
+                    height: '30%'
+                }}
+            />
 
-                {/* Title */}
-                {/* <Text style={styles.title}>Rebot</Text> */}
+            {/* Action buttons */}
+            <View style={styles.actionButtons}>
+                <TouchableOpacity
+                    style={styles.newConversationButton}
+                    onPress={handleNewConversation}
+                >
+                    <Text style={styles.newConversationText}>New Conversation</Text>
+                </TouchableOpacity>
 
-                {/* Action buttons */}
-                <View style={styles.actionButtons}>
-                    <TouchableOpacity
-                        style={styles.newConversationButton}
-                        onPress={handleNewConversation}
-                    >
-                        <Text style={styles.newConversationText}>New Conversation</Text>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity
-                        style={styles.previousButton}
-                        onPress={handlePreviousConversations}
-                    >
-                        <Text style={styles.previousText}>Previous Conversations</Text>
-                    </TouchableOpacity>
-                </View>
+                <TouchableOpacity
+                    style={styles.previousButton}
+                    onPress={handlePreviousConversations}
+                >
+                    <Text style={styles.previousText}>Previous Conversations</Text>
+                </TouchableOpacity>
             </View>
         </View>
+
     );
 };
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: 'white',
-    },
-    content: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-        paddingHorizontal: 20,
-    },
     illustrationContainer: {
         width: '100%',
         height: "45%",
         alignItems: 'center',
         justifyContent: 'center',
-    },
-    illustration: {
-        width: '80%',
-        height: '100%',
-    },
-    title: {
-        fontSize: 28,
-        fontWeight: 'bold',
-        color: '#16837D',
-        marginBottom: 30,
     },
     actionButtons: {
         display: "flex",
