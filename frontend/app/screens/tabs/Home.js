@@ -1,7 +1,7 @@
 import { ImageBackground, ScrollView, Text, View } from "react-native";
 import Card from "../../fragments/card";
 import { useTheme } from "@react-navigation/native";
-import { useThemeToggle } from "../../theme-context";
+import { useThemeToggle } from "../../hooks/theme-service";
 import { Avatar } from "@rneui/themed";
 import useQuotes from "../../hooks/quote-service";
 
@@ -10,22 +10,31 @@ export default function Home() {
   const { colors } = useTheme();
   const { toggleTheme } = useThemeToggle();
 
-  console.log(quote);
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+    let partOfDay;
+
+    if (hour >= 5 && hour < 12) partOfDay = "Morning";
+    else if (hour >= 12 && hour < 18) partOfDay = "Afternoon";
+    else partOfDay = "Evening";
+
+    return `Good ${partOfDay}`
+  };
 
   return (
-    <ScrollView style={{ paddingHorizontal: 16, backgroundColor: colors.background }}>
-      <ImageBackground
-        source={{ uri: 'https://legacy.reactjs.org/logo-og.png' }}
-        resizeMode="cover"
-        style={{ flex: 1, justifyContent: 'center' }}
-      >
+    <ScrollView>
 
+      <ImageBackground
+        source={require('../../assets/pexels-pink-flowers.jpg')}
+        resizeMode="cover"
+        style={{ flex: 1, justifyContent: 'space-between', paddingHorizontal: 16, height: 300 }}
+      >
 
         <View style={{ display: "flex", justifyContent: "space-between", flexDirection: "row", alignItems: "center", marginVertical: 16 }}>
           <Text style={{ color: colors.text, fontSize: 24, fontWeight: "bold", letterSpacing: 1.5 }}>{getGreeting()}</Text>
           <Avatar
             rounded
-            title="LW"
+            title="I"
             activeOpacity={0.7}
             containerStyle={{
               backgroundColor: colors.card,
@@ -42,7 +51,7 @@ export default function Home() {
         </View>
 
         {quote && (
-          <Card style={{ marginVertical: 8, padding: 8, backgroundColor: colors.card }}>
+          <Card style={{ marginVertical: 8, padding: 8, backgroundColor: `rgba(255, 255, 255, 0.7)` }}>
             <Card.Content>
               <Text style={{ fontSize: 18, fontStyle: "italic", textAlign: "center", color: colors.text }}>
                 {quote.quote}
@@ -54,21 +63,7 @@ export default function Home() {
           </Card>
         )}
       </ImageBackground>
-    </ScrollView>
+    </ScrollView >
   );
 }
 
-function getGreeting() {
-  const hour = new Date().getHours();
-  let temporalDivision;
-
-  if (hour >= 5 && hour < 12) {
-    temporalDivision = "Morning";
-  } else if (hour >= 12 && hour < 18) {
-    temporalDivision = "Afternoon";
-  } else {
-    temporalDivision = "Evening";
-  }
-
-  return `Good ${temporalDivision}`
-}

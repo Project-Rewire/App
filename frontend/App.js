@@ -1,6 +1,5 @@
 import React from 'react';
-import { SafeAreaView, StyleSheet } from 'react-native';
-import { StatusBar } from 'expo-status-bar';
+import { SafeAreaView, Platform, StatusBar } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -17,8 +16,32 @@ import SignupStepOne from './app/screens/signupStepOne';
 import SignupStepTwo from './app/screens/signupStepTwo';
 import RebotWelcome from './app/screens/RebotWelcome';
 import RebotChatInterface from './app/screens/RebotChatInterface';
-import { ThemeProvider, useThemeToggle } from './app/theme-context';
-import { Avatar } from '@rneui/base';
+import { ThemeProvider, useThemeToggle } from './app/hooks/theme-service';
+
+export default function App() {
+  return (
+    <ThemeProvider>
+      <AppContent />
+    </ThemeProvider>
+  );
+}
+
+function AppContent() {
+  const { loggedIn } = useLogin();
+  const { theme } = useThemeToggle();
+
+  return (
+    <SafeAreaView style={{
+      flex: 1,
+      backgroundColor: "#fff",
+      paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0
+    }}>
+      <NavigationContainer theme={theme}>
+        {loggedIn ? <BottomTabNavigator /> : <LoginNavigator />}
+      </NavigationContainer>
+    </SafeAreaView>
+  );
+}
 
 const LoginStack = createNativeStackNavigator();
 function LoginNavigator() {
@@ -37,16 +60,6 @@ function LoginNavigator() {
       <LoginStack.Screen name="MainApp" component={BottomTabNavigator} />
     </LoginStack.Navigator>
   )
-}
-
-const RebotStack = createNativeStackNavigator();
-function RebotNavigator() {
-  return (
-    <RebotStack.Navigator screenOptions={{ headerShown: false }}>
-      <RebotStack.Screen name="RebotWelcome" component={RebotWelcome} />
-      <RebotStack.Screen name="RebotChatInterface" component={RebotChatInterface} />
-    </RebotStack.Navigator>
-  );
 }
 
 const BottomTabStack = createBottomTabNavigator();
@@ -71,13 +84,13 @@ function BottomTabNavigator() {
           }
           return <Icon name={iconName} type={iconLib} size={size} color={color} />;
         },
-        tabBarShowLabel: false,
+        tabBarShowLabel: true,
         tabBarPressColor: "transparent",
         tabBarStyle: {
           padding: 16
         },
 
-        headerShown: true,
+        headerShown: false,
         headerShadowVisible: false,
         headerTitleAlign: "center",
         headerTitleStyle: {
@@ -93,28 +106,12 @@ function BottomTabNavigator() {
   );
 }
 
-
-/*  App Start Point
-   ----------------  */
-
-function AppContent() {
-  const { loggedIn } = useLogin();
-  const { theme } = useThemeToggle();
-
+const RebotStack = createNativeStackNavigator();
+function RebotNavigator() {
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
-      <StatusBar style={theme.dark ? 'light' : 'dark'} />
-      <NavigationContainer theme={theme}>
-        {loggedIn ? <BottomTabNavigator /> : <LoginNavigator />}
-      </NavigationContainer>
-    </SafeAreaView>
-  );
-}
-
-export default function App() {
-  return (
-    <ThemeProvider>
-      <AppContent />
-    </ThemeProvider>
+    <RebotStack.Navigator screenOptions={{ headerShown: false }}>
+      <RebotStack.Screen name="RebotWelcome" component={RebotWelcome} />
+      <RebotStack.Screen name="RebotChatInterface" component={RebotChatInterface} />
+    </RebotStack.Navigator>
   );
 }
