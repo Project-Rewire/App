@@ -38,8 +38,6 @@ export default function Home() {
             activeOpacity={0.7}
             containerStyle={{
               backgroundColor: colors.card,
-              borderColor: colors.border,
-              borderWidth: 1,
               height: 56,
               width: 56,
             }}

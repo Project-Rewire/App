@@ -59,7 +59,7 @@ function BottomTabNavigator() {
           let iconLib = 'ionicon';
 
           switch (route.name) {
-            case 'HomeNavigator':
+            case 'Home':
               iconName = focused ? 'home' : 'home-outline';
               break;
             case 'Tasks':
@@ -86,7 +86,7 @@ function BottomTabNavigator() {
         headerTitleStyle: { fontSize: 20 },
       })}
     >
-      <BottomTabStack.Screen name="HomeNavigator" component={HomeNavigator} />
+      <BottomTabStack.Screen name="Home" component={HomeNavigator} />
       <BottomTabStack.Screen name="Tasks" component={Tasks} />
       <BottomTabStack.Screen name="Rebot" component={RebotNavigator} />
       <BottomTabStack.Screen name="Community" component={Community} />
@@ -112,7 +112,7 @@ const HomeStack = createNativeStackNavigator();
 function HomeNavigator() {
   return (
     <HomeStack.Navigator screenOptions={{ headerShown: false }}>
-      <HomeStack.Screen name="Home" component={Home} />
+      <HomeStack.Screen name="HomeScreen" component={Home} />
       <HomeStack.Screen name="SettingsNavigator" component={SettingsNavigator} />
     </HomeStack.Navigator>
   );
