@@ -4,6 +4,7 @@ import { useTheme } from "@react-navigation/native";
 import { Avatar } from "@rneui/themed";
 import useQuotes from "../../hooks/quote-service";
 import { useNavigation } from "@react-navigation/native";
+import { H1 } from "../../fragments/heading";
 
 export default function Home() {
   const { quote } = useQuotes();
@@ -61,6 +62,11 @@ export default function Home() {
           </Card>
         )}
       </ImageBackground>
+
+      <View>
+        <H1>Your Progress</H1>
+
+      </View>
     </ScrollView >
   );
 }
