@@ -16,7 +16,7 @@ import * as Haptics from 'expo-haptics';
 const HomePage = () => {
   const [refreshing, setRefreshing] = useState(false);
   const [progressAnim] = useState(new Animated.Value(0));
-  const [userName] = useState('John'); // Replace with actual user name from context/redux
+  const [userName] = useState('shark'); // Replace with actual user name from context/redux
 
   const getGreeting = () => {
     const hour = new Date().getHours();
