@@ -27,7 +27,7 @@ const HomePage = () => {
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
-    // Simulate data refresh
+    // Simulate y data refresh
     setTimeout(() => {
       setRefreshing(false);
       // Trigger success haptic
