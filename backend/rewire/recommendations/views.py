@@ -1,4 +1,5 @@
 from django.utils import timezone
+from django.views.decorators.csrf import csrf_exempt
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from rest_framework.decorators import api_view, permission_classes
@@ -10,13 +11,13 @@ from .serializers import (
     TaskSerializer, UserTaskSerializer, UserScoreSerializer,
     TaskRatingSerializer, RecommendationRequestSerializer, UserTaskUpdateSerializer
 )
-from .service import RecommendationService
+from .service import RecommendationsService
 
 # Get all tasks assigned to the user
+@csrf_exempt
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def get_user_tasks(request):
-    
     # Get filter params
     status_filter = request.query_params.get('status')
     difficulty = request.query_params.get('difficulty')
@@ -35,6 +36,7 @@ def get_user_tasks(request):
 
 
 # Get the user's current score
+@csrf_exempt
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def get_user_score(request):
@@ -47,6 +49,7 @@ def get_user_score(request):
 
 
 # Generate and save task recommendations for the user
+@csrf_exempt
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def generate_recommendations(request):
@@ -61,7 +64,7 @@ def generate_recommendations(request):
     count = serializer.validated_data.get('count')
     
     # Generate recommendations
-    service = RecommendationService()
+    service = RecommendationsService()
     recommendations = service.generate_recommendations(
         user_id=request.user.id,
         difficulty=difficulty,
@@ -94,6 +97,7 @@ def generate_recommendations(request):
 
 
 # Update the status of a user's task (start, complete, or pass)
+@csrf_exempt
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def update_task_status(request, task_id):
@@ -154,6 +158,7 @@ def update_task_status(request, task_id):
 
 
 # Rate a task that the user has completed
+@csrf_exempt
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def rate_task(request, task_id):
@@ -181,6 +186,7 @@ def rate_task(request, task_id):
 
 
 # Get analytics about user's tasks and progress
+@csrf_exempt
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def get_task_analytics(request):

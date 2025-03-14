@@ -3,7 +3,7 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 from core.models import User
 
 class Task(models.Model):
-    title = models.Charfield(max_length=100)
+    title = models.CharField(max_length=100)
     description = models.TextField()
 
     DIFICULTY_CHOICES = [
