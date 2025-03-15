@@ -10,20 +10,15 @@ import {
 } from "react-native";
 import Card from "../../fragments/card";
 import { useNavigation} from "@react-navigation/native";
+import CommuniteCreate from "../../screens/CommuniteCreate";
+
 
 // Main community card(ReWire Community)
 export default function Community() {
+  //return <CommuniteCreate />;
+
 
   const navigation = useNavigation();
-
-  //some dummy data
-  const [maincommunity, setMainCommunity] = useState([
-    {
-      id: "0000",
-      name: 'ReWire Community',
-      image: require("../../assets/rewire-logo.png"),
-    },
-    ]);
   
     const [joinedCommunities, setJoinedCommunities] = useState([
       {
@@ -60,6 +55,15 @@ export default function Community() {
         members: 23,
       },
     ]);
+  const [maincommunity, setMainCommunity] = useState([
+    {
+      id: "0000",
+      name: 'ReWire Community',
+      image: require("../../assets/rewire-logo.png"),
+      members: 200,
+    },
+  ]);
+
   const handleJoinCommunity= (community) => {
     setJoinedCommunities([...joinedCommunities, community]);
     setSuggestedCommunities(suggestedCommunities.filter(c => c.id !== community.id));
@@ -169,7 +173,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     borderRadius: 20,
-    backgroundColor: "#ffffff",
+    
   },
   searchBar: {
     flexDirection: "row",
@@ -294,7 +298,7 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   CreateCard: {
-    backgroundColor: "#f0f0f0", 
+    backgroundColor: "#D9D9D6", 
     marginTop: 10,
     marginBottom: 20,
     borderRadius: 15,
