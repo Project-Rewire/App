@@ -11,7 +11,7 @@
 const isProduction = false;
 
 const DOMAINS = {
-    production: "",
+    production: "ec2-13-217-166-117.compute-1.amazonaws.com",
     local: "localhost"
 };
 
