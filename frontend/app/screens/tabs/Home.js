@@ -158,18 +158,19 @@ const styles = StyleSheet.create({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
+    gap: 16,
     marginVertical: 8,
     padding: 16,
     minHeight: 150
   },
   quoteCardQuote: {
     fontSize: 18,
-    fontStyle: "italic",
     textAlign: "center",
   },
   quoteCardAuthor: {
     textAlign: "center",
     marginTop: 8,
+    opacity: 0.6
   },
   quickActionCardContainer: {
     display: 'flex',
@@ -180,7 +181,7 @@ const styles = StyleSheet.create({
   },
   quickActionCard: {
     padding: 16,
-    width: '50%'
+    width: '48%'
   },
   quickActionCardContent: {
     display: 'flex',

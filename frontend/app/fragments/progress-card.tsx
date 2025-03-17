@@ -24,6 +24,7 @@ export default function ProgressCard({ title, currentProgress, maximumProgress, 
     return (
         <TouchableOpacity
             style={[styles.progressCard, { backgroundColor: colors.card, width: width ? width : '100%' }]}
+            activeOpacity={0.6}
             accessibilityLabel={`${title} card`}
             accessibilityHint={`Shows detailed information about your ${title}`}
             accessibilityRole="button"
@@ -34,7 +35,7 @@ export default function ProgressCard({ title, currentProgress, maximumProgress, 
             </View>
             <View style={styles.progressCircleContainer}>
                 <CircularProgressBar
-                    radius={48}
+                    radius={40}
                     percentage={progressPercentage}
                 />
             </View>
@@ -58,14 +59,16 @@ const styles = StyleSheet.create({
         alignItems: "center",
     },
     progressTitle: {
-        fontSize: 20,
+        fontSize: 16,
         marginTop: 8,
+        fontWeight: "600"
     },
     progressStatus: {
-        fontSize: 18,
+        // fontSize: 18,
     },
     progressTextContainer: {
         flex: 1,
-        gap: 4
+        gap: 4,
+        alignItems: 'center'
     }
 });

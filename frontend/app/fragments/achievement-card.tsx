@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { ReactNode } from "react";
 import { useTheme } from "@react-navigation/native";
 
@@ -14,8 +14,9 @@ export default function AchievementCard({ title, status, icon, width }: Achievem
     const { colors } = useTheme();
 
     return (
-        <View
+        <TouchableOpacity
             style={[styles.achievementCard, { backgroundColor: colors.card, width: width ? width : 125 }]}
+            activeOpacity={0.6}
             accessibilityLabel={`${title} ${status}`}
         >
             <View style={styles.achievementIconContainer}>
@@ -30,22 +31,15 @@ export default function AchievementCard({ title, status, icon, width }: Achievem
                     {status.toLowerCase().replace(/\b\w/g, char => char.toUpperCase())}
                 </Text>
             </View>
-        </View>
+        </TouchableOpacity>
     );
 }
 
 const styles = StyleSheet.create({
     achievementCard: {
-        width: '50%',
         borderRadius: 16,
         padding: 16,
-        marginRight: 8,
         alignItems: 'center',
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1,
-        shadowRadius: 4,
-        elevation: 2,
         minHeight: 140,
     },
     achievementIconContainer: {
@@ -68,11 +62,11 @@ const styles = StyleSheet.create({
         margin: 8
     },
     achievementTitle: {
-        fontSize: 18,
+        fontSize: 16,
+        fontWeight: '600',
         opacity: 0.9
     },
     achievementSubtitle: {
-        fontSize: 16,
         marginTop: 2,
         opacity: 0.6
     },
