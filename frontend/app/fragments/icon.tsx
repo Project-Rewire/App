@@ -1,6 +1,7 @@
 import Ionicons from "react-native-vector-icons/Ionicons";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
+import FontAwesome5 from "react-native-vector-icons/FontAwesome";
 import EvilIcons from "react-native-vector-icons/EvilIcons";
 import Entypo from "react-native-vector-icons/Entypo";
 import Feather from "react-native-vector-icons/Feather";
@@ -22,6 +23,7 @@ const iconLibraries: IconLibrary = {
     ionicon: Ionicons,
     material: MaterialIcons,
     fontawesome: FontAwesome,
+    fontawesome5: FontAwesome5,
     evilicon: EvilIcons,
     entypo: Entypo,
     feather: Feather,

@@ -5,8 +5,9 @@ import {
     StyleSheet,
     TouchableHighlight,
 } from "react-native";
+import { useTheme } from "@react-navigation/native";
 
-const Card = ({
+export default function Card({
     style,
     onPress,
     children,
@@ -16,11 +17,14 @@ const Card = ({
     shadow = false,
     padding = 4,
     margin = 0,
-    backgroundColor = "white",
-    activeOpacity = 0.9,
-    underlayColor = "#f0f0f0",
+    backgroundColor,
+    activeOpacity = 0.6,
+    underlayColor,
     ...props
-}) => {
+}) {
+    const { colors } = useTheme();
+    backgroundColor = backgroundColor ? backgroundColor : colors.card;
+    underlayColor = underlayColor ? underlayColor : backgroundColor;
     const Container = onPress ? TouchableHighlight : View;
     const containerProps = onPress
         ? {
@@ -29,7 +33,6 @@ const Card = ({
             activeOpacity,
         }
         : {};
-
     const cardStyles = [
         styles.cardWrapper,
         {
@@ -43,6 +46,7 @@ const Card = ({
         },
         style,
     ];
+
 
     return (
         <Container style={cardStyles} {...containerProps} {...props}>
@@ -85,5 +89,3 @@ const styles = StyleSheet.create({
         elevation: 4, // for Android
     },
 });
-
-export default Card;

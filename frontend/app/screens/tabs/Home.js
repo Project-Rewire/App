@@ -7,10 +7,10 @@ import {
   ScrollView,
   RefreshControl,
 } from 'react-native';
-// import * as Haptics from 'expo-haptics';
+
 import useQuotes from '../../hooks/quote-service';
 import { useNavigation, useTheme } from '@react-navigation/native';
-import { Avatar } from '@rneui/themed';
+import Avatar from '../../fragments/avatar';
 import Card from '../../fragments/card';
 import { H1, H2 } from '../../fragments/heading';
 import ProgressCard from '../../fragments/progress-card';
@@ -24,13 +24,15 @@ export default function Home() {
   const navigation = useNavigation();
 
   const [refreshing, setRefreshing] = useState(false);
-  const [userName] = useState('shark');
+  const [userName] = useState('Shark');
 
   const getGreeting = () => {
+    let greeting;
     const hour = new Date().getHours();
-    if (hour < 12) return 'Good Morning';
-    if (hour < 17) return 'Good Afternoon';
-    return 'Good Evening';
+    if (hour < 12) greeting = 'Good Morning';
+    else if (hour < 17) greeting = 'Good Afternoon';
+    else greeting = 'Good Evening';
+    return greeting;
   };
 
   const onRefresh = useCallback(() => {
@@ -39,12 +41,11 @@ export default function Home() {
     setTimeout(() => {
       setRefreshing(false);
       // Trigger success haptic
-      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     }, 1500);
   }, []);
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.containerWrap}>
       <ScrollView
         refreshControl={
           <RefreshControl
@@ -55,89 +56,80 @@ export default function Home() {
           />
         }
         accessibilityLabel="Home page content"
+        contentContainerStyle={styles.container}
       >
         {/* Greeting Section */}
         <View style={styles.header}>
           <H1>{getGreeting()}</H1>
           <Avatar
-            rounded
-            title={userName.split("")[0].toUpperCase()}
-            activeOpacity={0.7}
-            containerStyle={{
-              backgroundColor: colors.card,
-              height: 56,
-              width: 56,
-            }}
-            titleStyle={{
-              color: colors.text
-            }}
+            name={userName}
+            radius={30}
+            backgroundColor='#74007a'
+            color='#fff'
+            opacity={0.9}
             onPress={() => navigation.navigate('SettingsNavigator', { screen: 'Settings' })}
           />
         </View>
 
-        {/* Quick Actions */}
-        <View style={styles.quickActionCardContainer} accessibilityRole="menubar">
-
-          <Card style={styles.quickActionCard} onPress={() => { console.log('Redirect to emergency page') }}>
-            <Card.Content style={styles.quickActionCardContent}>
-              <Icon type='ionicon' name='medical' color={colors.primary} />
-              <Text>Emergency</Text>
-            </Card.Content>
-          </Card>
-
-          <Card style={styles.quickActionCard}>
-            <Card.Content style={styles.quickActionCardContent}>
-              <Icon type='materialcommunityicons' name='robot-happy' color={colors.primary} />
-              <Text>Chat Now</Text>
-            </Card.Content>
-          </Card>
-
-          <Card style={styles.quickActionCard}>
-            <Card.Content style={styles.quickActionCardContent}>
-              <Icon type='ionicon' name='calendar' color={colors.primary} />
-              <Text>Schedule</Text>
-            </Card.Content>
-          </Card>
-
-        </View>
-
+        {/* Quote Section */}
         {quote && (
-          <Card style={{ marginVertical: 8, padding: 8, backgroundColor: `rgba(255, 255, 255, 0.7)` }}>
+          <Card style={[styles.quoteCard, { backgroundColor: colors.card }]}>
             <Card.Content>
-              <Text style={{ fontSize: 18, fontStyle: "italic", textAlign: "center", color: colors.text }}>
+              <Text style={[styles.quoteCardQuote, { color: colors.text }]}>
                 {quote.quote}
               </Text>
-              <Text style={{ textAlign: "center", marginTop: 8, color: colors.text }}>
+              <Text style={[styles.quoteCardAuthor, { color: colors.text }]}>
                 - {quote.author} -
               </Text>
             </Card.Content>
           </Card>
         )}
 
+        {/* Quick Actions */}
+        <View style={styles.quickActionCardContainer} accessibilityRole="menubar">
+
+          <Card style={styles.quickActionCard} onPress={() => { console.log('Implement to emergency page') }}>
+            <Card.Content style={styles.quickActionCardContent}>
+              <Icon type='ionicon' name='medical' color={colors.primary} />
+              <Text style={{ color: colors.text }}>Emergency</Text>
+            </Card.Content>
+          </Card>
+
+          <Card style={styles.quickActionCard} onPress={() => { console.log('Implement to emergency page') }}>
+            <Card.Content style={styles.quickActionCardContent}>
+              <Icon type='ionicon' name='clipboard' color={colors.primary} />
+              <Text style={{ color: colors.text }}>Your Report</Text>
+            </Card.Content>
+          </Card>
+
+        </View>
+
         <H2>Your Progress</H2>
 
-        <View style={styles.progressCardsContainer} accessibilityRole="group" accessibilityLabel="Progress tracking cards">
+        {/* <ScrollView horizontal={true} contentContainerStyle={styles.progressCardsContainer} accessibilityLabel="Progress tracking cards"> */}
+        <View style={styles.progressCardsContainer}>
           <ProgressCard title="Overall Progress" currentProgress={48} maximumProgress={100} />
           <ProgressCard title="Daily Tasks" currentProgress={65} maximumProgress={100} />
         </View>
+        {/* </ScrollView> */}
 
         <H2>Achievements</H2>
 
-        <View style={styles.achievementsContainer} accessibilityRole="group" accessibilityLabel="Your achievements">
+        <ScrollView horizontal={true} contentContainerStyle={styles.achievementsContainer} accessibilityLabel="Your achievements">
 
           <AchievementCard
             title={"Task 07"}
             status={"Completed"}
-            icon={<Icon type="ionicon" name="help-outline" size={24} color="black" />}
+            icon={<Icon type="materialcommunityicons" name="check-circle-outline" size={24} color="#FFD700" />}
           />
 
           <AchievementCard
             title={"7 Days"}
             status={"Streak"}
-            icon={<Icon type="ionicon" name="help-outline" size={24} color="black" />}
+            icon={<Icon type="materialcommunityicons" name="trophy-outline" size={24} color="#C0C0C0" />}
           />
 
-        </View>
+        </ScrollView>
 
       </ScrollView>
     </SafeAreaView>
@@ -145,9 +137,16 @@ export default function Home() {
 };
 
 const styles = StyleSheet.create({
-  container: {
+  containerWrap: {
     flex: 1,
-    padding: 8
+  },
+  container: {
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    display: 'flex',
+    alignItems: 'stretch',
+    justifyContent: 'flex-start',
+    gap: 16
   },
   header: {
     display: 'flex',
@@ -155,14 +154,33 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     flexDirection: 'row'
   },
+  quoteCard: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginVertical: 8,
+    padding: 16,
+    minHeight: 150
+  },
+  quoteCardQuote: {
+    fontSize: 18,
+    fontStyle: "italic",
+    textAlign: "center",
+  },
+  quoteCardAuthor: {
+    textAlign: "center",
+    marginTop: 8,
+  },
   quickActionCardContainer: {
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-evenly'
+    justifyContent: 'space-evenly',
+    gap: 8,
   },
   quickActionCard: {
-    padding: 16
+    padding: 16,
+    width: '50%'
   },
   quickActionCardContent: {
     display: 'flex',
@@ -171,16 +189,16 @@ const styles = StyleSheet.create({
   },
   progressCardsContainer: {
     display: 'flex',
-    flexDirection: 'row',
+    flexDirection: 'column',
     alignItems: 'center',
-    justifyContent: 'flex-start',
-    gap: 8
+    gap: 8,
+    paddingVertical: 8
   },
   achievementsContainer: {
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'flex-start',
-    gap: 8
+    gap: 8,
   }
 });
