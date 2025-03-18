@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useRef, useEffect } from 'react';
 import {
     View,
     Text,
@@ -8,93 +8,21 @@ import {
     StyleSheet,
     KeyboardAvoidingView,
     Platform,
-    SafeAreaView,
-    Alert,
 } from 'react-native';
+import { useRebot } from '../hooks/rebot-service';
 
 const RebotChatInterface = ({ userId = 'default', roomName = 'default' }) => {
-    const [message, setMessage] = useState('');
-    const [chatHistory, setChatHistory] = useState([]);
-    const [isConnected, setIsConnected] = useState(false);
+    const [message, setMessage] = React.useState('');
     const flatListRef = useRef(null);
-    const webSocketRef = useRef(null);
-
-    useEffect(() => {
-        connectWebSocket();
-        return () => {
-            if (webSocketRef.current) {
-                webSocketRef.current.close();
-            }
-        };
-    }, []);
-
-    const connectWebSocket = () => {
-        // Create WebSocket connection
-        const wsUrl = `ws://localhost:8000/ws/rebot/${roomName}/`;
-        webSocketRef.current = new WebSocket(wsUrl);
-
-        webSocketRef.current.onopen = () => {
-            console.log('WebSocket connection established');
-            setIsConnected(true);
-        };
-
-        webSocketRef.current.onmessage = (event) => {
-            const data = JSON.parse(event.data);
-            console.log('Message received:', data);
-
-            if (data.type === 'message') {
-                const newMessage = {
-                    id: Date.now().toString(),
-                    sender: data.sender === 'therapist' ? 'bot' : 'user',
-                    text: data.content,
-                };
-
-                setChatHistory(prevHistory => [...prevHistory, newMessage]);
-            } else if (data.type === 'error') {
-                Alert.alert('Error', data.content);
-            } else if (data.type === 'system') {
-                // Handle system messages
-                console.log('System message:', data.content);
-            }
-        };
-
-        webSocketRef.current.onclose = (event) => {
-            console.log('WebSocket connection closed', event.code, event.reason);
-            setIsConnected(false);
-
-            // Attempt to reconnect after a delay
-            setTimeout(() => {
-                connectWebSocket();
-            }, 3000);
-        };
-
-        webSocketRef.current.onerror = (error) => {
-            console.error('WebSocket error:', error);
-        };
-    };
+    const { messages: chatHistory, isConnected, sendMessage } = useRebot({
+        userId,
+        roomName
+    });
 
     const handleSend = () => {
-        if (message.trim() === '' || !isConnected) return;
-
-        // Create user message object
-        const userMessage = {
-            id: Date.now().toString(),
-            sender: 'user',
-            text: message,
-        };
-
-        // Add to local chat history
-        setChatHistory(prevHistory => [...prevHistory, userMessage]);
-
-        // Send message to WebSocket server
-        const messageData = {
-            type: 'message',
-            content: message,
-            timestamp: Date.now() / 1000, // Convert to seconds for server compatibility
-        };
-
-        webSocketRef.current.send(JSON.stringify(messageData));
-        setMessage('');
+        if (sendMessage(message)) {
+            setMessage('');
+        }
     };
 
     const renderChatItem = ({ item }) => {
@@ -110,6 +38,12 @@ const RebotChatInterface = ({ userId = 'default', roomName = 'default' }) => {
         );
     };
 
+    useEffect(() => {
+        if (flatListRef.current && chatHistory.length > 0) {
+            flatListRef.current.scrollToEnd({ animated: true });
+        }
+    }, [chatHistory]);
+
     return (
         <>
             <FlatList
@@ -118,7 +52,7 @@ const RebotChatInterface = ({ userId = 'default', roomName = 'default' }) => {
                 renderItem={renderChatItem}
                 keyExtractor={(item) => item.id}
                 contentContainerStyle={styles.chatContainer}
-                onContentSizeChange={() => flatListRef.current.scrollToEnd({ animated: true })}
+                onContentSizeChange={() => flatListRef.current?.scrollToEnd({ animated: true })}
             />
 
             <KeyboardAvoidingView
