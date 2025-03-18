@@ -13,7 +13,8 @@ export function H1({ children, style }: HProps) {
         fontSize: 24,
         fontWeight: 'bold',
         color: colors.text,
-        marginVertical: 8
+        marginVertical: 16,
+        marginHorizontal: 8
     };
 
     return (
@@ -31,7 +32,8 @@ export function H2({ children, style }: HProps) {
         fontWeight: 'bold',
         color: colors.text,
         opacity: 0.8,
-        marginVertical: 8
+        marginVertical: 16,
+        marginHorizontal: 8
     };
 
     return (

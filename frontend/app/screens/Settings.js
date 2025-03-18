@@ -3,10 +3,11 @@ import React from 'react';
 import { Icon } from '@rneui/base';
 import { ListItem } from '@rneui/base';
 import { useThemeToggle } from '../hooks/theme-service';
-import { TouchableHighlight } from 'react-native';
+import { StyleSheet, TouchableHighlight } from 'react-native';
 import { FlatList, Switch, View } from 'react-native';
 import { useNavigation, useTheme } from '@react-navigation/native';
 import { Text } from 'react-native';
+import { H1, H2 } from '../fragments/heading';
 
 
 export default function Settings() {
@@ -41,6 +42,8 @@ export default function Settings() {
 
     return (
         <View>
+            <H1>Settings</H1>
+            <H2>General</H2>
             <FlatList
                 data={SETTINGS}
                 keyExtractor={(item) => item.id}
@@ -49,7 +52,7 @@ export default function Settings() {
                         onPress={() => item.callback()}
                         underlayColor={colors.highlight}
                     >
-                        <ListItem bottomDivider containerStyle={{ backgroundColor: colors.card }}>
+                        <ListItem bottomDivider containerStyle={{ backgroundColor: colors.card, borderColor: colors.border }}>
                             <Icon name={item.iconName} type={item.iconLib} color={colors.text} />
                             <ListItem.Content>
                                 <ListItem.Title style={{ color: colors.text }}>{item.title}</ListItem.Title>
@@ -59,9 +62,7 @@ export default function Settings() {
                     </TouchableHighlight>
                 )}
             />
-            <View style={{ margin: 16 }}>
-                <Text style={{ fontSize: 16, color: colors.text }}>Appearance</Text>
-            </View>
+            <H2>Appearance</H2>
             <ListItem containerStyle={{ backgroundColor: colors.card }}>
                 <Icon name="sun" type="feather" color={colors.text} />
                 <ListItem.Content>
@@ -76,5 +77,6 @@ export default function Settings() {
         </View>
     );
 }
+
 
 

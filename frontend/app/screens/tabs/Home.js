@@ -60,7 +60,7 @@ export default function Home() {
       >
         {/* Greeting Section */}
         <View style={styles.header}>
-          <H1>{getGreeting()}</H1>
+          <H1 style={styles.headerGreeting}>{getGreeting()}</H1>
           <Avatar
             name={userName}
             radius={30}
@@ -114,7 +114,7 @@ export default function Home() {
 
         </View>
 
-        <H2>Your Progress</H2>
+        <H2 style={styles.h2}>Your Progress</H2>
 
         {/* <ScrollView horizontal={true} contentContainerStyle={styles.progressCardsContainer} accessibilityLabel="Progress tracking cards"> */}
         <View style={styles.progressCardsContainer}>
@@ -123,7 +123,7 @@ export default function Home() {
         </View>
         {/* </ScrollView> */}
 
-        <H2>Achievements</H2>
+        <H2 style={styles.h2}>Achievements</H2>
 
         <ScrollView horizontal={true} contentContainerStyle={styles.achievementsContainer} accessibilityLabel="Your achievements">
 
@@ -163,6 +163,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     flexDirection: 'row'
+  },
+  headerGreeting: {
+    marginLeft: 0,
+  },
+  h2: {
+    marginLeft: 0
   },
   quoteCard: {
     display: 'flex',
