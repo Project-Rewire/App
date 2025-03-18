@@ -1,6 +1,6 @@
-from datetime import timezone
 from django.db import models
 from core.models import User
+from django.utils import timezone
 
 class Community(models.Model):
     id = models.AutoField(primary_key=True)
@@ -17,7 +17,7 @@ class Community(models.Model):
 class CommunityMember(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     community = models.ForeignKey(Community, on_delete=models.CASCADE, related_name='members')
-    joined_at = models.DateTimeField(default=timezone.now)
+    joined_at = models.DateTimeField(default=timezone.now) # returns utc time by default
     
     class Meta:
         unique_together = ('user', 'community')
