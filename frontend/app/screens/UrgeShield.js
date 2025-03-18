@@ -24,7 +24,7 @@ const UrgeShieldScreen = () => {
         {/* Strong Craving Section */}
         <View style={styles.cravingSection}>
           <Image 
-            source={require('../../assets/images/img01.png')} 
+            source={require('../assets/img01.png')} 
             style={styles.cravingImage} 
             resizeMode="contain"
           />
@@ -45,7 +45,7 @@ const UrgeShieldScreen = () => {
                 <Text style={styles.buttonSubtitle}>Your Digital Friend is here for you!</Text>
               </View>
               <Image 
-                source={require('../../assets/images/img02.png')} 
+                source={require('../assets/img02.png')} 
                 style={styles.buttonIcon} 
                 resizeMode="contain"
               />
@@ -60,7 +60,7 @@ const UrgeShieldScreen = () => {
                 <Text style={styles.buttonSubtitle}>Stay on track and stay motivated!</Text>
               </View>
               <Image 
-                source={require('../../assets/images/img03.png')} 
+                source={require('../assets/img03.png')} 
                 style={styles.buttonIcon} 
                 resizeMode="contain"
               />
@@ -75,7 +75,7 @@ const UrgeShieldScreen = () => {
                 <Text style={styles.buttonSubtitle}>Connect with someone who cares.</Text>
               </View>
               <Image 
-                source={require('../../assets/images/img04.png')}
+                source={require('../assets/img04.png')}
                 style={styles.buttonIcon} 
                 resizeMode="contain"
               />
