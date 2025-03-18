@@ -15,7 +15,12 @@ export default function AchievementCard({ title, status, icon, width }: Achievem
 
     return (
         <TouchableOpacity
-            style={[styles.achievementCard, { backgroundColor: colors.card, width: width ? width : 125 }]}
+            style={[styles.achievementCard, {
+                backgroundColor: colors.card,
+                width: width ? width : 125,
+                borderWidth: 0.5,
+                borderColor: colors.border,
+            }]}
             activeOpacity={0.6}
             accessibilityLabel={`${title} ${status}`}
         >

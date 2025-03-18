@@ -23,7 +23,12 @@ export default function ProgressCard({ title, currentProgress, maximumProgress, 
 
     return (
         <TouchableOpacity
-            style={[styles.progressCard, { backgroundColor: colors.card, width: width ? width : '100%' }]}
+            style={[styles.progressCard, {
+                backgroundColor: colors.card,
+                width: width ? width : '100%',
+                borderWidth: 0.5,
+                borderColor: colors.border,
+            }]}
             activeOpacity={0.6}
             accessibilityLabel={`${title} card`}
             accessibilityHint={`Shows detailed information about your ${title}`}

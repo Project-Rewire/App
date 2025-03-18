@@ -73,7 +73,11 @@ export default function Home() {
 
         {/* Quote Section */}
         {quote && (
-          <Card style={[styles.quoteCard, { backgroundColor: colors.card }]}>
+          <Card style={[styles.quoteCard, {
+            backgroundColor: colors.card,
+            borderWidth: 0.5,
+            borderColor: colors.border,
+          }]}>
             <Card.Content>
               <Text style={[styles.quoteCardQuote, { color: colors.text }]}>
                 {quote.quote}
@@ -88,14 +92,20 @@ export default function Home() {
         {/* Quick Actions */}
         <View style={styles.quickActionCardContainer} accessibilityRole="menubar">
 
-          <Card style={styles.quickActionCard} onPress={() => { console.log('Implement to emergency page') }}>
+          <Card style={[styles.quickActionCard, {
+            borderWidth: 0.5,
+            borderColor: colors.border,
+          }]} onPress={() => { console.log('Implement navigation to emergency page') }}>
             <Card.Content style={styles.quickActionCardContent}>
               <Icon type='ionicon' name='medical' color={colors.primary} />
               <Text style={{ color: colors.text }}>Emergency</Text>
             </Card.Content>
           </Card>
 
-          <Card style={styles.quickActionCard} onPress={() => { console.log('Implement to emergency page') }}>
+          <Card style={[styles.quickActionCard, {
+            borderWidth: 0.5,
+            borderColor: colors.border,
+          }]} onPress={() => { console.log('Implement navigation to emergency page') }}>
             <Card.Content style={styles.quickActionCardContent}>
               <Icon type='ionicon' name='clipboard' color={colors.primary} />
               <Text style={{ color: colors.text }}>Your Report</Text>
