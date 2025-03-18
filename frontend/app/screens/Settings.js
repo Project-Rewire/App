@@ -64,9 +64,9 @@ export default function Settings() {
             />
             <H2>Appearance</H2>
             <ListItem containerStyle={{ backgroundColor: colors.card }}>
-                <Icon name="sun" type="feather" color={colors.text} />
+                <Icon name="moon" type="feather" color={colors.text} />
                 <ListItem.Content>
-                    <ListItem.Title style={{ color: colors.text }}>Toggle Theme</ListItem.Title>
+                    <ListItem.Title style={{ color: colors.text }}>Dark Theme</ListItem.Title>
                 </ListItem.Content>
                 <Switch
                     ios_backgroundColor={colors.switchBackground}

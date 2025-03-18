@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -19,11 +19,9 @@ import { Icon } from '../../fragments/icon';
 
 export default function Home() {
 
-  const { quote } = useQuotes();
+  const { quote, refreshing, setRefreshing } = useQuotes();
   const { colors } = useTheme();
   const navigation = useNavigation();
-
-  const [refreshing, setRefreshing] = useState(false);
   const [userName] = useState('Shark');
 
   const getGreeting = () => {
@@ -35,22 +33,13 @@ export default function Home() {
     return greeting;
   };
 
-  const onRefresh = useCallback(() => {
-    setRefreshing(true);
-    // Simulate y data refresh
-    setTimeout(() => {
-      setRefreshing(false);
-      // Trigger success haptic
-    }, 1500);
-  }, []);
-
   return (
     <SafeAreaView style={styles.containerWrap}>
       <ScrollView
         refreshControl={
           <RefreshControl
             refreshing={refreshing}
-            onRefresh={onRefresh}
+            onRefresh={() => { setRefreshing(true) }}
             accessibilityLabel="Pull down to refresh content"
             accessibilityHint="Updates your progress and achievements"
           />
@@ -91,7 +80,6 @@ export default function Home() {
 
         {/* Quick Actions */}
         <View style={styles.quickActionCardContainer} accessibilityRole="menubar">
-
           <Card style={[styles.quickActionCard, {
             borderWidth: 0.5,
             borderColor: colors.border,
@@ -111,34 +99,26 @@ export default function Home() {
               <Text style={{ color: colors.text }}>Your Report</Text>
             </Card.Content>
           </Card>
-
         </View>
 
         <H2 style={styles.h2}>Your Progress</H2>
-
-        {/* <ScrollView horizontal={true} contentContainerStyle={styles.progressCardsContainer} accessibilityLabel="Progress tracking cards"> */}
         <View style={styles.progressCardsContainer}>
           <ProgressCard title="Overall Progress" currentProgress={48} maximumProgress={100} />
           <ProgressCard title="Daily Tasks" currentProgress={65} maximumProgress={100} />
         </View>
-        {/* </ScrollView> */}
 
         <H2 style={styles.h2}>Achievements</H2>
-
         <ScrollView horizontal={true} contentContainerStyle={styles.achievementsContainer} accessibilityLabel="Your achievements">
-
           <AchievementCard
             title={"Task 07"}
             status={"Completed"}
             icon={<Icon type="materialcommunityicons" name="check-circle-outline" size={24} color="#FFD700" />}
           />
-
           <AchievementCard
             title={"7 Days"}
             status={"Streak"}
             icon={<Icon type="materialcommunityicons" name="trophy-outline" size={24} color="#C0C0C0" />}
           />
-
         </ScrollView>
 
       </ScrollView>
