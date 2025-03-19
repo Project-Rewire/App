@@ -61,8 +61,8 @@ export default function Tasks() {
     <SafeAreaView style={styles.safeArea}>
       <StatusBar barStyle="dark-content" backgroundColor="#ffffff" />
       <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <View style={styles.header}>
-          <Text style={styles.title}>Daily tasks</Text>
+        <View style={styles.paragraph}>
+          <Text style={styles.paragraph}>Your AI based Task Recommendations are here</Text>
         </View>
 
         {tasks.map((task) => (
@@ -126,6 +126,12 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
     alignItems: 'center'
   },
+  paragraph:{
+    alignItems: 'flex-start',
+    fontSize: 17,
+    padding: 2,
+  }
+  ,
   title: {
     fontSize: 24,
     fontWeight: 'bold'
