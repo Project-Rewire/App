@@ -2,7 +2,7 @@ import axios from 'axios';
 import tokenService from './token-service';
 
 // Base URL for your Django backend
-const API_URL = 'http://0.0.0.0:8000/'; 
+const API_URL = 'http://localhost:8000/'; 
 // Use 'http://10.0.2.2:8000' For Android emulator
 
 // Create an axios instance
@@ -103,7 +103,27 @@ export const authService = {
     } catch (error) {
       throw error.response ? error.response.data : new Error('Network error');
     }
-  }
+  },
+  forgotPassword: async (email) => {
+    try {
+      const response = await api.post('/forget-password', { email });
+      return response.data;
+    } catch (error) {
+      throw error.response ? error.response.data : new Error('Network error');
+    }
+  },
+
+  // Reset Password
+  resetPassword: async (uidb64, token, newPassword) => {
+    try {
+      const response = await api.post(`/reset-password/${uidb64}/${token}`, {
+        new_password: newPassword,
+      });
+      return response.data;
+    } catch (error) {
+      throw error.response ? error.response.data : new Error('Network error');
+    }
+  },
   
 };
 

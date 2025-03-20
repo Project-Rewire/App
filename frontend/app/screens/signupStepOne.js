@@ -1,3 +1,5 @@
+// Fixed signupStepOne.js
+
 import React, { useState } from 'react';
 import {
   View,
@@ -31,14 +33,23 @@ const SignupStepOne = ({ navigation }) => {
       const response = await authService.signupStepOne({
         first_name: firstName,
         last_name: lastName,
-        user_name: username
+        user_name: username  
       });
       
-      // If successful, navigate to step two with the user data
+      // Get the temp_user_id from the response
+      const tempUserId = response.temp_user_id;
+      
+      if (!tempUserId) {
+        Alert.alert('Error', 'Server did not return a temporary user ID');
+        setIsLoading(false);
+        return;
+      }
+      
       navigation.navigate('SignupStepTwo', {
         firstName,
         lastName,
-        username
+        username,
+        tempUserId
       });
     } catch (error) {
       const errorMessage = error.error || 'Something went wrong. Please try again.';

@@ -1,4 +1,6 @@
 import json
+import uuid
+import time
 from django.http import JsonResponse
 from rest_framework.decorators import api_view
 from django.views.decorators.csrf import csrf_exempt
@@ -9,6 +11,10 @@ from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import send_mail
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
+from django.core.cache import cache
+
+# Cache timeout for temporary user data (1 hour in seconds)
+TEMP_USER_CACHE_TIMEOUT = 60 * 60
 
 @api_view(['POST'])
 @csrf_exempt
@@ -23,13 +29,25 @@ def signup_step_one(request):
             if User.objects.filter(user_name=user_name).exists():
                 return JsonResponse({'error': 'Username already exists'}, status=400)
             
-            request.session['signup_data'] = {
+            # Generate a unique ID
+            temp_user_id = str(uuid.uuid4())
+            
+            # Store data in cache instead of session
+            cache_data = {
                 'first_name': first_name,
                 'last_name': last_name,
-                'user_name': user_name
+                'user_name': user_name,
+                'timestamp': time.time()  # For potential expiry check
             }
             
-            return JsonResponse({'message': 'Step one completed successfully'}, status=200)
+            # Save to cache with expiration
+            cache.set(f'signup_data_{temp_user_id}', cache_data, TEMP_USER_CACHE_TIMEOUT)
+            
+            # Return the temporary ID to the client
+            return JsonResponse({
+                'message': 'Step one completed successfully',
+                'temp_user_id': temp_user_id
+            }, status=200)
         except KeyError:
             return JsonResponse({'error': 'Invalid data'}, status=400)
     else:
@@ -44,14 +62,23 @@ def signup_step_two(request):
             email = data['email']
             password = data['password']
             confirm_password = data['confirm_password']
+            temp_user_id = data.get('temp_user_id')
             
             if password != confirm_password:
                 return JsonResponse({'error': 'Passwords do not match'}, status=400)
             
-            signup_data = request.session.get('signup_data')
-            if not signup_data:
-                return JsonResponse({'error': 'No data from step one'}, status=400)
+            # Get data from cache instead of session
+            cache_key = f'signup_data_{temp_user_id}'
+            signup_data = cache.get(cache_key)
             
+            # Debug logging
+            print(f"Received temp_user_id: {temp_user_id}")
+            print(f"Cache data found: {signup_data is not None}")
+            
+            if not signup_data:
+                return JsonResponse({'error': 'Invalid or expired temporary user ID'}, status=400)
+            
+            # Create the user
             user = User.objects.create(
                 first_name=signup_data['first_name'],
                 last_name=signup_data['last_name'],
@@ -62,10 +89,13 @@ def signup_step_two(request):
             
             user.save()
             
-            return JsonResponse({'message': 'User created successfully'}, status=201)
+            # Delete the temporary data from cache
+            cache.delete(cache_key)
+            
+            return JsonResponse({'message': 'User created successfully', 'user_id': user.id}, status=201)
         except KeyError as e:
-            print(e)
-            return JsonResponse({'error': 'Invalid data'}, status=400)
+            print(f"KeyError in signup_step_two: {e}")
+            return JsonResponse({'error': f'Invalid data: missing {e}'}, status=400)
     else:
         return JsonResponse({'error': 'Invalid HTTP method'}, status=405)
 

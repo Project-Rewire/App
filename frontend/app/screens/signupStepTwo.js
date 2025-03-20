@@ -7,45 +7,89 @@ import {
   StyleSheet,
   Image,
   SafeAreaView,
-  CheckBox,
+  ActivityIndicator,
+  Alert,
 } from 'react-native';
+import { authService } from '../services/api-service';
+import { useLogin } from '../hooks/login-service';
 
 const SignupStepTwo = ({ navigation, route }) => {
-  const { firstName, lastName, username } = route.params || {};
+  const { firstName, lastName, username, tempUserId } = route.params || {};
+
+  React.useEffect(() => {
+    if (!tempUserId) {
+      Alert.alert(
+        'Error',
+        'Missing user information from step one',
+        [{ text: 'Go Back', onPress: () => navigation.goBack() }]
+      );
+    }
+  }, []);
   
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [agreeToTerms, setAgreeToTerms] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   
+  const { login } = useLogin();
+
   const handleSignup = async () => {
+    // Basic validation
     if (!email.trim() || !password.trim() || !confirmPassword.trim()) {
+      Alert.alert('Error', 'All fields are required');
       return;
     }
-    
     if (password !== confirmPassword) {
+      Alert.alert('Error', 'Passwords do not match');
       return;
     }
-    
     if (!agreeToTerms) {
+      Alert.alert('Error', 'Please agree to the terms and conditions');
       return;
     }
     
-    // Combine data from both steps
-    const userData = {
-      firstName,
-      lastName,
-      username,
-      email,
-      password,
-    };
+    // Validate tempUserId
+    if (!tempUserId) {
+      Alert.alert('Error', 'Missing temporary user ID from step one');
+      return;
+    }
+    
+    setIsLoading(true);
     
     try {
-    
-      console.log('User registration data:', userData);
+      await authService.signupStepTwo({
+        temp_user_id: tempUserId,
+        firstName: firstName,
+        lastName: lastName,
+        username: username,
+        email: email,
+        password: password,        
+        confirm_password: confirmPassword  
+      });
       
+      Alert.alert(
+        'Success',
+        'Your account has been created successfully!',
+        [
+          {
+            text: 'Login now',
+            onPress: async () => {
+              try {
+                await login(email, password);
+              } catch (loginError) {
+                navigation.navigate('Login');
+              }
+            }
+          }
+        ]
+      );
     } catch (error) {
-      console.error('Signup failed:', error);
+      console.error('Signup error details:', error);
+      const errorMessage = error.error || error.message || 'Registration failed. Please try again.';
+      Alert.alert('Error', errorMessage);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -72,6 +116,7 @@ const SignupStepTwo = ({ navigation, route }) => {
           keyboardType="email-address"
           autoCapitalize="none"
           placeholderTextColor="#B8B8B8"
+          editable={!isLoading}
         />
         
         <TextInput
@@ -81,6 +126,7 @@ const SignupStepTwo = ({ navigation, route }) => {
           onChangeText={setPassword}
           secureTextEntry
           placeholderTextColor="#B8B8B8"
+          editable={!isLoading}
         />
         
         <TextInput
@@ -90,6 +136,7 @@ const SignupStepTwo = ({ navigation, route }) => {
           onChangeText={setConfirmPassword}
           secureTextEntry
           placeholderTextColor="#B8B8B8"
+          editable={!isLoading}
         />
       </View>
       
@@ -98,6 +145,7 @@ const SignupStepTwo = ({ navigation, route }) => {
         <TouchableOpacity
           style={styles.checkbox}
           onPress={() => setAgreeToTerms(!agreeToTerms)}
+          disabled={isLoading}
         >
           <View style={[
             styles.checkboxInner,
@@ -107,7 +155,12 @@ const SignupStepTwo = ({ navigation, route }) => {
         
         <Text style={styles.termsText}>
           By creating an account your agree to our{' '}
-          <Text style={styles.termsLink}>Term and Conditions</Text>
+          <Text 
+            style={styles.termsLink}
+            onPress={() => navigation.navigate('TermsAndConditions')}
+          >
+            Term and Conditions
+          </Text>
         </Text>
       </View>
       
@@ -121,14 +174,22 @@ const SignupStepTwo = ({ navigation, route }) => {
       <TouchableOpacity 
         style={styles.signupButton}
         onPress={handleSignup}
+        disabled={isLoading}
       >
-        <Text style={styles.signupButtonText}>Signup</Text>
+        {isLoading ? (
+          <ActivityIndicator color="#fff" />
+        ) : (
+          <Text style={styles.signupButtonText}>Signup</Text>
+        )}
       </TouchableOpacity>
       
       {/* Sign In Link */}
       <View style={styles.signInContainer}>
         <Text style={styles.accountText}>Have an Account? </Text>
-        <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+        <TouchableOpacity 
+          onPress={() => navigation.navigate('Login')}
+          disabled={isLoading}
+        >
           <Text style={styles.signInText}>Sign in here</Text>
         </TouchableOpacity>
       </View>
