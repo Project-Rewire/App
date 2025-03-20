@@ -32,10 +32,9 @@ const SignupStepTwo = ({ navigation, route }) => {
   const [agreeToTerms, setAgreeToTerms] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   
-  const { login } = useLogin();
+  const { login, setLoggedIn } = useLogin();
 
   const handleSignup = async () => {
-    // Basic validation
     if (!email.trim() || !password.trim() || !confirmPassword.trim()) {
       Alert.alert('Error', 'All fields are required');
       return;
@@ -49,7 +48,6 @@ const SignupStepTwo = ({ navigation, route }) => {
       return;
     }
     
-    // Validate tempUserId
     if (!tempUserId) {
       Alert.alert('Error', 'Missing temporary user ID from step one');
       return;
@@ -58,32 +56,35 @@ const SignupStepTwo = ({ navigation, route }) => {
     setIsLoading(true);
     
     try {
-      await authService.signupStepTwo({
+      const response = await authService.signupStepTwo({
         temp_user_id: tempUserId,
-        firstName: firstName,
-        lastName: lastName,
-        username: username,
-        email: email,
-        password: password,        
+        email,
+        password,        
         confirm_password: confirmPassword  
       });
       
-      Alert.alert(
-        'Success',
-        'Your account has been created successfully!',
-        [
-          {
-            text: 'Login now',
-            onPress: async () => {
-              try {
-                await login(email, password);
-              } catch (loginError) {
-                navigation.navigate('Login');
-              }
+      console.log('Signup successful:', response);
+      
+      try {
+        await login(email, password);
+        navigation.reset({
+          index: 0,
+          routes: [{ name: 'Main' }]  // Assuming 'Main' is your tab navigator or home screen
+        });
+      } catch (loginError) {
+        console.error('Auto-login failed:', loginError);
+        
+        Alert.alert(
+          'Account Created',
+          'Your account has been created successfully! Please login.',
+          [
+            {
+              text: 'Login now',
+              onPress: () => navigation.navigate('Login')
             }
-          }
-        ]
-      );
+          ]
+        );
+      }
     } catch (error) {
       console.error('Signup error details:', error);
       const errorMessage = error.error || error.message || 'Registration failed. Please try again.';

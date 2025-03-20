@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
 import tokenService from "../services/token-service";
 import { authService } from "../services/api-service";
 
@@ -18,9 +20,13 @@ export function useLogin() {
                 
                 if (accessToken && !isExpired) {
                     // We have a valid token, try to get user data from storage
-                    const userData = await AsyncStorage.getItem('user');
-                    setUser(userData ? JSON.parse(userData) : null);
-                    setLoggedIn(true);
+                    try {
+                        const userData = await AsyncStorage.getItem('user');
+                        setUser(userData ? JSON.parse(userData) : null);
+                        setLoggedIn(true);
+                    } catch (storageError) {
+                        console.error('Error reading user data:', storageError);
+                    }
                 } else {
                     // refresh the token
                     const refreshToken = await tokenService.getRefreshToken();
@@ -32,9 +38,13 @@ export function useLogin() {
                             
                             await tokenService.saveTokens(response.data.access, null);
                             
-                            const userData = await AsyncStorage.getItem('user');
-                            setUser(userData ? JSON.parse(userData) : null);
-                            setLoggedIn(true);
+                            try {
+                                const userData = await AsyncStorage.getItem('user');
+                                setUser(userData ? JSON.parse(userData) : null);
+                                setLoggedIn(true);
+                            } catch (storageError) {
+                                console.error('Error reading user data after refresh:', storageError);
+                            }
                         } catch (refreshError) {
                             // If refresh fails, clear tokens and stay logged out
                             await tokenService.clearTokens();
@@ -58,14 +68,22 @@ export function useLogin() {
             const response = await authService.login({ email, password });
             
             if (response.message === 'Login successful') {
-                await AsyncStorage.setItem('user', JSON.stringify({ email }));
-                // Tokens are already saved by the authService
-                setUser({ email });
-                setLoggedIn(true);
-                return true;
+                try {
+                    await AsyncStorage.setItem('user', JSON.stringify({ email }));
+                    // Tokens are already saved by the authService
+                    setUser({ email });
+                    setLoggedIn(true);
+                    return true;
+                } catch (storageError) {
+                    console.error('Error saving user data:', storageError);
+                    setError('Failed to save user session');
+                    throw new Error('Failed to save user session');
+                }
             }
         } catch (error) {
-            setError(error.message || 'Login failed');
+            const errorMsg = error?.message || 'Login failed';
+            console.error('Login error:', errorMsg);
+            setError(errorMsg);
             throw error;
         }
     };
@@ -75,7 +93,11 @@ export function useLogin() {
         try {
             // Clear stored tokens using the token service
             await tokenService.clearTokens();
-            await AsyncStorage.removeItem('user');
+            try {
+                await AsyncStorage.removeItem('user');
+            } catch (storageError) {
+                console.error('Error removing user data:', storageError);
+            }
             setUser(null);
             setLoggedIn(false);
         } catch (error) {
