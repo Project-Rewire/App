@@ -34,6 +34,7 @@ urlpatterns = [
     path('forget-password', forget_password),
     path('reset-password', reset_password),
     path('questionnaire/', include('questionnaire.urls')),
+    path('recommendations/', include('recommendations.urls')),
     path('aiprofile/', include('aiprofile.urls')),
     path('community/', include('community.urls')),
 ]

@@ -1,25 +1,33 @@
 import Ionicons from "react-native-vector-icons/Ionicons";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
-import EvilIcons from 'react-native-vector-icons/EvilIcons';
-import Entypo from 'react-native-vector-icons/Entypo';
-import Feather from 'react-native-vector-icons/Feather';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import FontAwesome5 from "react-native-vector-icons/FontAwesome";
+import EvilIcons from "react-native-vector-icons/EvilIcons";
+import Entypo from "react-native-vector-icons/Entypo";
+import Feather from "react-native-vector-icons/Feather";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
-import { IconProps } from "react-native-vector-icons/Icon";
+export interface IconProps {
+    type?: string;
+    name?: string;
+    size?: number;
+    color?: string;
+    style?: object;
+}
 
 type IconLibrary = {
-    [key: string]: React.ComponentType<IconProps>;
+    [key: string]: React.ComponentType<any>;
 };
 
 const iconLibraries: IconLibrary = {
-    "ionicon": Ionicons,
-    "material": MaterialIcons,
-    "fontawesome": FontAwesome,
-    "evilicon": EvilIcons,
-    "entypo": Entypo,
-    "feather": Feather,
-    "materialcommunityicons": MaterialCommunityIcons,
+    ionicon: Ionicons,
+    material: MaterialIcons,
+    fontawesome: FontAwesome,
+    fontawesome5: FontAwesome5,
+    evilicon: EvilIcons,
+    entypo: Entypo,
+    feather: Feather,
+    materialcommunityicons: MaterialCommunityIcons,
 };
 
 export function Icon({
@@ -28,13 +36,7 @@ export function Icon({
     size = 24,
     color = "black",
     style,
-}: {
-    type?: string;
-    name?: string;
-    size?: number;
-    color?: string;
-    style?: object;
-}) {
+}: IconProps) {
     const IconComponent = iconLibraries[type];
 
     if (!IconComponent) {
@@ -42,5 +44,5 @@ export function Icon({
         return null;
     }
 
-    return <IconComponent name={name} size={size} color={color} style={[style]} />;
+    return <IconComponent name={name} size={size} color={color} style={style} />;
 }

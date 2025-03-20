@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'questionnaire',
     'aiprofile',
     'community',
+    'recommendations',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
