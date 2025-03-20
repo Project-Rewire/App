@@ -1,18 +1,19 @@
 import React, { useRef, useEffect, useState } from 'react';
 import {
-    View,
     Text,
-    TextInput,
-    TouchableOpacity,
-    FlatList,
-    StyleSheet,
-    KeyboardAvoidingView,
-    Platform,
+    View,
     Alert,
+    FlatList,
+    Platform,
+    TextInput,
+    StyleSheet,
+    TouchableOpacity,
+    KeyboardAvoidingView,
 } from 'react-native';
 import { settings } from '../app.settings';
+import * as SQLite from 'expo-sqlite';
 
-function generateRandomString(length) {
+const generateRandomString = (length) => {
     const lowercaseLetters = 'abcdefghijklmnopqrstuvwxyz';
     let result = '';
     for (let i = 0; i < length; i++) {
@@ -20,7 +21,7 @@ function generateRandomString(length) {
         result += lowercaseLetters[randomIndex];
     }
     return result;
-}
+};
 
 const RebotChatInterface = ({ userId = 'default' }) => {
     const flatListRef = useRef(null);
@@ -28,20 +29,93 @@ const RebotChatInterface = ({ userId = 'default' }) => {
     const [message, setMessage] = useState('');
     const [isConnected, setIsConnected] = useState(false);
     const wsRef = useRef(null);
-    const [roomName, setRoomName] = useState(generateRandomString(4))
+    const [conversationId, setConversationId] = useState(generateRandomString(4));
+    const [db, setDb] = useState(null);
+
+    useEffect(() => {
+        const initializeDb = async () => {
+            const db = await SQLite.openDatabaseAsync('chat.db');
+            setDb(db);
+
+            // Enable WAL mode for better performance
+            await db.execAsync('PRAGMA journal_mode = WAL;');
+
+            // Drop the existing messages table if it exists
+            await db.execAsync('DROP TABLE IF EXISTS messages;');
+
+            // Create the conversations table if it doesn't exist
+            await db.execAsync(`
+                CREATE TABLE IF NOT EXISTS conversations (
+                    id TEXT PRIMARY KEY NOT NULL,
+                    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+                );
+            `);
+
+            // Create the messages table with the updated schema
+            await db.execAsync(`
+                CREATE TABLE IF NOT EXISTS messages (
+                    id TEXT PRIMARY KEY NOT NULL,
+                    conversation_id TEXT NOT NULL,
+                    sender TEXT NOT NULL,
+                    text TEXT NOT NULL,
+                    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                    FOREIGN KEY (conversation_id) REFERENCES conversations (id)
+                );
+            `);
+
+            // Check if the conversation exists, and if not, insert it
+            const conversation = await db.getFirstAsync(
+                'SELECT * FROM conversations WHERE id = ?',
+                [conversationId]
+            );
+            if (!conversation) {
+                await db.runAsync(
+                    'INSERT INTO conversations (id) VALUES (?)',
+                    [conversationId]
+                );
+            }
+
+            // Load messages for the current conversation
+            const messages = await getMessages();
+            setChatHistory(messages);
+        };
+        initializeDb();
+    }, [conversationId]);
+
+    const addMessage = async (m) => {
+        try {
+            if (db) {
+                await db.runAsync(
+                    'INSERT INTO messages (id, conversation_id, sender, text) VALUES (?, ?, ?, ?)',
+                    [m.id, conversationId, m.sender, m.text]
+                );
+            }
+        } catch (error) {
+            console.error('Error adding message to database:', error);
+        }
+    };
+
+    const getMessages = async () => {
+        if (db) {
+            return await db.getAllAsync(
+                'SELECT * FROM messages WHERE conversation_id = ?',
+                [conversationId]
+            );
+        }
+        return [];
+    };
 
     useEffect(() => {
         connectWebSocket();
-
         return () => {
             wsRef.current?.close();
         };
-    }, [roomName]);
+    }, [conversationId]);
 
     const connectWebSocket = () => {
         wsRef.current?.close();
 
-        const url = `${settings.rebotWebsocket.value}/${roomName}/`;
+        const url = `${settings.rebotWebsocket.value}/${conversationId}/`;
         wsRef.current = new WebSocket(url);
 
         wsRef.current.onopen = () => {
@@ -58,9 +132,15 @@ const RebotChatInterface = ({ userId = 'default' }) => {
             }
         };
 
-        wsRef.current.onerror = () => setIsConnected(false);
+        wsRef.current.onerror = () => {
+            setIsConnected(false);
+            setTimeout(connectWebSocket, 5000);
+        };
 
-        wsRef.current.onclose = () => setIsConnected(false);
+        wsRef.current.onclose = () => {
+            setIsConnected(false);
+            setTimeout(connectWebSocket, 5000);
+        };
     };
 
     const handleIncomingMessage = (data) => {
@@ -71,6 +151,7 @@ const RebotChatInterface = ({ userId = 'default' }) => {
                 text: data.content,
             };
             setChatHistory((prev) => [...prev, newMessage]);
+            addMessage(newMessage);
         } else if (data.type === 'error') {
             Alert.alert('Error', data.content);
         }
@@ -87,13 +168,21 @@ const RebotChatInterface = ({ userId = 'default' }) => {
 
         try {
             wsRef.current.send(JSON.stringify(messageData));
-            setChatHistory((prev) => [...prev, { id: Date.now().toString(), sender: 'user', text: text.trim() }]);
+            const userMessage = { id: Date.now().toString(), sender: 'user', text: text.trim() };
+            setChatHistory((prev) => [...prev, userMessage]);
+            addMessage(userMessage);
             return true;
         } catch (error) {
             console.error('Error sending message:', error);
             return false;
         }
     };
+
+    useEffect(() => {
+        if (flatListRef.current) {
+            flatListRef.current.scrollToEnd({ animated: true });
+        }
+    }, [chatHistory]);
 
     return (
         <>
@@ -105,13 +194,13 @@ const RebotChatInterface = ({ userId = 'default' }) => {
                         style={[
                             styles.messageContainer,
                             item.sender === 'bot' ? styles.botMessageContainer : styles.userMessageContainer,
-                        ]}>
+                        ]}
+                    >
                         <Text style={styles.messageText}>{item.text}</Text>
                     </View>
                 )}
                 keyExtractor={(item) => item.id}
                 contentContainerStyle={styles.chatContainer}
-                onContentSizeChange={() => flatListRef.current?.scrollToEnd({ animated: true })}
             />
 
             {!isConnected && (
@@ -124,7 +213,11 @@ const RebotChatInterface = ({ userId = 'default' }) => {
             >
                 <View style={styles.quickReplies}>
                     {['Hello', 'How are you?', 'I need help'].map((text) => (
-                        <TouchableOpacity key={text} style={styles.quickReplyButton} onPress={() => setMessage(text)}>
+                        <TouchableOpacity
+                            key={text}
+                            style={styles.quickReplyButton}
+                            onPress={() => sendMessage(text)}
+                        >
                             <Text style={styles.quickReplyText}>{text}</Text>
                         </TouchableOpacity>
                     ))}
@@ -156,56 +249,56 @@ const styles = StyleSheet.create({
         color: 'red',
         fontSize: 12,
         textAlign: 'center',
-        paddingVertical: 4
+        paddingVertical: 4,
     },
     chatContainer: {
         paddingHorizontal: 16,
-        paddingVertical: 8
+        paddingVertical: 8,
     },
     messageContainer: {
         borderRadius: 20,
         padding: 12,
         marginVertical: 4,
-        maxWidth: '80%'
+        maxWidth: '80%',
     },
     botMessageContainer: {
         alignSelf: 'flex-start',
         backgroundColor: '#e1f2f2',
-        borderBottomLeftRadius: 4
+        borderBottomLeftRadius: 4,
     },
     userMessageContainer: {
         alignSelf: 'flex-end',
         backgroundColor: '#cce6e6',
-        borderBottomRightRadius: 4
+        borderBottomRightRadius: 4,
     },
     messageText: {
         fontSize: 16,
-        color: '#333'
+        color: '#333',
     },
     inputContainer: {
         borderTopWidth: 1,
         borderTopColor: '#e1e8e8',
-        backgroundColor: '#f2f7f7'
+        backgroundColor: '#f2f7f7',
     },
     quickReplies: {
         flexDirection: 'row',
         padding: 8,
-        justifyContent: 'space-around'
+        justifyContent: 'space-around',
     },
     quickReplyButton: {
         backgroundColor: '#e9eef1',
         paddingVertical: 8,
         paddingHorizontal: 16,
-        borderRadius: 20
+        borderRadius: 20,
     },
     quickReplyText: {
-        color: '#333'
+        color: '#333',
     },
     inputRow: {
         flexDirection: 'row',
         paddingHorizontal: 12,
         paddingVertical: 8,
-        alignItems: 'center'
+        alignItems: 'center',
     },
     input: {
         flex: 1,
@@ -214,7 +307,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 16,
         paddingVertical: 10,
         fontSize: 16,
-        color: '#333'
+        color: '#333',
     },
     sendButton: {
         width: 40,
@@ -223,14 +316,14 @@ const styles = StyleSheet.create({
         backgroundColor: '#2D7A7A',
         justifyContent: 'center',
         alignItems: 'center',
-        marginLeft: 8
+        marginLeft: 8,
     },
     disabledButton: {
-        backgroundColor: '#a0a0a0'
+        backgroundColor: '#a0a0a0',
     },
     sendButtonText: {
         color: 'white',
-        fontSize: 18
+        fontSize: 18,
     },
 });
 
