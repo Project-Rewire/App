@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Community, Post, CommunityAllocation
+from .models import Community, CommunityMember, Post, CommunityAllocation
 from django.contrib.auth.models import User
 
 class UserSerializer(serializers.ModelSerializer):
@@ -8,9 +8,17 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ['id', 'username']
 
 class CommunitySerializer(serializers.ModelSerializer):
+    member_count = serializers.IntegerField(read_only=True)
+    is_member = serializers.SerializerMethodField()
     class Meta:
         model = Community
-        fields = ['id', 'title']
+        fields = ['id', 'name', 'icon', 'category', 'member_count', 'is_member']
+
+    def get_is_member(self, obj):
+        request = self.context.get('request')
+        if request and request.user.is_authenticated:
+            return CommunityMember.objects.filter(user=request.user, community=obj).exists()
+        return False
 
 class PostSerializer(serializers.ModelSerializer):
     user = UserSerializer(read_only=True)
