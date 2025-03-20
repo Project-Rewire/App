@@ -1,564 +1,201 @@
-import React, { useState, useCallback } from 'react';
-import { 
-  View, 
-  Text, 
-  StyleSheet, 
-  SafeAreaView, 
-  TouchableOpacity, 
-  ScrollView, 
+import React, { useState } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  SafeAreaView,
+  ScrollView,
   RefreshControl,
-  Animated,
-  Platform
 } from 'react-native';
-import { Ionicons, FontAwesome5, MaterialCommunityIcons } from '@expo/vector-icons';
-import * as Haptics from 'expo-haptics';
 
-const HomePage = () => {
-  const [refreshing, setRefreshing] = useState(false);
-  const [progressAnim] = useState(new Animated.Value(0));
-  const [userName] = useState('shark'); // Replace with actual user name from context/redux
+import useQuotes from '../../hooks/quote-service';
+import { useNavigation, useTheme } from '@react-navigation/native';
+import Avatar from '../../fragments/avatar';
+import Card from '../../fragments/card';
+import { H1, H2 } from '../../fragments/heading';
+import ProgressCard from '../../fragments/progress-card';
+import AchievementCard from '../../fragments/achievement-card';
+import { Icon } from '../../fragments/icon';
+
+export default function Home() {
+
+  const { quote, refreshing, setRefreshing } = useQuotes();
+  const { colors } = useTheme();
+  const navigation = useNavigation();
+  const [userName] = useState('Shark');
 
   const getGreeting = () => {
+    let greeting;
     const hour = new Date().getHours();
-    if (hour < 12) return 'Good Morning';
-    if (hour < 17) return 'Good Afternoon';
-    return 'Good Evening';
+    if (hour < 12) greeting = 'Good Morning';
+    else if (hour < 17) greeting = 'Good Afternoon';
+    else greeting = 'Good Evening';
+    return greeting;
   };
-
-  const onRefresh = useCallback(() => {
-    setRefreshing(true);
-    // Simulate y data refresh
-    setTimeout(() => {
-      setRefreshing(false);
-      // Trigger success haptic
-      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-    }, 1500);
-  }, []);
-
-  const handleButtonPress = () => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-  };
-
-  // Animate progress on mount
-  React.useEffect(() => {
-    Animated.timing(progressAnim, {
-      toValue: 0.48, // 48% progress
-      duration: 1000,
-      useNativeDriver: false,
-    }).start();
-  }, []);
-
-  const progressRotation = progressAnim.interpolate({
-    inputRange: [0, 1],
-    outputRange: ['0deg', '360deg'],
-  });
 
   return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView 
+    <SafeAreaView style={styles.containerWrap}>
+      <ScrollView
         refreshControl={
-          <RefreshControl 
-            refreshing={refreshing} 
-            onRefresh={onRefresh} 
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={() => { setRefreshing(true) }}
             accessibilityLabel="Pull down to refresh content"
             accessibilityHint="Updates your progress and achievements"
           />
         }
         accessibilityLabel="Home page content"
+        contentContainerStyle={styles.container}
       >
         {/* Greeting Section */}
-        <View style={styles.greetingContainer}>
-          <Text style={styles.greeting} accessibilityRole="header">
-            {getGreeting()}, {userName}
-          </Text>
-          <Text style={styles.date} accessibilityLabel={`Today is ${new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}`}>
-            {new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}
-          </Text>
-        </View>
-
-        {/* Quick Actions */}
-        <View style={styles.quickActions} accessibilityRole="menubar">
-          <TouchableOpacity 
-            style={styles.quickActionButton} 
-            onPress={handleButtonPress}
-            accessibilityLabel="Emergency help"
-            accessibilityHint="Access immediate emergency support"
-            accessibilityRole="button"
-            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-          >
-            <Ionicons name="medical" size={24} color="#4A90E2" />
-            <Text style={styles.quickActionText}>Emergency</Text>
-          </TouchableOpacity>
-          
-          <TouchableOpacity 
-            style={styles.quickActionButton} 
-            onPress={handleButtonPress}
-            accessibilityLabel="Chat now"
-            accessibilityHint="Start a conversation with a support specialist"
-            accessibilityRole="button"
-            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-          >
-            <Ionicons name="chatbubble-ellipses" size={24} color="#4A90E2" />
-            <Text style={styles.quickActionText}>Chat Now</Text>
-          </TouchableOpacity>
-          
-          <TouchableOpacity 
-            style={styles.quickActionButton} 
-            onPress={handleButtonPress}
-            accessibilityLabel="Schedule"
-            accessibilityHint="View or schedule your appointments"
-            accessibilityRole="button"
-            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-          >
-            <Ionicons name="calendar" size={24} color="#4A90E2" />
-            <Text style={styles.quickActionText}>Schedule</Text>
-          </TouchableOpacity>
-        </View>
-
-        {/* Quote Section b- Enlarged */}
-        <View 
-          style={styles.quoteContainer}
-          accessibilityLabel="Motivational quote"
-          accessibilityRole="text"
-        >
-          <Text style={styles.quoteText}>
-            "Your decision to kill your addiction will become a reality only if you
-            believe and reinforce the fact that you have the capacity to do it."
-          </Text>
-          <Text style={styles.quoteAuthor}>Osho Maharaj</Text>
-        </View>
-
-        {/* Progress Section */}
-        <View style={styles.sectionLabel}>
-          <Text 
-            style={styles.sectionLabelText} 
-            accessibilityRole="header"
-          >
-            Your Progress
-          </Text>
-        </View>
-
-        {/* Progress Cards */}
-        <View style={styles.progressCardsContainer} accessibilityRole="group" accessibilityLabel="Progress tracking cards">
-          {/* Overall Progress Card */}
-          <View 
-            style={styles.progressCard}
-            accessibilityLabel="Overall Progress Card"
-          >
-            <View style={styles.progressCircleContainer}>
-              <View 
-                style={styles.progressCircle}
-                accessibilityLabel="Progress circle showing 48 percent completion"
-                accessibilityRole="progressbar"
-                accessibilityValue={{ min: 0, max: 100, now: 48 }}
-              >
-                <View style={styles.progressArc} />
-                <View style={styles.progressInnerCircle}>
-                  <Ionicons name="person" size={16} color="#4A90E2" />
-                  <Text style={styles.progressPercentage}>48%</Text>
-                  <Text style={styles.progressStatus}>Good</Text>
-                </View>
-              </View>
-            </View>
-            <Text style={styles.progressTitle}>Overall Progress</Text>
-            <TouchableOpacity 
-              style={styles.detailsButton}
-              accessibilityLabel="View progress details"
-              accessibilityHint="Shows detailed information about your overall progress"
-              accessibilityRole="button"
-              hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-            >
-              <Text style={styles.detailsButtonText}>Details</Text>
-            </TouchableOpacity>
-          </View>
-
-          {/* Daily Task Card */}
-          <View 
-            style={styles.progressCard}
-            accessibilityLabel="Daily Task Progress Card"
-          >
-            <View style={styles.progressCircleContainer}>
-              <View 
-                style={styles.progressCircle}
-                accessibilityLabel="Daily task progress showing 65 percent completion"
-                accessibilityRole="progressbar"
-                accessibilityValue={{ min: 0, max: 100, now: 65 }}
-              >
-                <View style={styles.dailyProgressArc} />
-                <View style={styles.progressInnerCircle}>
-                  <Ionicons name="person" size={16} color="#4A90E2" />
-                  <Text style={styles.progressPercentage}>65%</Text>
-                  <Text style={styles.progressStatus}>Almost There</Text>
-                </View>
-              </View>
-            </View>
-            <Text style={styles.progressTitle}>Daily Task</Text>
-          </View>
-        </View>
-
-        {/* Achievements Section */}
-        <View style={styles.sectionLabel}>
-          <Text 
-            style={styles.sectionLabelText}
-            accessibilityRole="header"
-          >
-            Achievements
-          </Text>
-        </View>
-
-        {/* Achievement Cards */}
-        <View 
-          style={styles.achievementsContainer} 
-          accessibilityRole="group" 
-          accessibilityLabel="Your achievements"
-        >
-          {/* Task Completed Card */}
-          <View 
-            style={styles.achievementCard}
-            accessibilityLabel="Task 7 completed achievement, gold medal"
-          >
-            <View style={styles.achievementIconContainer}>
-              <View style={[styles.achievementIcon, styles.goldIcon]}>
-                <MaterialCommunityIcons name="check-circle-outline" size={28} color="#FFD700" />
-              </View>
-            </View>
-            <Text style={styles.achievementTitle}>Task 07</Text>
-            <Text style={styles.achievementSubtitle}>Completed</Text>
-            <View style={styles.achievementBadge}>
-              <Text style={styles.achievementBadgeText}>Day 7 Gold</Text>
-            </View>
-          </View>
-
-          {/* Streak Card */}
-          <View 
-            style={styles.achievementCard}
-            accessibilityLabel="7 day streak achievement, silver medal"
-          >
-            <View style={styles.achievementIconContainer}>
-              <View style={[styles.achievementIcon, styles.silverIcon]}>
-                <MaterialCommunityIcons name="trophy-outline" size={28} color="#C0C0C0" />
-              </View>
-            </View>
-            <Text style={styles.achievementTitle}>7 days</Text>
-            <Text style={styles.achievementSubtitle}>Streak</Text>
-            <View style={styles.achievementBadge}>
-              <Text style={styles.achievementBadgeText}>1st Streak</Text>
-            </View>
-          </View>
-
-          {/* Partially visible third card */}
-          <View 
-            style={[styles.achievementCard, styles.partialCard]}
-            accessibilityLabel="More achievements available"
+        <View style={styles.header}>
+          <H1 style={styles.headerGreeting}>{getGreeting()}</H1>
+          <Avatar
+            name={userName}
+            radius={30}
+            backgroundColor='#74007a'
+            color='#fff'
+            opacity={0.9}
+            onPress={() => navigation.navigate('SettingsNavigator', { screen: 'Settings' })}
           />
         </View>
 
-        {/* Bottom Menu */}
-        <View style={styles.bottomMenu} accessibilityRole="menubar">
-          <TouchableOpacity 
-            style={styles.menuItem}
-            accessibilityLabel="Your Report"
-            accessibilityHint="View your progress reports and statistics"
-            accessibilityRole="button"
-            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-          >
-            <View style={styles.reportButton}>
-              <FontAwesome5 name="clipboard-list" size={20} color="#666" />
-              <Text style={styles.menuItemText}>Your Report</Text>
-            </View>
-          </TouchableOpacity>
+        {/* Quote Section */}
+        {quote && (
+          <Card style={[styles.quoteCard, {
+            backgroundColor: colors.card,
+            borderWidth: 0.5,
+            borderColor: colors.border,
+          }]}>
+            <Card.Content>
+              <Text style={[styles.quoteCardQuote, { color: colors.text }]}>
+                {quote.quote}
+              </Text>
+              <Text style={[styles.quoteCardAuthor, { color: colors.text }]}>
+                - {quote.author} -
+              </Text>
+            </Card.Content>
+          </Card>
+        )}
 
-          <TouchableOpacity 
-            style={styles.menuItem}
-            accessibilityLabel="ReWire Assistant"
-            accessibilityHint="Get help from your virtual assistant"
-            accessibilityRole="button"
-            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-          >
-            <View style={styles.assistantButton}>
-              <FontAwesome5 name="robot" size={20} color="#4A90E2" />
-              <Text style={styles.menuItemText}>ReWire Assistant</Text>
-            </View>
-          </TouchableOpacity>
+        {/* Quick Actions */}
+        <View style={styles.quickActionCardContainer} accessibilityRole="menubar">
+          <Card style={[styles.quickActionCard, {
+            borderWidth: 0.5,
+            borderColor: colors.border,
+          }]} onPress={() => { console.log('Implement navigation to emergency page') }}>
+            <Card.Content style={styles.quickActionCardContent}>
+              <Icon type='ionicon' name='medical' color={colors.primary} />
+              <Text style={{ color: colors.text }}>Emergency</Text>
+            </Card.Content>
+          </Card>
+
+          <Card style={[styles.quickActionCard, {
+            borderWidth: 0.5,
+            borderColor: colors.border,
+          }]} onPress={() => { console.log('Implement navigation to emergency page') }}>
+            <Card.Content style={styles.quickActionCardContent}>
+              <Icon type='ionicon' name='clipboard' color={colors.primary} />
+              <Text style={{ color: colors.text }}>Your Report</Text>
+            </Card.Content>
+          </Card>
         </View>
+
+        <H2 style={styles.h2}>Your Progress</H2>
+        <View style={styles.progressCardsContainer}>
+          <ProgressCard title="Overall Progress" currentProgress={48} maximumProgress={100} />
+          <ProgressCard title="Daily Tasks" currentProgress={65} maximumProgress={100} />
+        </View>
+
+        <H2 style={styles.h2}>Achievements</H2>
+        <ScrollView horizontal={true} contentContainerStyle={styles.achievementsContainer} accessibilityLabel="Your achievements">
+          <AchievementCard
+            title={"Task 07"}
+            status={"Completed"}
+            icon={<Icon type="materialcommunityicons" name="check-circle-outline" size={24} color="#FFD700" />}
+          />
+          <AchievementCard
+            title={"7 Days"}
+            status={"Streak"}
+            icon={<Icon type="materialcommunityicons" name="trophy-outline" size={24} color="#C0C0C0" />}
+          />
+        </ScrollView>
+
       </ScrollView>
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
+  containerWrap: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
-    paddingTop: 16,
   },
-  greetingContainer: {
+  container: {
+    paddingVertical: 8,
     paddingHorizontal: 16,
-    paddingVertical: 12,
+    display: 'flex',
+    alignItems: 'stretch',
+    justifyContent: 'flex-start',
+    gap: 16
   },
-  greeting: {
-    fontSize: 24,
-    fontWeight: '600',
-    color: '#333',
-    marginBottom: 4,
-  },
-  date: {
-    fontSize: 14,
-    color: '#666',
-  },
-  quickActions: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    marginBottom: 8,
-  },
-  quickActionButton: {
+  header: {
+    display: 'flex',
     alignItems: 'center',
-    backgroundColor: '#FFFFFF',
-    padding: 16, // Increased from 12 to 16 for larger touch target
-    borderRadius: 12,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
-    width: '30%',
-    minHeight: 88, // Ensure minimum height for touch target
+    justifyContent: 'space-between',
+    flexDirection: 'row'
   },
-  quickActionText: {
+  headerGreeting: {
+    marginLeft: 0,
+  },
+  h2: {
+    marginLeft: 0
+  },
+  quoteCard: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 16,
+    marginVertical: 8,
+    padding: 16,
+    minHeight: 150
+  },
+  quoteCardQuote: {
+    fontSize: 18,
+    textAlign: "center",
+  },
+  quoteCardAuthor: {
+    textAlign: "center",
     marginTop: 8,
-    fontSize: 14, // Increased from 12 to 14 for better readability
-    color: '#333',
-    fontWeight: '500',
+    opacity: 0.6
   },
-  quoteContainer: {
-    backgroundColor: '#FFFFFF',
-    margin: 16,
-    padding: 20, 
-    borderRadius: 15, 
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.15, 
-    shadowRadius: 6, 
-    elevation: 3, 
+  quickActionCardContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-evenly',
+    gap: 8,
   },
-  quoteText: {
-    fontSize: 18, 
-    fontWeight: '500',
-    textAlign: 'center',
-    marginBottom: 12, 
-    lineHeight: 26, 
-    color: '#333', // Ensure good contrast
+  quickActionCard: {
+    padding: 16,
+    width: '48%'
   },
-  quoteAuthor: {
-    fontSize: 15, 
-    color: '#666', // Darkened from #888 for better contrast
-    textAlign: 'right',
-  },
-  sectionLabel: {
-    paddingHorizontal: 16,
-    marginTop: 20, 
-    marginBottom: 12,
-  },
-  sectionLabelText: {
-    fontSize: 18, // Increased from 17 for better visibility 
-    color: '#555', // Darkened from #666 for better contrast 
-    fontWeight: '600', // Increased from 500 for better emphasis
+  quickActionCardContent: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 8
   },
   progressCardsContainer: {
-    flexDirection: 'row',
-    paddingHorizontal: 16,
-    justifyContent: 'space-between',
-  },
-  progressCard: {
-    width: '48%',
-    backgroundColor: '#FFFFFF',
-    borderRadius: 12, 
-    padding: 16,
+    display: 'flex',
+    flexDirection: 'column',
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
-    minHeight: 180, // Ensure minimum height for touch target
-  },
-  progressCircleContainer: {
-    marginBottom: 12, 
-  },
-  progressCircle: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    backgroundColor: '#F5F5F5',
-    justifyContent: 'center',
-    alignItems: 'center',
-    position: 'relative',
-  },
-  progressArc: {
-    position: 'absolute',
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    borderWidth: 4,
-    borderColor: 'transparent',
-    borderTopColor: '#4A90E2',
-    borderRightColor: '#4A90E2',
-    transform: [{ rotate: '-45deg' }],
-  },
-  dailyProgressArc: {
-    position: 'absolute',
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    borderWidth: 4,
-    borderColor: 'transparent',
-    borderTopColor: '#4A90E2',
-    borderRightColor: '#4A90E2',
-    borderBottomColor: '#4A90E2',
-    transform: [{ rotate: '-90deg' }],
-  },
-  progressInnerCircle: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    backgroundColor: '#FFFFFF',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  progressPercentage: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#333',
-    marginTop: 4,
-  },
-  progressStatus: {
-    fontSize: 12,
-    color: '#666',
-    marginTop: 2,
-  },
-  progressTitle: {
-    fontSize: 16,
-    color: '#333',
-    marginTop: 8,
-  },
-  detailsButton: {
-    backgroundColor: '#F0F0F0',
-    paddingHorizontal: 16,
-    paddingVertical: 8, // Increased from 6 to 8 for larger touch target
-    borderRadius: 15,
-    marginTop: 12,
-    minWidth: 90, // Ensure minimum width for touch target
-    alignItems: 'center',
-  },
-  detailsButtonText: {
-    color: '#4A90E2',
-    fontSize: 14,
-    fontWeight: '500',
+    gap: 8,
+    paddingVertical: 8
   },
   achievementsContainer: {
-    flexDirection: 'row',
-    paddingHorizontal: 16,
-    marginTop: 8,
-  },
-  achievementCard: {
-    width: '31%',
-    backgroundColor: '#FFFFFF',
-    borderRadius: 12,
-    padding: 12,
-    marginRight: 8,
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
-    minHeight: 140, // Ensure minimum height
-  },
-  achievementIconContainer: {
-    marginBottom: 8,
-  },
-  achievementIcon: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  goldIcon: {
-    backgroundColor: 'rgba(255, 215, 0, 0.1)',
-  },
-  silverIcon: {
-    backgroundColor: 'rgba(192, 192, 192, 0.1)',
-  },
-  achievementTitle: {
-    fontSize: 15,
-    fontWeight: '600',
-    color: '#333',
-  },
-  achievementSubtitle: {
-    fontSize: 13,
-    color: '#666',
-    marginTop: 2,
-  },
-  achievementBadge: {
-    backgroundColor: '#F0F0F0',
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 10,
-    marginTop: 8,
-  },
-  achievementBadgeText: {
-    fontSize: 12,
-    color: '#666',
-  },
-  partialCard: {
-    opacity: 0.5,
-  },
-  bottomMenu: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingHorizontal: 16,
-    paddingVertical: 20,
-    marginTop: 16,
-  },
-  menuItem: {
-    flex: 1,
-    marginHorizontal: 8,
-  },
-  reportButton: {
+    display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#FFFFFF',
-    padding: 16, // Increased from 12 to 16 for larger touch target
-    borderRadius: 12,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
-    minHeight: 55, // Ensure minimum height
-  },
-  assistantButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#FFFFFF',
-    padding: 16, // Increased from 12 to 16 for larger touch target
-    borderRadius: 12,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
-    minHeight: 55, // Ensure minimum height
-  },
-  menuItemText: {
-    marginLeft: 8,
-    fontSize: 14,
-    color: '#333',
-    fontWeight: '500',
-  },
+    justifyContent: 'flex-start',
+    gap: 8,
+  }
 });
-
-export default HomePage;

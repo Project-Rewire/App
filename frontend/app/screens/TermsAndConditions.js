@@ -1,9 +1,9 @@
 import { Text, View, StyleSheet } from "react-native";
 
-export default function PrivacyPolicy() {
+export default function TermsAndConditions() {
     return (
         <View style={styles.container}>
-            <Text>Privacy Policy</Text>
+            <Text>Terms & Conditions</Text>
         </View>
     );
 }
