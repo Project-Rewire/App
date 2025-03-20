@@ -100,6 +100,7 @@ export default function Tasks() {
                   </Text>
                 </TouchableOpacity>
                 
+                
                 <View style={styles.taskDetails}>
                   <Text style={styles.taskDescription}>
                     Complete your task to earn badges and track your progress.
