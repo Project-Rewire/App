@@ -2,7 +2,7 @@ import axios from 'axios';
 import tokenService from './token-service';
 
 // Base URL for your Django backend
-const API_URL = 'http://localhost:8000'; 
+const API_URL = 'http://0.0.0.0:8000/'; 
 // Use 'http://10.0.2.2:8000' For Android emulator
 
 // Create an axios instance

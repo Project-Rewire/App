@@ -7,24 +7,45 @@ import {
   StyleSheet,
   Image,
   SafeAreaView,
+  ActivityIndicator,
+  Alert,
 } from 'react-native';
+import { authService } from '../services/api-service';
 
 const SignupStepOne = ({ navigation }) => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [username, setUsername] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   
-  const handleNext = () => {
+  const handleNext = async () => {
+    // Basic validation
     if (!firstName.trim() || !lastName.trim() || !username.trim()) {
+      Alert.alert('Error', 'All fields are required');
       return;
     }
     
-    // Navigate to step two with user data
-    navigation.navigate('SignupStepTwo', {
-      firstName,
-      lastName,
-      username
-    });
+    setIsLoading(true);
+    try {
+      // Call the signup step one API
+      const response = await authService.signupStepOne({
+        first_name: firstName,
+        last_name: lastName,
+        user_name: username
+      });
+      
+      // If successful, navigate to step two with the user data
+      navigation.navigate('SignupStepTwo', {
+        firstName,
+        lastName,
+        username
+      });
+    } catch (error) {
+      const errorMessage = error.error || 'Something went wrong. Please try again.';
+      Alert.alert('Error', errorMessage);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -48,6 +69,7 @@ const SignupStepOne = ({ navigation }) => {
           value={firstName}
           onChangeText={setFirstName}
           placeholderTextColor="#B8B8B8"
+          editable={!isLoading}
         />
         
         <TextInput
@@ -56,6 +78,7 @@ const SignupStepOne = ({ navigation }) => {
           value={lastName}
           onChangeText={setLastName}
           placeholderTextColor="#B8B8B8"
+          editable={!isLoading}
         />
         
         <TextInput
@@ -64,6 +87,7 @@ const SignupStepOne = ({ navigation }) => {
           value={username}
           onChangeText={setUsername}
           placeholderTextColor="#B8B8B8"
+          editable={!isLoading}
         />
       </View>
       
@@ -76,15 +100,23 @@ const SignupStepOne = ({ navigation }) => {
       {/* Next Button */}
       <TouchableOpacity 
         style={styles.nextButton}
-        onPress={() => navigation.navigate('SignupStepTwo')}
+        onPress={handleNext}
+        disabled={isLoading}
       >
-        <Text style={styles.nextButtonText}>Next</Text>
+        {isLoading ? (
+          <ActivityIndicator color="#fff" />
+        ) : (
+          <Text style={styles.nextButtonText}>Next</Text>
+        )}
       </TouchableOpacity>
       
       {/* Sign In Link */}
       <View style={styles.signInContainer}>
         <Text style={styles.accountText}>Have an Account? </Text>
-        <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+        <TouchableOpacity 
+          onPress={() => navigation.navigate('Login')}
+          disabled={isLoading}
+        >
           <Text style={styles.signInText}>Sign in here</Text>
         </TouchableOpacity>
       </View>
