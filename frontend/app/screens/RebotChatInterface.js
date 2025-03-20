@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import {
     View,
     Text,
@@ -8,67 +8,126 @@ import {
     StyleSheet,
     KeyboardAvoidingView,
     Platform,
+    Alert,
 } from 'react-native';
-import { useRebot } from '../hooks/rebot-service';
+import { settings } from '../app.settings';
 
-const RebotChatInterface = ({ userId = 'default', roomName = 'default' }) => {
-    const [message, setMessage] = React.useState('');
+function generateRandomString(length) {
+    const lowercaseLetters = 'abcdefghijklmnopqrstuvwxyz';
+    let result = '';
+    for (let i = 0; i < length; i++) {
+        const randomIndex = Math.floor(Math.random() * lowercaseLetters.length);
+        result += lowercaseLetters[randomIndex];
+    }
+    return result;
+}
+
+const RebotChatInterface = ({ userId = 'default' }) => {
     const flatListRef = useRef(null);
-    const { messages: chatHistory, isConnected, sendMessage } = useRebot({
-        userId,
-        roomName
-    });
-
-    const handleSend = () => {
-        if (sendMessage(message)) {
-            setMessage('');
-        }
-    };
-
-    const renderChatItem = ({ item }) => {
-        const isBot = item.sender === 'bot';
-
-        return (
-            <View style={[
-                styles.messageContainer,
-                isBot ? styles.botMessageContainer : styles.userMessageContainer
-            ]}>
-                <Text style={styles.messageText}>{item.text}</Text>
-            </View>
-        );
-    };
+    const [chatHistory, setChatHistory] = useState([]);
+    const [message, setMessage] = useState('');
+    const [isConnected, setIsConnected] = useState(false);
+    const wsRef = useRef(null);
+    const [roomName, setRoomName] = useState(generateRandomString(4))
 
     useEffect(() => {
-        if (flatListRef.current && chatHistory.length > 0) {
-            flatListRef.current.scrollToEnd({ animated: true });
+        connectWebSocket();
+
+        return () => {
+            wsRef.current?.close();
+        };
+    }, [roomName]);
+
+    const connectWebSocket = () => {
+        wsRef.current?.close();
+
+        const url = `${settings.rebotWebsocket.value}/${roomName}/`;
+        wsRef.current = new WebSocket(url);
+
+        wsRef.current.onopen = () => {
+            setIsConnected(true);
+            sendMessage('Hello');
+        };
+
+        wsRef.current.onmessage = (event) => {
+            try {
+                const data = JSON.parse(event.data);
+                handleIncomingMessage(data);
+            } catch (error) {
+                console.error('Invalid message format:', error);
+            }
+        };
+
+        wsRef.current.onerror = () => setIsConnected(false);
+
+        wsRef.current.onclose = () => setIsConnected(false);
+    };
+
+    const handleIncomingMessage = (data) => {
+        if (data.type === 'message') {
+            const newMessage = {
+                id: Date.now().toString(),
+                sender: data.sender === 'therapist' ? 'bot' : 'user',
+                text: data.content,
+            };
+            setChatHistory((prev) => [...prev, newMessage]);
+        } else if (data.type === 'error') {
+            Alert.alert('Error', data.content);
         }
-    }, [chatHistory]);
+    };
+
+    const sendMessage = (text) => {
+        if (!text.trim() || !isConnected || !wsRef.current) return false;
+
+        const messageData = {
+            type: 'message',
+            sender: userId,
+            content: text.trim(),
+        };
+
+        try {
+            wsRef.current.send(JSON.stringify(messageData));
+            setChatHistory((prev) => [...prev, { id: Date.now().toString(), sender: 'user', text: text.trim() }]);
+            return true;
+        } catch (error) {
+            console.error('Error sending message:', error);
+            return false;
+        }
+    };
 
     return (
         <>
             <FlatList
                 ref={flatListRef}
                 data={chatHistory}
-                renderItem={renderChatItem}
+                renderItem={({ item }) => (
+                    <View
+                        style={[
+                            styles.messageContainer,
+                            item.sender === 'bot' ? styles.botMessageContainer : styles.userMessageContainer,
+                        ]}>
+                        <Text style={styles.messageText}>{item.text}</Text>
+                    </View>
+                )}
                 keyExtractor={(item) => item.id}
                 contentContainerStyle={styles.chatContainer}
                 onContentSizeChange={() => flatListRef.current?.scrollToEnd({ animated: true })}
             />
+
+            {!isConnected && (
+                <Text style={styles.connectionStatus}>Disconnected. Trying to reconnect...</Text>
+            )}
 
             <KeyboardAvoidingView
                 behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
                 style={styles.inputContainer}
             >
                 <View style={styles.quickReplies}>
-                    <TouchableOpacity style={styles.quickReplyButton} onPress={() => setMessage("Hello")}>
-                        <Text style={styles.quickReplyText}>Hello</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.quickReplyButton} onPress={() => setMessage("How are you?")}>
-                        <Text style={styles.quickReplyText}>How are you?</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.quickReplyButton} onPress={() => setMessage("I need help")}>
-                        <Text style={styles.quickReplyText}>I need help</Text>
-                    </TouchableOpacity>
+                    {['Hello', 'How are you?', 'I need help'].map((text) => (
+                        <TouchableOpacity key={text} style={styles.quickReplyButton} onPress={() => setMessage(text)}>
+                            <Text style={styles.quickReplyText}>{text}</Text>
+                        </TouchableOpacity>
+                    ))}
                 </View>
 
                 <View style={styles.inputRow}>
@@ -78,12 +137,11 @@ const RebotChatInterface = ({ userId = 'default', roomName = 'default' }) => {
                         placeholderTextColor="#8D9093"
                         value={message}
                         onChangeText={setMessage}
-                        multiline={false}
                     />
                     <TouchableOpacity
                         style={[styles.sendButton, !isConnected && styles.disabledButton]}
-                        onPress={handleSend}
-                        disabled={message.trim() === '' || !isConnected}
+                        onPress={() => sendMessage(message) && setMessage('')}
+                        disabled={!message.trim() || !isConnected}
                     >
                         <Text style={styles.sendButtonText}>➤</Text>
                     </TouchableOpacity>
@@ -94,63 +152,60 @@ const RebotChatInterface = ({ userId = 'default', roomName = 'default' }) => {
 };
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-    },
     connectionStatus: {
         color: 'red',
         fontSize: 12,
-        marginTop: 4,
+        textAlign: 'center',
+        paddingVertical: 4
     },
     chatContainer: {
         paddingHorizontal: 16,
-        paddingVertical: 8,
+        paddingVertical: 8
     },
     messageContainer: {
         borderRadius: 20,
         padding: 12,
         marginVertical: 4,
-        maxWidth: '80%',
+        maxWidth: '80%'
     },
     botMessageContainer: {
         alignSelf: 'flex-start',
         backgroundColor: '#e1f2f2',
-        borderBottomLeftRadius: 4,
+        borderBottomLeftRadius: 4
     },
     userMessageContainer: {
         alignSelf: 'flex-end',
         backgroundColor: '#cce6e6',
-        borderBottomRightRadius: 4,
+        borderBottomRightRadius: 4
     },
     messageText: {
         fontSize: 16,
-        color: '#333',
+        color: '#333'
     },
     inputContainer: {
-        marginTop: 'auto',
         borderTopWidth: 1,
         borderTopColor: '#e1e8e8',
-        backgroundColor: '#f2f7f7',
+        backgroundColor: '#f2f7f7'
     },
     quickReplies: {
         flexDirection: 'row',
         padding: 8,
-        justifyContent: 'space-around',
+        justifyContent: 'space-around'
     },
     quickReplyButton: {
         backgroundColor: '#e9eef1',
         paddingVertical: 8,
         paddingHorizontal: 16,
-        borderRadius: 20,
+        borderRadius: 20
     },
     quickReplyText: {
-        color: '#333',
+        color: '#333'
     },
     inputRow: {
         flexDirection: 'row',
         paddingHorizontal: 12,
         paddingVertical: 8,
-        alignItems: 'center',
+        alignItems: 'center'
     },
     input: {
         flex: 1,
@@ -159,7 +214,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 16,
         paddingVertical: 10,
         fontSize: 16,
-        color: '#333',
+        color: '#333'
     },
     sendButton: {
         width: 40,
@@ -168,14 +223,14 @@ const styles = StyleSheet.create({
         backgroundColor: '#2D7A7A',
         justifyContent: 'center',
         alignItems: 'center',
-        marginLeft: 8,
+        marginLeft: 8
     },
     disabledButton: {
-        backgroundColor: '#a0a0a0',
+        backgroundColor: '#a0a0a0'
     },
     sendButtonText: {
         color: 'white',
-        fontSize: 18,
+        fontSize: 18
     },
 });
 
