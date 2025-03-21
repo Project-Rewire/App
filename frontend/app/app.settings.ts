@@ -1,13 +1,3 @@
-/**
- * App Configuration
- * -----------------
- * This file contains all development-level app configurations.
- * Not to be confused with user-configurable app settings like theme preferences.
- * 
- * Note:
- *  To connect to a local backend instead of production: Set isProduction to false
- */
-
 const isProduction = false;
 
 const DOMAINS = {
@@ -22,20 +12,25 @@ const PORTS = {
 
 const BACKEND_DOMAIN = isProduction ? DOMAINS.production : DOMAINS.local;
 const BACKEND_PORT = isProduction ? PORTS.production : PORTS.local;
-const BACKEND_URL = `${BACKEND_DOMAIN}:${BACKEND_PORT}`;
+const BACKEND_URL = `http://${BACKEND_DOMAIN}:${BACKEND_PORT}`;
 
-interface Setting {
-    isUserVisible: boolean;
-    value: string | number | object;
-}
-
-interface Settings {
-    [key: string]: Setting;
-}
-
-export const settings: Settings = {
+export const settings = {
     rebotWebsocket: {
         isUserVisible: false,
         value: `ws://${BACKEND_URL}/ws/rebot`
     },
+    apiBaseUrl: {
+        isUserVisible: false,
+        value: BACKEND_URL
+    },
+    authEndpoints: {
+        isUserVisible: false,
+        value: {
+            login: "/login",
+            signupStepOne: "/signup/step-one",
+            signupStepTwo: "/signup/step-two",
+            forgotPassword: "/forget-password",
+            resetPassword: "/reset-password"
+        }
+    }
 };

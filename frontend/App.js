@@ -21,12 +21,15 @@ import Settings from './app/screens/Settings';
 import About from './app/screens/About';
 import PrivacyPolicy from './app/screens/PrivacyPolicy';
 import TermsAndConditions from './app/screens/TermsAndConditions';
+import { AuthProvider } from './app/hooks/login-service';
 
 export default function App() {
   return (
-    <ThemeProvider>
-      <AppContent />
-    </ThemeProvider>
+    <AuthProvider>
+      <ThemeProvider>
+        <AppContent />
+      </ThemeProvider>
+    </AuthProvider>
   );
 }
 

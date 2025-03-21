@@ -7,8 +7,11 @@ import {
   StyleSheet,
   Image,
   SafeAreaView,
-  CheckBox,
+  ActivityIndicator,
+  Alert,
 } from 'react-native';
+import { authService } from '../services/auth-service';
+import { useLogin } from '../hooks/login-service';
 
 const SignupStepTwo = ({ navigation, route }) => {
   const { firstName, lastName, username } = route.params || {};
@@ -17,35 +20,56 @@ const SignupStepTwo = ({ navigation, route }) => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [agreeToTerms, setAgreeToTerms] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const { login } = useLogin();
   
   const handleSignup = async () => {
+    // Validate inputs
     if (!email.trim() || !password.trim() || !confirmPassword.trim()) {
+      Alert.alert('Error', 'Please fill in all fields');
       return;
     }
     
     if (password !== confirmPassword) {
+      Alert.alert('Error', 'Passwords do not match');
       return;
     }
     
     if (!agreeToTerms) {
+      Alert.alert('Error', 'Please agree to the terms and conditions');
       return;
     }
     
-    // Combine data from both steps
-    const userData = {
-      firstName,
-      lastName,
-      username,
-      email,
-      password,
-    };
-    
+    setLoading(true);
     try {
-    
-      console.log('User registration data:', userData);
+ 
+      await authService.signupStepTwo(firstName, lastName, username, email, password, confirmPassword);
       
+      // Show success message
+      Alert.alert(
+        'Success', 
+        'Account created successfully!',
+        [
+          { 
+            text: 'Login Now', 
+            onPress: async () => {
+              try {
+                // Attempt to log in the user automatically
+                const success = await login(email, password);
+                if (!success) {
+                  navigation.navigate('Login');
+                }
+              } catch (error) {
+                navigation.navigate('Login');
+              }
+            } 
+          }
+        ]
+      );
     } catch (error) {
-      console.error('Signup failed:', error);
+      Alert.alert('Error', error.message || 'Signup failed. Please try again.');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -72,6 +96,7 @@ const SignupStepTwo = ({ navigation, route }) => {
           keyboardType="email-address"
           autoCapitalize="none"
           placeholderTextColor="#B8B8B8"
+          editable={!loading}
         />
         
         <TextInput
@@ -81,6 +106,7 @@ const SignupStepTwo = ({ navigation, route }) => {
           onChangeText={setPassword}
           secureTextEntry
           placeholderTextColor="#B8B8B8"
+          editable={!loading}
         />
         
         <TextInput
@@ -90,6 +116,7 @@ const SignupStepTwo = ({ navigation, route }) => {
           onChangeText={setConfirmPassword}
           secureTextEntry
           placeholderTextColor="#B8B8B8"
+          editable={!loading}
         />
       </View>
       
@@ -98,6 +125,7 @@ const SignupStepTwo = ({ navigation, route }) => {
         <TouchableOpacity
           style={styles.checkbox}
           onPress={() => setAgreeToTerms(!agreeToTerms)}
+          disabled={loading}
         >
           <View style={[
             styles.checkboxInner,
@@ -107,7 +135,12 @@ const SignupStepTwo = ({ navigation, route }) => {
         
         <Text style={styles.termsText}>
           By creating an account your agree to our{' '}
-          <Text style={styles.termsLink}>Term and Conditions</Text>
+          <Text 
+            style={styles.termsLink}
+            onPress={() => navigation.navigate('TermsAndConditions')}
+          >
+            Terms and Conditions
+          </Text>
         </Text>
       </View>
       
@@ -119,10 +152,15 @@ const SignupStepTwo = ({ navigation, route }) => {
       
       {/* Signup Button */}
       <TouchableOpacity 
-        style={styles.signupButton}
+        style={[styles.signupButton, loading && styles.signupButtonDisabled]}
         onPress={handleSignup}
+        disabled={loading}
       >
-        <Text style={styles.signupButtonText}>Signup</Text>
+        {loading ? (
+          <ActivityIndicator color="#fff" />
+        ) : (
+          <Text style={styles.signupButtonText}>Signup</Text>
+        )}
       </TouchableOpacity>
       
       {/* Sign In Link */}
@@ -230,6 +268,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 15,
+  },
+  signupButtonDisabled: {
+    backgroundColor: '#A0A0A0',
+    opacity: 0.7,
   },
   signupButtonText: {
     color: '#fff',

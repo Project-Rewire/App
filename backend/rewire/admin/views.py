@@ -41,21 +41,35 @@ def signup_step_two(request):
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
-            email = data['email']
-            password = data['password']
-            confirm_password = data['confirm_password']
+            
+            # Get all fields from the request
+            first_name = data.get('first_name')
+            last_name = data.get('last_name')
+            user_name = data.get('user_name')
+            email = data.get('email')
+            password = data.get('password')
+            confirm_password = data.get('confirm_password')
+            
+            # Validate all required fields
+            if not all([first_name, last_name, user_name, email, password, confirm_password]):
+                return JsonResponse({'error': 'All fields are required'}, status=400)
             
             if password != confirm_password:
                 return JsonResponse({'error': 'Passwords do not match'}, status=400)
             
-            signup_data = request.session.get('signup_data')
-            if not signup_data:
-                return JsonResponse({'error': 'No data from step one'}, status=400)
+            # Check if username exists
+            if User.objects.filter(user_name=user_name).exists():
+                return JsonResponse({'error': 'Username already exists'}, status=400)
             
+            # Check if email exists
+            if User.objects.filter(email=email).exists():
+                return JsonResponse({'error': 'Email already exists'}, status=400)
+            
+            # Create user
             user = User.objects.create(
-                first_name=signup_data['first_name'],
-                last_name=signup_data['last_name'],
-                user_name=signup_data['user_name'],
+                first_name=first_name,
+                last_name=last_name,
+                user_name=user_name,
                 email=email,
                 password=make_password(password)
             )
@@ -63,9 +77,15 @@ def signup_step_two(request):
             user.save()
             
             return JsonResponse({'message': 'User created successfully'}, status=201)
+            
         except KeyError as e:
             print(e)
-            return JsonResponse({'error': 'Invalid data'}, status=400)
+            return JsonResponse({'error': f'Missing field: {str(e)}'}, status=400)
+        except json.JSONDecodeError:
+            return JsonResponse({'error': 'Invalid JSON format'}, status=400)
+        except Exception as e:
+            print(f"Error in signup step two: {str(e)}")
+            return JsonResponse({'error': str(e)}, status=500)
     else:
         return JsonResponse({'error': 'Invalid HTTP method'}, status=405)
 
