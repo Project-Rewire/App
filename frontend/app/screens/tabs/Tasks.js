@@ -25,7 +25,7 @@ const initialTasks = [
     id: '2',
     title: 'Meditate for 10 minutes',
     description: 'Take a break to calm your mind, focus on your breath, and practice mindfulness for mental clarity.',
-    difficulty: 'easy',
+    difficulty: 'medium',
     completed: false,
     expanded: false
   },
@@ -33,7 +33,7 @@ const initialTasks = [
     id: '3',
     title: 'Limit screen time 1 hour Before Sleep',
     description: 'Reduce exposure to screens before bed to improve sleep quality and overall well-being.',
-    difficulty: 'easy',
+    difficulty: 'medium',
     completed: false,
     expanded: false
   },
@@ -41,7 +41,7 @@ const initialTasks = [
     id: '4',
     title: 'Evening Pledge',
     description: 'Reflect on your day, express gratitude, and set intentions for a restful night and a productive tomorrow.',
-    difficulty: 'easy',
+    difficulty: 'hard',
     completed: false,
     expanded: false
   }
@@ -98,11 +98,19 @@ export default function Tasks() {
 
             {task.expanded && (
               <View style={styles.taskContent}>
+                
+                <View style={[
+                  styles.difficultyTag, 
+                  task.difficulty === 'easy' && styles.easyTag,
+                  task.difficulty === 'medium' && styles.mediumTag,
+                  task.difficulty === 'hard' && styles.hardTag
+                ]}>
+                  <Text style={styles.difficultyText}>
+                    {task.difficulty}
+                  </Text>
+                </View>
                 <Text style={[styles.taskDescription]}>
                 {task.description}
-                </Text>
-                <Text style={[styles.taskDescription]}>
-                {task.difficulty}
                 </Text>
                 <TouchableOpacity 
                   style={[
@@ -200,6 +208,37 @@ const styles = StyleSheet.create({
   },
   taskDescription: {
     color: '#666',
-    lineHeight: 20
+    lineHeight: 20,
+    marginBottom: 10
+  },
+  difficultyTag: {
+    borderRadius: 12,
+    paddingVertical: 4,
+    paddingHorizontal: 12,
+    alignSelf: 'flex-start',
+    marginBottom: 12,
+    top: 8,
+    
+  },
+  easyTag: {
+    backgroundColor: '#E8F5E9',
+    borderWidth: 1,
+    borderColor: '#C8E6C9'
+  },
+  mediumTag: {
+    backgroundColor: '#FFF8E1',
+    borderWidth: 1,
+    borderColor: '#FFECB3'
+  },
+  hardTag: {
+    backgroundColor: '#FFEBEE',
+    borderWidth: 1,
+    borderColor: '#FFCDD2'
+  },
+  difficultyText: {
+    fontSize: 12,
+    textTransform: 'uppercase',
+    fontWeight: '600',
+    
   }
 });
