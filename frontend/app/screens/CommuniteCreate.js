@@ -1,6 +1,7 @@
 import  react, {useState, useEffect, useRef }  from 'react';
 import { View, Text, StyleSheet, ScrollView, Image, TouchableOpacity, TextInput, SafeAreaView, KeyboardAvoidingView, Platform } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import * as ImagePicker from 'expo-image-picker';
 
 const CreateCommunity = () => {
     // State management for form  inputs
@@ -19,19 +20,31 @@ const CreateCommunity = () => {
             }
         },100);
     }, []);
-   // Function to handle icon selection (placeholder for image picking functionality)
-  const selectIcon = () => {
-    // This is a placeholder function - in a real app, you would implement
-    // your specific image picking logic here
-    
-    // For demo purposes, we'll set a placeholder image URL
-    setSelectedIcon('https://via.placeholder.com/100');
-    
-    // In a real implementation, you might want to show an alert that this is a placeholder
-    alert("Image picker functionality needs to be implemented based on your project setup.");
-  }; 
 
-   // Function to handle form submission and community creation
+  // Function to handle icon selection
+  const selectIcon = async () => {
+    // Request permission to access media library
+    const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+    if (!permissionResult.granted) {
+      alert("Permission to access media library is required!");
+      return;
+    }
+
+    // Launch the image picker
+    const pickerResult = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [1, 1], // Square aspect ratio
+      quality: 1, // High quality
+    });
+
+    if (!pickerResult.canceled) {
+      // Set the selected image URI
+      setSelectedIcon(pickerResult.assets[0].uri);
+    }
+  };
+   
    const handleCreateCommunity = () => {
     // Validation checks for required fields
     if (!communityName.trim()) {

@@ -10,51 +10,50 @@ import {
 } from "react-native";
 import Card from "../../fragments/card";
 import { useNavigation} from "@react-navigation/native";
+import AntDesign from '@expo/vector-icons/AntDesign';
 import CommuniteCreate from "../../screens/CommuniteCreate";
 
 
 // Main community card(ReWire Community)
 export default function Community() {
-  //return <CommuniteCreate />;
-
-
   const navigation = useNavigation();
-  
-    const [joinedCommunities, setJoinedCommunities] = useState([
-      {
-        id: "0001",
-        name: 'Braking Habits',
-        image: require("../../assets/habits.jpeg"),
-        members: 100,
-      },
-      {
-        id: "0002",
-        name: 'Fight For Freedom',
-        image: require("../../assets/freedom.jpeg"),
-        members: 67
-      },
-    ]);
-  
-    const [suggestedCommunities, setSuggestedCommunities] = useState([
-      {
-        id: "0003",
-        name: 'Rise from Darkness',
-        image: require("../../assets/rise.png"),
-        members: 45,
-      },
-      {
-        id: "0004",
-        name: 'Better Future Together',
-        image: require("../../assets/better future.jpeg"),
-        members: 23,
-      },
-      {
-        id: "0005",
-        name: 'Better Future Together',
-        image: require("../../assets/better future.jpeg"),
-        members: 23,
-      },
-    ]);
+
+  const [joinedCommunities, setJoinedCommunities] = useState([
+    {
+      id: "0001",
+      name: 'Braking Habits',
+      image: require("../../assets/habits.jpeg"),
+      members: 100,
+    },
+    {
+      id: "0002",
+      name: 'Fight For Freedom',
+      image: require("../../assets/freedom.jpeg"),
+      members: 67,
+    },
+  ]);
+
+  const [suggestedCommunities, setSuggestedCommunities] = useState([
+    {
+      id: "0003",
+      name: 'Rise from Darkness',
+      image: require("../../assets/rise.png"),
+      members: 45,
+    },
+    {
+      id: "0004",
+      name: 'Better Future Together',
+      image: require("../../assets/better future.jpeg"),
+      members: 23,
+    },
+    {
+      id: "0005",
+      name: 'Better Future Together',
+      image: require("../../assets/better future.jpeg"),
+      members: 23,
+    },
+  ]);
+
   const [maincommunity, setMainCommunity] = useState([
     {
       id: "0000",
@@ -64,7 +63,7 @@ export default function Community() {
     },
   ]);
 
-  const handleJoinCommunity= (community) => {
+  const handleJoinCommunity = (community) => {
     setJoinedCommunities([...joinedCommunities, community]);
     setSuggestedCommunities(suggestedCommunities.filter(c => c.id !== community.id));
   };
@@ -74,24 +73,24 @@ export default function Community() {
     setSuggestedCommunities([...suggestedCommunities, community]);
   };
 
-  // Recreating card ui to mach the community components.
   const communityCard = (item, section) => (
     <Card
       key={item.id}
       onPress={() => console.log(item.name + " Card Pressed")}
       style={styles.communitycard}
-      >
+    >
       <View style={styles.cardRow}>
         <View style={styles.leftContent}>
-        <Image
-          source={item.image}
-          style={styles.avatar}/>
-        <View style={styles.textBox}>
-        <Card.Title>{item.name}</Card.Title>
-        {item.members && <Text style={styles.members}>{item.members} members</Text>}
+          <Image
+            source={item.image}
+            style={styles.avatar}
+          />
+          <View style={styles.textBox}>
+            <Card.Title>{item.name}</Card.Title>
+            {item.members && <Text style={styles.members}>{item.members} members</Text>}
+          </View>
         </View>
-      </View>
-      {section !== 'mainCommunity' && (
+        {section !== 'mainCommunity' && (
           <TouchableOpacity
             style={[
               styles.button,
@@ -99,23 +98,25 @@ export default function Community() {
             ]}
             onPress={(e) => {
               e.stopPropagation();
-              section === 'joinedCommunities' 
+              section === 'joinedCommunities'
                 ? handleLeaveCommunity(item)
                 : handleJoinCommunity(item);
-            }}>
-            <Text 
+            }}
+          >
+            <Text
               style={[
-                styles.buttonText, 
+                styles.buttonText,
                 section === 'joinedCommunities' ? styles.greenText : styles.whiteText
               ]}
             >
               {section === 'joinedCommunities' ? 'Joined' : 'Join'}
             </Text>
-            </TouchableOpacity>
-            )}
-            </View>
-          </Card>
-        );
+          </TouchableOpacity>
+        )}
+      </View>
+    </Card>
+  );
+
   return (
     <View style={styles.container}>
       <ScrollView style={{ flex: 1 }} contentContainerStyle={styles.scrollContent}>
@@ -139,31 +140,28 @@ export default function Community() {
         {communityCard(maincommunity[0], 'mainCommunity')}
 
         <Text style={styles.heading}>Joined Community</Text>
-        {joinedCommunities.map((item) => 
+        {joinedCommunities.map((item) =>
           communityCard(item, 'joinedCommunities')
         )}
 
         <Text style={styles.heading}>Suggestions</Text>
-        {suggestedCommunities.map((item) => 
+        {suggestedCommunities.map((item) =>
           communityCard(item, 'suggestedCommunities')
         )}
 
-        {/* Create Community card */}
-        <TouchableOpacity
-        onPress={() => {
-          console.log("Create Community pressed");
-          navigation.navigate("CreateCommunity");
-        }}
+        {/* Create Community button as a card */}
+        <Card
+          onPress={() => {
+            console.log("Create Community pressed");
+            navigation.navigate("CreateCommunity");
+          }}
           style={styles.CreateCard}
         >
           <View style={styles.createContent}>
-            <Image
-              source={require("../../assets/community-icon.png")}
-              style={styles.createIcon}
-            />
+            <AntDesign name="addusergroup" size={24} color="green" />
             <Text style={styles.createText}>Create Community</Text>
           </View>
-        </TouchableOpacity>
+        </Card>
       </ScrollView>
     </View>
   );
@@ -239,8 +237,8 @@ const styles = StyleSheet.create({
   },
   button: {
     paddingVertical: 6,
-    paddingHorizontal: 15,
-    borderRadius: 20,
+    paddingHorizontal: 30,
+    borderRadius: 15,
     borderWidth: 1,
   },
   greenButton: {
@@ -263,8 +261,8 @@ const styles = StyleSheet.create({
   },
   createCard: {
     backgroundColor: "#D9D9D6", 
-    marginTop: 10,
-    marginBottom: 20,
+    marginTop: 5,
+    marginBottom: 10,
   },
   createContent: {
     flexDirection: "row",
