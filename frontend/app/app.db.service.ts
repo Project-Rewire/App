@@ -51,7 +51,6 @@ export const addMessage = async ({
     onError?: (error: any) => void;
 }) => {
     try {
-        // Try to initialize if not already initialized
         if (!db) {
             await initializeDb();
         }
@@ -79,7 +78,6 @@ export const getMessages = async ({
     onError?: (error: any) => void;
 }) => {
     try {
-        // Try to initialize if not already initialized
         if (!db) {
             await initializeDb();
         }
@@ -108,7 +106,6 @@ export const createConversation = async ({
     onError?: (error: any) => void;
 }) => {
     try {
-        // Try to initialize if not already initialized
         if (!db) {
             await initializeDb();
         }
@@ -134,7 +131,6 @@ export const getConversations = async ({
     onError?: (error: any) => void;
 }) => {
     try {
-        // Try to initialize if not already initialized
         if (!db) {
             await initializeDb();
         }
