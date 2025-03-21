@@ -9,108 +9,42 @@ import {
     StyleSheet,
     TouchableOpacity,
     KeyboardAvoidingView,
+    ActivityIndicator,
 } from 'react-native';
 import { settings } from '../app.settings';
-import * as SQLite from 'expo-sqlite';
+import { addMessage, createConversation, getMessages } from '../app.db.service';
 
-const generateRandomString = (length) => {
-    const lowercaseLetters = 'abcdefghijklmnopqrstuvwxyz';
-    let result = '';
-    for (let i = 0; i < length; i++) {
-        const randomIndex = Math.floor(Math.random() * lowercaseLetters.length);
-        result += lowercaseLetters[randomIndex];
-    }
-    return result;
-};
-
-const RebotChatInterface = ({ userId = 'default' }) => {
+const RebotChatInterface = ({ userId = 'default', conversationId }) => {
     const flatListRef = useRef(null);
     const [chatHistory, setChatHistory] = useState([]);
     const [message, setMessage] = useState('');
     const [isConnected, setIsConnected] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
     const wsRef = useRef(null);
-    const [conversationId, setConversationId] = useState(generateRandomString(4));
-    const [db, setDb] = useState(null);
-
-    useEffect(() => {
-        const initializeDb = async () => {
-            const db = await SQLite.openDatabaseAsync('chat.db');
-            setDb(db);
-
-            // Enable WAL mode for better performance
-            await db.execAsync('PRAGMA journal_mode = WAL;');
-
-            // Drop the existing messages table if it exists
-            await db.execAsync('DROP TABLE IF EXISTS messages;');
-
-            // Create the conversations table if it doesn't exist
-            await db.execAsync(`
-                CREATE TABLE IF NOT EXISTS conversations (
-                    id TEXT PRIMARY KEY NOT NULL,
-                    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-                );
-            `);
-
-            // Create the messages table with the updated schema
-            await db.execAsync(`
-                CREATE TABLE IF NOT EXISTS messages (
-                    id TEXT PRIMARY KEY NOT NULL,
-                    conversation_id TEXT NOT NULL,
-                    sender TEXT NOT NULL,
-                    text TEXT NOT NULL,
-                    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-                    FOREIGN KEY (conversation_id) REFERENCES conversations (id)
-                );
-            `);
-
-            // Check if the conversation exists, and if not, insert it
-            const conversation = await db.getFirstAsync(
-                'SELECT * FROM conversations WHERE id = ?',
-                [conversationId]
-            );
-            if (!conversation) {
-                await db.runAsync(
-                    'INSERT INTO conversations (id) VALUES (?)',
-                    [conversationId]
-                );
-            }
-
-            // Load messages for the current conversation
-            const messages = await getMessages();
-            setChatHistory(messages);
-        };
-        initializeDb();
-    }, [conversationId]);
-
-    const addMessage = async (m) => {
-        try {
-            if (db) {
-                await db.runAsync(
-                    'INSERT INTO messages (id, conversation_id, sender, text) VALUES (?, ?, ?, ?)',
-                    [m.id, conversationId, m.sender, m.text]
-                );
-            }
-        } catch (error) {
-            console.error('Error adding message to database:', error);
-        }
-    };
-
-    const getMessages = async () => {
-        if (db) {
-            return await db.getAllAsync(
-                'SELECT * FROM messages WHERE conversation_id = ?',
-                [conversationId]
-            );
-        }
-        return [];
-    };
 
     useEffect(() => {
         connectWebSocket();
+        fetchMessages();
         return () => {
             wsRef.current?.close();
         };
     }, [conversationId]);
+
+    const fetchMessages = async () => {
+        setIsLoading(true);
+        try {
+            const prevMessages = await getMessages({
+                conversationId, onError: () => {
+                    Alert.alert("Previous conversations could not be loaded");
+                }
+            });
+            setChatHistory(prevMessages);
+        } catch (error) {
+            console.error('Error fetching messages:', error);
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
     const connectWebSocket = () => {
         wsRef.current?.close();
@@ -147,11 +81,14 @@ const RebotChatInterface = ({ userId = 'default' }) => {
         if (data.type === 'message') {
             const newMessage = {
                 id: Date.now().toString(),
+                conversationId,
                 sender: data.sender === 'therapist' ? 'bot' : 'user',
                 text: data.content,
+                createdAt: new Date().toISOString(),
+                status: 'delivered',
             };
             setChatHistory((prev) => [...prev, newMessage]);
-            addMessage(newMessage);
+            addMessage({ m: newMessage });
         } else if (data.type === 'error') {
             Alert.alert('Error', data.content);
         }
@@ -168,9 +105,17 @@ const RebotChatInterface = ({ userId = 'default' }) => {
 
         try {
             wsRef.current.send(JSON.stringify(messageData));
-            const userMessage = { id: Date.now().toString(), sender: 'user', text: text.trim() };
+            const userMessage = {
+                id: Date.now().toString(),
+                conversationId,
+                sender: 'user',
+                text: text.trim(),
+                createdAt: new Date().toISOString(),
+                status: 'sent',
+            };
             setChatHistory((prev) => [...prev, userMessage]);
-            addMessage(userMessage);
+            addMessage({ m: userMessage });
+            setMessage('');
             return true;
         } catch (error) {
             console.error('Error sending message:', error);
@@ -179,29 +124,41 @@ const RebotChatInterface = ({ userId = 'default' }) => {
     };
 
     useEffect(() => {
-        if (flatListRef.current) {
+        if (flatListRef.current && chatHistory.length > 0) {
             flatListRef.current.scrollToEnd({ animated: true });
         }
     }, [chatHistory]);
 
     return (
         <>
-            <FlatList
-                ref={flatListRef}
-                data={chatHistory}
-                renderItem={({ item }) => (
-                    <View
-                        style={[
-                            styles.messageContainer,
-                            item.sender === 'bot' ? styles.botMessageContainer : styles.userMessageContainer,
-                        ]}
-                    >
-                        <Text style={styles.messageText}>{item.text}</Text>
-                    </View>
-                )}
-                keyExtractor={(item) => item.id}
-                contentContainerStyle={styles.chatContainer}
-            />
+            {isLoading ? (
+                <View style={styles.loadingContainer}>
+                    <ActivityIndicator size="large" color="#2D7A7A" />
+                </View>
+            ) : (
+                <FlatList
+                    ref={flatListRef}
+                    data={chatHistory}
+                    renderItem={({ item }) => (
+                        <View
+                            style={[
+                                styles.messageContainer,
+                                item.sender === 'bot' ? styles.botMessageContainer : styles.userMessageContainer,
+                            ]}
+                        >
+                            <Text style={styles.messageText}>{item.text}</Text>
+                            <Text style={styles.messageTimestamp}>
+                                {new Date(item.createdAt).toLocaleTimeString()}
+                            </Text>
+                            {item.sender === 'user' && (
+                                <Text style={styles.messageStatus}>{item.status}</Text>
+                            )}
+                        </View>
+                    )}
+                    keyExtractor={(item) => item.id}
+                    contentContainerStyle={styles.chatContainer}
+                />
+            )}
 
             {!isConnected && (
                 <Text style={styles.connectionStatus}>Disconnected. Trying to reconnect...</Text>
@@ -233,7 +190,7 @@ const RebotChatInterface = ({ userId = 'default' }) => {
                     />
                     <TouchableOpacity
                         style={[styles.sendButton, !isConnected && styles.disabledButton]}
-                        onPress={() => sendMessage(message) && setMessage('')}
+                        onPress={() => sendMessage(message)}
                         disabled={!message.trim() || !isConnected}
                     >
                         <Text style={styles.sendButtonText}>➤</Text>
@@ -245,6 +202,11 @@ const RebotChatInterface = ({ userId = 'default' }) => {
 };
 
 const styles = StyleSheet.create({
+    loadingContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
     connectionStatus: {
         color: 'red',
         fontSize: 12,
@@ -274,6 +236,17 @@ const styles = StyleSheet.create({
     messageText: {
         fontSize: 16,
         color: '#333',
+    },
+    messageTimestamp: {
+        fontSize: 12,
+        color: '#666',
+        marginTop: 4,
+    },
+    messageStatus: {
+        fontSize: 12,
+        color: '#666',
+        marginTop: 4,
+        textAlign: 'right',
     },
     inputContainer: {
         borderTopWidth: 1,

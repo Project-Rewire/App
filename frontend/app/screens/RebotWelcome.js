@@ -1,28 +1,58 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { createConversation } from '../app.db.service';
+
+const generateRandomString = (length) => {
+    const lowercaseLetters = 'abcdefghijklmnopqrstuvwxyz';
+    let result = '';
+    for (let i = 0; i < length; i++) {
+        const randomIndex = Math.floor(Math.random() * lowercaseLetters.length);
+        result += lowercaseLetters[randomIndex];
+    }
+    return result;
+};
 
 export default function RebotWelcome() {
     const navigation = useNavigation();
 
-    const handleNewConversation = () => {
-        navigation.navigate('RebotChatInterface');
+    const handleNewConversation = async () => {
+        const conversationId = generateRandomString(5);
+        try {
+            // Create a new conversation in the database
+            await createConversation({
+                conversation: {
+                    id: conversationId,
+                    created_at: new Date().toISOString(),
+                },
+                onError: (error) => {
+                    console.error('Error creating conversation:', error);
+                    Alert.alert('Error', 'Failed to create a new conversation.');
+                    return;
+                },
+            });
+
+            // Navigate to the chat interface with the new conversationId
+            navigation.navigate('RebotChatInterface', { conversationId });
+        } catch (error) {
+            console.error('Error handling new conversation:', error);
+            Alert.alert('Error', 'Something went wrong. Please try again.');
+        }
     };
 
     const handlePreviousConversations = () => {
-        console.log("Pressed Previous Conversations");
+        console.log('Pressed Previous Conversations');
+        // Navigate to a screen where previous conversations are listed
+        navigation.navigate('PreviousConversations');
     };
 
     return (
-        <View style={{ flex: 1, padding: 16, alignItems: 'center', justifyContent: 'space-evenly' }}>
-
+        <View style={styles.container}>
             {/* Illustration container */}
             <Image
                 source={require('../assets/chatbot-healthcare-vector-v2.png')}
                 resizeMode="contain"
-                style={{
-                    height: '30%'
-                }}
+                style={styles.illustration}
             />
 
             {/* Action buttons */}
@@ -42,23 +72,25 @@ export default function RebotWelcome() {
                 </TouchableOpacity>
             </View>
         </View>
-
     );
-};
+}
 
 const styles = StyleSheet.create({
-    illustrationContainer: {
-        width: '100%',
-        height: "45%",
+    container: {
+        flex: 1,
+        padding: 16,
         alignItems: 'center',
-        justifyContent: 'center',
+        justifyContent: 'space-evenly',
+        backgroundColor: '#fff',
+    },
+    illustration: {
+        height: '30%',
+        width: '100%',
     },
     actionButtons: {
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        gap: 4,
-        width: "100%"
+        width: '100%',
+        alignItems: 'center',
+        gap: 16,
     },
     newConversationButton: {
         backgroundColor: '#16837D',
@@ -67,7 +99,6 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         justifyContent: 'center',
         alignItems: 'center',
-        marginBottom: 16,
     },
     newConversationText: {
         color: 'white',
