@@ -19,7 +19,7 @@ const initialTasks = [
     description: 'Start your day with a positive affirmation or commitment to stay focused and productive.',
     difficulty: 'easy',
     marks: 3,
-    completed: false,
+    status: 'not_started',
     expanded: true
   },
   {
@@ -28,7 +28,7 @@ const initialTasks = [
     description: 'Take a break to calm your mind, focus on your breath, and practice mindfulness for mental clarity.',
     difficulty: 'medium',
     marks: 5,
-    completed: false,
+    status: 'not_started',
     expanded: false
   },
   {
@@ -37,7 +37,7 @@ const initialTasks = [
     description: 'Reduce exposure to screens before bed to improve sleep quality and overall well-being.',
     difficulty: 'hard',
     marks: 5,
-    completed: false,
+    status: 'not_started',
     expanded: false
   },
   {
@@ -46,7 +46,7 @@ const initialTasks = [
     description: 'Reflect on your day, express gratitude, and set intentions for a restful night and a productive tomorrow.',
     difficulty: 'hard',
     marks: 9,
-    completed: false,
+    status: 'not_started',
     expanded: false
   }
 ];
@@ -55,6 +55,7 @@ export default function Tasks() {
   const [tasks, setTasks] = useState(initialTasks);
   const { colors } = useTheme();
 
+  // Toggle task expansion - only one task can be expanded at a time
   const toggleExpand = (id) => {
     setTasks(tasks.map(task => 
       task.id === id 
@@ -63,10 +64,26 @@ export default function Tasks() {
     ));
   };
 
-  const toggleComplete = (id) => {
-    setTasks(tasks.map(task => 
-      task.id === id ? { ...task, completed: !task.completed } : task
-    ));
+  // Task status progression: not_started -> in_progress -> completed
+  const toggleTaskStatus = (id) => {
+    setTasks(tasks.map(task => {
+      if (task.id === id) {
+        // Determine the next status
+        let newStatus = task.status;
+        
+        if (newStatus === 'not_started') {
+          newStatus = 'in_progress';
+        } else if (newStatus === 'in_progress') {
+          newStatus = 'completed';
+        } else {
+          // If already completed, do nothing
+          return task;
+        }
+        
+        return { ...task, status: newStatus };
+      }
+      return task;
+    }));
   };
 
   return (
@@ -105,21 +122,25 @@ export default function Tasks() {
                     {task.difficulty}
                   </Text>
                 </View>
-                <Text style={[styles.taskDescription]}>
-                {task.description}
+                <Text style={styles.taskDescription}>
+                  {task.description}
                 </Text>
-                <Text style={[styles.taskDescription]}>
-                Complete this task to get {task.marks} points.
+                <Text style={styles.taskDescription}>
+                  Complete this task to get {task.marks} points.
                 </Text>
                 <TouchableOpacity 
                   style={[
                     styles.taskButton,
-                    task.completed && styles.completedButton
+                    task.status === 'in_progress' && styles.inProgressButton,
+                    task.status === 'completed' && styles.completedButton
                   ]}
-                  onPress={() => toggleComplete(task.id)}
+                  onPress={() => toggleTaskStatus(task.id)}
+                  disabled={task.status === 'completed'}
                 >
                   <Text style={styles.buttonText}>
-                    {task.completed ? "Completed" : "Mark as Complete"}
+                    {task.status === 'not_started' ? "Start" : 
+                     task.status === 'in_progress' ? "Mark as Complete" : 
+                     "Completed"}
                   </Text>
                 </TouchableOpacity>
                 
@@ -195,6 +216,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginVertical: 8
   },
+  inProgressButton: {
+    backgroundColor: '#FFA726'  // Orange for in-progress state
+  },
   completedButton: {
     backgroundColor: '#4CAF50'
   },
@@ -227,5 +251,4 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
     fontWeight: '600',
   },
-
 });
