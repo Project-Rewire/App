@@ -18,6 +18,7 @@ const initialTasks = [
     title: 'Morning Pledge',
     description: 'Start your day with a positive affirmation or commitment to stay focused and productive.',
     difficulty: 'easy',
+    marks: 3,
     completed: false,
     expanded: true
   },
@@ -26,6 +27,7 @@ const initialTasks = [
     title: 'Meditate for 10 minutes',
     description: 'Take a break to calm your mind, focus on your breath, and practice mindfulness for mental clarity.',
     difficulty: 'medium',
+    marks: 5,
     completed: false,
     expanded: false
   },
@@ -33,7 +35,8 @@ const initialTasks = [
     id: '3',
     title: 'Limit screen time 1 hour Before Sleep',
     description: 'Reduce exposure to screens before bed to improve sleep quality and overall well-being.',
-    difficulty: 'medium',
+    difficulty: 'hard',
+    marks: 5,
     completed: false,
     expanded: false
   },
@@ -42,6 +45,7 @@ const initialTasks = [
     title: 'Evening Pledge',
     description: 'Reflect on your day, express gratitude, and set intentions for a restful night and a productive tomorrow.',
     difficulty: 'hard',
+    marks: 9,
     completed: false,
     expanded: false
   }
@@ -51,7 +55,6 @@ export default function Tasks() {
   const [tasks, setTasks] = useState(initialTasks);
   const { colors } = useTheme();
 
-  // Toggle task expansion - modified to collapse other tasks
   const toggleExpand = (id) => {
     setTasks(tasks.map(task => 
       task.id === id 
@@ -60,7 +63,6 @@ export default function Tasks() {
     ));
   };
 
-  // Toggle task completion
   const toggleComplete = (id) => {
     setTasks(tasks.map(task => 
       task.id === id ? { ...task, completed: !task.completed } : task
@@ -98,19 +100,16 @@ export default function Tasks() {
 
             {task.expanded && (
               <View style={styles.taskContent}>
-                
-                <View style={[
-                  styles.difficultyTag, 
-                  task.difficulty === 'easy' && styles.easyTag,
-                  task.difficulty === 'medium' && styles.mediumTag,
-                  task.difficulty === 'hard' && styles.hardTag
-                ]}>
+                <View style={styles.difficultyTag}>
                   <Text style={styles.difficultyText}>
                     {task.difficulty}
                   </Text>
                 </View>
                 <Text style={[styles.taskDescription]}>
                 {task.description}
+                </Text>
+                <Text style={[styles.taskDescription]}>
+                Complete this task to get {task.marks} points.
                 </Text>
                 <TouchableOpacity 
                   style={[
@@ -207,38 +206,26 @@ const styles = StyleSheet.create({
     marginTop: 8
   },
   taskDescription: {
+    top: 5,
     color: '#666',
     lineHeight: 20,
     marginBottom: 10
   },
   difficultyTag: {
+    top: 12,
     borderRadius: 12,
     paddingVertical: 4,
     paddingHorizontal: 12,
     alignSelf: 'flex-start',
     marginBottom: 12,
-    top: 8,
-    
-  },
-  easyTag: {
     backgroundColor: '#E8F5E9',
     borderWidth: 1,
     borderColor: '#C8E6C9'
-  },
-  mediumTag: {
-    backgroundColor: '#FFF8E1',
-    borderWidth: 1,
-    borderColor: '#FFECB3'
-  },
-  hardTag: {
-    backgroundColor: '#FFEBEE',
-    borderWidth: 1,
-    borderColor: '#FFCDD2'
   },
   difficultyText: {
     fontSize: 12,
     textTransform: 'uppercase',
     fontWeight: '600',
-    
-  }
+  },
+
 });
