@@ -11,29 +11,37 @@ import {
 import { Icon } from '../../fragments/icon';
 import { useTheme } from '@react-navigation/native';
 
-  // Task data structure
+// Task data structure
 const initialTasks = [
   {
     id: '1',
     title: 'Morning Pledge',
+    description: 'Start your day with a positive affirmation or commitment to stay focused and productive.',
+    difficulty: 'easy',
     completed: false,
     expanded: true
   },
   {
     id: '2',
     title: 'Meditate for 10 minutes',
+    description: 'Take a break to calm your mind, focus on your breath, and practice mindfulness for mental clarity.',
+    difficulty: 'easy',
     completed: false,
     expanded: false
   },
   {
     id: '3',
-    title: 'Limit screen time 1 hour\nBefore Sleep',
+    title: 'Limit screen time 1 hour Before Sleep',
+    description: 'Reduce exposure to screens before bed to improve sleep quality and overall well-being.',
+    difficulty: 'easy',
     completed: false,
     expanded: false
   },
   {
     id: '4',
     title: 'Evening Pledge',
+    description: 'Reflect on your day, express gratitude, and set intentions for a restful night and a productive tomorrow.',
+    difficulty: 'easy',
     completed: false,
     expanded: false
   }
@@ -43,10 +51,12 @@ export default function Tasks() {
   const [tasks, setTasks] = useState(initialTasks);
   const { colors } = useTheme();
 
-  // Toggle task expansion
+  // Toggle task expansion - modified to collapse other tasks
   const toggleExpand = (id) => {
     setTasks(tasks.map(task => 
-      task.id === id ? { ...task, expanded: !task.expanded } : task
+      task.id === id 
+        ? { ...task, expanded: !task.expanded } 
+        : { ...task, expanded: false }
     ));
   };
 
@@ -62,7 +72,7 @@ export default function Tasks() {
       <StatusBar barStyle="dark-content" backgroundColor="#ffffff" />
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <View style={styles.paragraph}>
-          <Text style={styles.paragraph}>Your AI based Task Recommendations are here</Text>
+          <Text style={styles.paragraph}>Complete your task to earn badges and track your progress.</Text>
         </View>
 
         {tasks.map((task) => (
@@ -88,6 +98,12 @@ export default function Tasks() {
 
             {task.expanded && (
               <View style={styles.taskContent}>
+                <Text style={[styles.taskDescription]}>
+                {task.description}
+                </Text>
+                <Text style={[styles.taskDescription]}>
+                {task.difficulty}
+                </Text>
                 <TouchableOpacity 
                   style={[
                     styles.taskButton,
@@ -100,12 +116,6 @@ export default function Tasks() {
                   </Text>
                 </TouchableOpacity>
                 
-                
-                <View style={styles.taskDetails}>
-                  <Text style={styles.taskDescription}>
-                    Complete your task to earn badges and track your progress.
-                  </Text>
-                </View>
               </View>
             )}
           </View>
@@ -131,8 +141,7 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     fontSize: 17,
     padding: 2,
-  }
-  ,
+  },
   title: {
     fontSize: 24,
     fontWeight: 'bold'
