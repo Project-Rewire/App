@@ -6,18 +6,41 @@ import {
   TouchableOpacity,
   StyleSheet,
   Image,
+  Alert,
+  ActivityIndicator
 } from 'react-native';
+import { authService } from '../services/auth-service';
 
 const ForgotPassword = ({ navigation }) => {
   const [email, setEmail] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleResetPassword = async () => {
+    // Validate email
+    if (!email.trim()) {
+      Alert.alert('Error', 'Please enter your email address');
+      return;
+    }
+    
+    // Email format validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      Alert.alert('Error', 'Please enter a valid email address');
+      return;
+    }
+    
+    setLoading(true);
     try {
-      // Implement password reset logic here
-      console.log('Password reset requested for:', email);
-      // You can add your password reset API call here
+      const response = await authService.forgotPassword(email);
+      Alert.alert(
+        'Success', 
+        'Password reset link has been sent to your email',
+        [{ text: 'OK', onPress: () => navigation.navigate('Login') }]
+      );
     } catch (error) {
-      console.error('Password reset failed:', error);
+      Alert.alert('Error', error.message || 'Password reset failed. Please try again.');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -48,20 +71,27 @@ const ForgotPassword = ({ navigation }) => {
         keyboardType="email-address"
         autoCapitalize="none"
         placeholderTextColor="#A9A9A9"
+        editable={!loading}
       />
 
       {/* Reset button */}
       <TouchableOpacity
-        style={styles.resetButton}
+        style={[styles.resetButton, loading && styles.resetButtonDisabled]}
         onPress={handleResetPassword}
+        disabled={loading}
       >
-        <Text style={styles.resetButtonText}>REQUEST RESET LINK</Text>
+        {loading ? (
+          <ActivityIndicator color="#fff" />
+        ) : (
+          <Text style={styles.resetButtonText}>REQUEST RESET LINK</Text>
+        )}
       </TouchableOpacity>
 
       {/* Back to login link */}
       <TouchableOpacity
         onPress={() => navigation.navigate('Login')}
         style={styles.backToLoginContainer}
+        disabled={loading}
       >
         <Text style={styles.backToLoginText}>Back To Login</Text>
       </TouchableOpacity>
@@ -113,6 +143,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 20,
+  },
+  resetButtonDisabled: {
+    backgroundColor: '#A0A0A0',
+    opacity: 0.7,
   },
   resetButtonText: {
     color: '#fff',

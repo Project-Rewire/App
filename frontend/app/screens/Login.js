@@ -12,15 +12,25 @@ import { useLogin } from '../hooks/login-service';
 const Login = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
   const { login } = useLogin();
 
   const handleLogin = async () => {
+    if (!email || !password) {
+      Alert.alert('Error', 'Please enter both email and password');
+      return;
+    }
+
+    setLoading(true);
     try {
-      await login(email, password);
-      // Navigation will be handled by App.js based on login state
+      const success = await login(email, password);
+      if (!success) {
+        Alert.alert('Login Failed', 'Invalid email or password');
+      }
     } catch (error) {
-      // Handle login error
-      console.error('Login failed:', error);
+      Alert.alert('Error', error.message || 'Login failed. Please try again.');
+    } finally {
+      setLoading(false);
     }
   };
 
