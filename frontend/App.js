@@ -21,6 +21,7 @@ import Settings from './app/screens/Settings';
 import About from './app/screens/About';
 import PrivacyPolicy from './app/screens/PrivacyPolicy';
 import TermsAndConditions from './app/screens/TermsAndConditions';
+import RebotChatSelection from './app/screens/RebotChatSelection';
 
 export default function App() {
   return (
@@ -136,6 +137,7 @@ function RebotNavigator() {
     <RebotStack.Navigator screenOptions={{ headerShown: false }}>
       <RebotStack.Screen name="RebotWelcome" component={RebotWelcome} />
       <RebotStack.Screen name="RebotChatInterface" component={RebotChatInterface} />
+      <RebotStack.Screen name="RebotChatSelection" component={RebotChatSelection} />
     </RebotStack.Navigator>
   );
 }

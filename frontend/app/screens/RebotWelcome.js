@@ -1,7 +1,7 @@
-import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
+import React, { useEffect } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, Image, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { createConversation } from '../app.db.service';
+import { createConversation, initializeDb } from '../app.db.service';
 
 const generateRandomString = (length) => {
     const lowercaseLetters = 'abcdefghijklmnopqrstuvwxyz';
@@ -15,6 +15,22 @@ const generateRandomString = (length) => {
 
 export default function RebotWelcome() {
     const navigation = useNavigation();
+
+    // Initialize the database when the component mounts
+    useEffect(() => {
+        const setupDb = async () => {
+            try {
+                const success = await initializeDb();
+                if (!success) {
+                    console.warn("Database initialization may have failed");
+                }
+            } catch (error) {
+                console.error("Failed to initialize database:", error);
+            }
+        };
+
+        setupDb();
+    }, []);
 
     const handleNewConversation = async () => {
         const conversationId = generateRandomString(5);
@@ -41,9 +57,7 @@ export default function RebotWelcome() {
     };
 
     const handlePreviousConversations = () => {
-        console.log('Pressed Previous Conversations');
-        // Navigate to a screen where previous conversations are listed
-        navigation.navigate('PreviousConversations');
+        navigation.navigate('RebotChatSelection');
     };
 
     return (

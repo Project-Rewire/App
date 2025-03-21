@@ -12,9 +12,13 @@ import {
     ActivityIndicator,
 } from 'react-native';
 import { settings } from '../app.settings';
-import { addMessage, createConversation, getMessages } from '../app.db.service';
+import { addMessage, getMessages, initializeDb } from '../app.db.service';
 
-const RebotChatInterface = ({ userId = 'default', conversationId }) => {
+const RebotChatInterface = ({ route, navigation }) => {
+    // Extract conversationId from route params
+    const { conversationId } = route.params || {};
+    const userId = 'default';
+
     const flatListRef = useRef(null);
     const [chatHistory, setChatHistory] = useState([]);
     const [message, setMessage] = useState('');
@@ -22,23 +26,42 @@ const RebotChatInterface = ({ userId = 'default', conversationId }) => {
     const [isLoading, setIsLoading] = useState(true);
     const wsRef = useRef(null);
 
+    // Initialize database on component mount
     useEffect(() => {
-        connectWebSocket();
-        fetchMessages();
+        const setup = async () => {
+            await initializeDb();
+            if (!conversationId) {
+                Alert.alert("Error", "No conversation ID provided");
+                navigation.goBack();
+                return;
+            }
+            connectWebSocket();
+            fetchMessages();
+        };
+
+        setup();
+
         return () => {
             wsRef.current?.close();
         };
     }, [conversationId]);
 
     const fetchMessages = async () => {
+        if (!conversationId) {
+            console.error("Cannot fetch messages: No conversation ID");
+            return;
+        }
+
         setIsLoading(true);
         try {
             const prevMessages = await getMessages({
-                conversationId, onError: () => {
-                    Alert.alert("Previous conversations could not be loaded");
+                conversationId,
+                onError: (error) => {
+                    console.error("Error fetching messages:", error);
+                    Alert.alert("Error", "Previous conversations could not be loaded");
                 }
             });
-            setChatHistory(prevMessages);
+            setChatHistory(prevMessages || []);
         } catch (error) {
             console.error('Error fetching messages:', error);
         } finally {
@@ -47,6 +70,11 @@ const RebotChatInterface = ({ userId = 'default', conversationId }) => {
     };
 
     const connectWebSocket = () => {
+        if (!conversationId) {
+            console.error("Cannot connect WebSocket: No conversation ID");
+            return;
+        }
+
         wsRef.current?.close();
 
         const url = `${settings.rebotWebsocket.value}/${conversationId}/`;
@@ -66,36 +94,54 @@ const RebotChatInterface = ({ userId = 'default', conversationId }) => {
             }
         };
 
-        wsRef.current.onerror = () => {
+        wsRef.current.onerror = (error) => {
+            console.error("WebSocket error:", error);
             setIsConnected(false);
             setTimeout(connectWebSocket, 5000);
         };
 
-        wsRef.current.onclose = () => {
+        wsRef.current.onclose = (event) => {
+            console.log("WebSocket closed:", event.code, event.reason);
             setIsConnected(false);
             setTimeout(connectWebSocket, 5000);
         };
     };
 
     const handleIncomingMessage = (data) => {
+        if (!conversationId) {
+            console.error("Cannot handle incoming message: No conversation ID");
+            return;
+        }
+
         if (data.type === 'message') {
             const newMessage = {
                 id: Date.now().toString(),
-                conversationId,
+                conversation_id: conversationId, // Ensure correct field name
                 sender: data.sender === 'therapist' ? 'bot' : 'user',
                 text: data.content,
-                createdAt: new Date().toISOString(),
+                created_at: new Date().toISOString(), // Match database field name
                 status: 'delivered',
             };
+
             setChatHistory((prev) => [...prev, newMessage]);
-            addMessage({ m: newMessage });
+
+            // Add message to database
+            addMessage({
+                m: newMessage,
+                onError: (error) => {
+                    console.error("Failed to add message to database:", error);
+                }
+            });
         } else if (data.type === 'error') {
             Alert.alert('Error', data.content);
         }
     };
 
     const sendMessage = (text) => {
-        if (!text.trim() || !isConnected || !wsRef.current) return false;
+        if (!text.trim() || !isConnected || !wsRef.current || !conversationId) {
+            console.log("Cannot send message:", !text.trim() ? "Empty text" : !isConnected ? "Not connected" : !wsRef.current ? "No WebSocket" : "No conversation ID");
+            return false;
+        }
 
         const messageData = {
             type: 'message',
@@ -105,16 +151,26 @@ const RebotChatInterface = ({ userId = 'default', conversationId }) => {
 
         try {
             wsRef.current.send(JSON.stringify(messageData));
+
             const userMessage = {
                 id: Date.now().toString(),
-                conversationId,
+                conversation_id: conversationId, // Ensure correct field name
                 sender: 'user',
                 text: text.trim(),
-                createdAt: new Date().toISOString(),
+                created_at: new Date().toISOString(), // Match database field name
                 status: 'sent',
             };
+
             setChatHistory((prev) => [...prev, userMessage]);
-            addMessage({ m: userMessage });
+
+            // Add message to database
+            addMessage({
+                m: userMessage,
+                onError: (error) => {
+                    console.error("Failed to add user message to database:", error);
+                }
+            });
+
             setMessage('');
             return true;
         } catch (error) {
@@ -148,7 +204,7 @@ const RebotChatInterface = ({ userId = 'default', conversationId }) => {
                         >
                             <Text style={styles.messageText}>{item.text}</Text>
                             <Text style={styles.messageTimestamp}>
-                                {new Date(item.createdAt).toLocaleTimeString()}
+                                {new Date(item.created_at || item.createdAt).toLocaleTimeString()}
                             </Text>
                             {item.sender === 'user' && (
                                 <Text style={styles.messageStatus}>{item.status}</Text>

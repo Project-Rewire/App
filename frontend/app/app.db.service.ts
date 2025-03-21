@@ -1,15 +1,14 @@
-import { useEffect, useState } from "react";
 import * as SQLite from 'expo-sqlite';
 import { Message, Conversation } from "./app.db.models";
-import { Alert } from "react-native";
 
-const [db, setDb] = useState<SQLite.SQLiteDatabase | null>(null);
+// Create a module-level variable for the database
+let db: SQLite.SQLiteDatabase | null = null;
 
-useEffect(() => {
-    const initializeDb = async () => {
-        try {
-            const db = await SQLite.openDatabaseAsync('rewire.db');
-            setDb(db);
+export const initializeDb = async () => {
+    try {
+        // Only initialize if not already initialized
+        if (!db) {
+            db = await SQLite.openDatabaseAsync('rewire.db');
 
             // Enable WAL mode for better performance
             await db.execAsync('PRAGMA journal_mode = WAL;');
@@ -33,12 +32,15 @@ useEffect(() => {
                     FOREIGN KEY (conversation_id) REFERENCES conversations (id)
                 );
             `);
-        } catch (error) {
-            Alert.alert("A error occurred while initializing the database")
+
+            console.log("Database initialized successfully");
         }
-    };
-    initializeDb();
-}, []);
+        return true;
+    } catch (error) {
+        console.error("An error occurred while initializing the database:", error);
+        return false;
+    }
+};
 
 // Add a message to the database
 export const addMessage = async ({
@@ -49,11 +51,18 @@ export const addMessage = async ({
     onError?: (error: any) => void;
 }) => {
     try {
+        // Try to initialize if not already initialized
+        if (!db) {
+            await initializeDb();
+        }
+
         if (db) {
             await db.runAsync(
                 'INSERT INTO messages (id, conversation_id, sender, text) VALUES (?, ?, ?, ?)',
                 [m.id, m.conversation_id, m.sender, m.text]
             );
+        } else {
+            throw new Error("Database not initialized");
         }
     } catch (error) {
         console.error('Error adding message to database:', error);
@@ -70,11 +79,18 @@ export const getMessages = async ({
     onError?: (error: any) => void;
 }) => {
     try {
+        // Try to initialize if not already initialized
+        if (!db) {
+            await initializeDb();
+        }
+
         if (db) {
             return await db.getAllAsync(
                 'SELECT * FROM messages WHERE conversation_id = ?',
                 [conversationId]
             );
+        } else {
+            throw new Error("Database not initialized");
         }
     } catch (error) {
         console.error('Error retrieving messages from database:', error);
@@ -92,14 +108,47 @@ export const createConversation = async ({
     onError?: (error: any) => void;
 }) => {
     try {
+        // Try to initialize if not already initialized
+        if (!db) {
+            await initializeDb();
+        }
+
         if (db) {
             await db.runAsync(
                 'INSERT INTO conversations (id, created_at) VALUES (?, ?)',
                 [conversation.id, new Date(conversation.created_at).toISOString()]
             );
+        } else {
+            throw new Error("Database not initialized");
         }
     } catch (error) {
         console.error('Error creating a conversation in the database:', error);
         onError(error);
     }
+};
+
+// Retrieve all messages
+export const getConversations = async ({
+    onError = () => { }
+}: {
+    onError?: (error: any) => void;
+}) => {
+    try {
+        // Try to initialize if not already initialized
+        if (!db) {
+            await initializeDb();
+        }
+
+        if (db) {
+            return await db.getAllAsync(
+                'SELECT * FROM conversations'
+            );
+        } else {
+            throw new Error("Database not initialized");
+        }
+    } catch (error) {
+        console.error('Error retrieving conversations from database:', error);
+        onError(error);
+    }
+    return [];
 };
