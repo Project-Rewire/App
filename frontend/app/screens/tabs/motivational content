@@ -3,10 +3,10 @@ import { View, Text, TouchableOpacity, FlatList, Image, StyleSheet, ScrollView }
 
 const categories = ['Shorts', 'Suggest for you'];
 const contentData = [
-  { id: '1', text: "Believe you can and you're halfway there.", author: 'Theodore Roosevelt', image: require('./assets/motivation1.png') },
-  { id: '2', text: 'Our greatest glory is not in never failing, but in rising up every time we fail.', author: 'Ralph Waldo Emerson', image: require('./assets/motivation2.png') },
-  { id: '3', text: 'Sometimes the smallest step in the right direction ends up being the biggest step of your life.', author: 'Naeem Callaway', image: require('./assets/motivation3.png') },
-  { id: '4', text: "It's okay to bleed on someone who didn't cut you.", author: 'Toni Sorenson', image: require('./assets/motivation4.png') },
+  { id: '1', text: "Believe you can and you're halfway there.", author: 'Theodore Roosevelt', image: require('/Users/nidarsanidu/Desktop/Rewire/App/frontend/app/assets/id1.jpeg') },
+  { id: '2', text: 'Our greatest glory is not in never failing, but in rising up every time we fail.', author: 'Ralph Waldo Emerson', image: require('/Users/nidarsanidu/Desktop/Rewire/App/frontend/app/assets/id2.jpg') },
+  { id: '3', text: 'Sometimes the smallest step in the right direction ends up being the biggest step of your life.', author: 'Naeem Callaway', image: require('/Users/nidarsanidu/Desktop/Rewire/App/frontend/app/assets/id3.jpeg') },
+  { id: '4', text: "It's okay to bleed on someone who didn't cut you.", author: 'Toni Sorenson', image: require('/Users/nidarsanidu/Desktop/Rewire/App/frontend/app/assets/id4.jpeg') },
 ];
 
 const suggestedData = [...contentData];
@@ -73,7 +73,4 @@ const MotivationalContent = () => {
   author: { fontSize: 12, color: 'gray', textAlign: 'center' },
 });
 
-export default MotivationalContent;
-
-
-  }
+export default MotivationalContent;g
