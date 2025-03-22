@@ -26,6 +26,13 @@ const MotivationalContent=()=>{
         ))}
       </View>
       <ScrollView>
+      {selectedCategory === 'Shorts' && (
+          <FlatList
+            data={contentData}
+            keyExtractor={item => item.id}
+            numColumns={2}
+            renderItem={({ item }) => (
+        
       </ScrollView>
     </View>
   )
