@@ -69,6 +69,11 @@ const MotivationalContent = () => {
     selectedCategory:{backgroundColor:'#8ac6d1'},
     card:{flex:1,backgroundColor:'#fff',margin:5,padding:10,borderRadius:10,alignItems:'center'},
     image:{width:150,height:200,borderRadius:10},
-    
+    quote: { marginTop: 5, fontSize: 14, fontWeight: 'bold', textAlign: 'center' },
+  author: { fontSize: 12, color: 'gray', textAlign: 'center' },
+});
+
+export default MotivationalContent;
+
 
   }
