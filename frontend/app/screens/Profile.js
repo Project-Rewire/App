@@ -82,7 +82,18 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginLeft: 16,
   },
-  
+  editButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: 'white',
+    borderRadius: 20,
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    width: 120,
+  },
+
 
 
 
