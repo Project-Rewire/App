@@ -3,6 +3,6 @@ import{View,Text,Touchab0pacity,FlatList,Image,StyleSheet} from 'react-native';
 
 const categories=['Shorts','Videos','Suggested for you'];
 const contentData=[
-  {id:'1',text:'Believe you can and you are halfway there.',author: 'Theodore Roosevelt',image: require('./Users/nidarsanidu/Desktop/Rewire/App/frontend/app/assets/images.jpeg')},
-  {id:'2',text:'Our greatest glory is not in never failing ,but in rising up every time we fall.',author:'Ralph Waldo Emerson',image: require('.')}
+  {id:'1',text:'Believe you can and you are halfway there.',author: 'Theodore Roosevelt',image: require('./Users/nidarsanidu/Desktop/Rewire/App/frontend/app/assets/id1.jpeg')},
+  {id:'2',text:'Our greatest glory is not in never failing ,but in rising up every time we fall.',author:'Ralph Waldo Emerson',image: require('./Users/nidarsanidu/Desktop/Rewire/App/frontend/app/assets/id2.jpg')}
 ]
