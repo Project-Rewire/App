@@ -23,7 +23,20 @@ const Profile = () => {
           <Text style={styles.editButtonText}>Edit Profile</Text>
         </TouchableOpacity>
       </View>
-      {/*Menu Card*/}
+            {/* Menu Card */}
+            <View style={styles.menuCard}>
+        <TouchableOpacity style={styles.menuItem}>
+          <Feather name="file-text" size={24} color="#fff" />
+          <Text style={styles.menuItemText}>Your Report</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.menuItem}>
+          <Feather name="help-circle" size={24} color="#fff" />
+          <Text style={styles.menuItemText}>Help</Text>
+        </TouchableOpacity>
+
+         
+
 
 
 
