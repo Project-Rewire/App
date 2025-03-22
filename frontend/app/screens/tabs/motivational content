@@ -60,3 +60,7 @@ const MotivationalContent = () => {
         </ScrollView>
       </View>
     );
+  };
+  const styles=StyleSheet.create({
+    
+  }
