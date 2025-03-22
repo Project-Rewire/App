@@ -48,6 +48,19 @@ const Profile = () => {
     </SafeAreaView>
   );
 );
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#B3BCC2',
+  },
+  profileCard: {
+    backgroundColor: '#454B54',
+    borderRadius: 12,
+    marginHorizontal: 16,
+    marginTop: 20,
+    padding: 16,
+  },
+  
 
 
 
