@@ -1,5 +1,5 @@
 import React,{useState} from 'react';
-import{View,Text,Touchab0pacity,FlatList,Image,StyleSheet} from 'react-native';
+import{View,Text,TouchabOpacity,FlatList,Image,StyleSheet} from 'react-native';
 
 const categories=['Shorts','Videos','Suggested for you'];
 const contentData=[
@@ -7,5 +7,27 @@ const contentData=[
   {id:'2',text:'Our greatest glory is not in never failing ,but in rising up every time we fall.',author:'Ralph Waldo Emerson',image: require('./Users/nidarsanidu/Desktop/Rewire/App/frontend/app/assets/id2.jpg')}
   {id:'3',text:'Sometimes the smallest step in the right direction ends up being the biggest step of your life.',author:'Naeem Callaway',image: require('./Users/nidarsanidu/Desktop/Rewire/App/frontend/app/assets/id3.jpeg')}
   {id:'4',text:'It is okay to bleed on someone who did not cut you.',author:'Toni Sorenson',image: require('./Users/nidarsanidu/Desktop/Rewire/App/frontend/app/assets/id4.jpeg')}
+];
+const suggestedData=[...contentData];
+const MotivationalContent=()=>{
+  const[selectCategory,setSelectedCategory]=useState('Shorts');
+  return(
+    <View style={StyleSheet.container}>
+      <Text style={StyleSheet.header}>MOTIVATIONAL contentData</Text>
+      <View style={StyleSheet.categoryContainer}>
+        {categories.map(category=>(
+          <TouchableOpacity
+          key={category}
+          style={[StyleSheet.categoryButton,selectCategory===category && styleSheet.selectedCategory]}
+          onPress={()=>setSelectedCategory(category)}
+          >
+            <Text>{category}</Text>
+          </TouchableOpacity>
+        ))}
+      </View>
+      <ScrollView>
+      </ScrollView>
+    </View>
+  )
+}
 
-]
