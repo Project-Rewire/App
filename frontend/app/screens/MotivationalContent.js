@@ -19,7 +19,7 @@ const contentData = [
     id: '3',
     text: 'Sometimes the smallest step in the right direction ends up being the biggest step of your life.',
     author: 'Naeem Callaway',
-    image: require('../assets/id3.jpeg')
+    image: require('../assetgs/id3.jpeg')
   },
   {
     id: '4',
