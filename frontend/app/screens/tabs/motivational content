@@ -63,5 +63,8 @@ const MotivationalContent = () => {
   };
   const styles=StyleSheet.create({
     container:{flex:1,padding:10,backgroundColor:'#f8f8f8'},
-    header:{fontSize:20,fontWeight:'bold',textAlign:'center',marginBottom:10}
+    header:{fontSize:20,fontWeight:'bold',textAlign:'center',marginBottom:10},
+    categoryContainer:{flexDirection:'row',justifyContent:'center',marginBottom:10},
+    categoryButton:{ padding: 10, marginHorizontal: 5, backgroundColor: '#ddd', borderRadius: 5 },
+
   }
