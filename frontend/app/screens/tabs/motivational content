@@ -49,3 +49,15 @@ const MotivationalContent = () => {
             keyExtractor={item => item.id}
             numColumns={2}
             renderItem={({ item }) => (
+              <View style={styles.card}>
+              <Image source={item.image} style={styles.image} />
+              <Text style={styles.quote}>{item.text}</Text>
+              <Text style={styles.author}>- {item.author}</Text>
+            </View>
+            )}
+          />
+        )}
+        </ScrollView>
+      </View>
+    );
+  }; 
