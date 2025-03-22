@@ -104,6 +104,11 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     padding: 16,
   },
+  menuItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 12,
+  },
 
 
 
