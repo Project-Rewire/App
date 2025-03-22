@@ -18,10 +18,10 @@ export default function ProfilePage() {
             <Image
               source={{ uri: "https://via.placeholder.com/150" }}
               className="w-28 h-28 rounded-full border-4 border-indigo-400 shadow-md"
-            />
+            />s
           </motion.div>
           <Text className="text-2xl font-extrabold text-gray-900">John Doe</Text>
-          <Text className="text-gray-600 text-sm">johndoe@example.com</Text>
+          <Text className="text-gray-600 text-sm">nidarsahss@example.com</Text>
           <Text className="text-center text-gray-700 mt-3 px-4">
             Passionate about tech and design. Love to explore new trends and innovations.
           </Text>
