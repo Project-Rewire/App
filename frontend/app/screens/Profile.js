@@ -35,6 +35,23 @@ const Profile = () => {
           <Text style={styles.menuItemText}>Help</Text>
         </TouchableOpacity>
 
+        <TouchableOpacity style={styles.menuItem}>
+          <Feather name="settings" size={24} color="#fff" />
+          <Text style={styles.menuItemText}>Settings</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.menuItem}>
+          <Feather name="log-out" size={24} color="#fff" />
+          <Text style={styles.menuItemText}>Log Out</Text>
+        </TouchableOpacity>
+      </View>
+    </SafeAreaView>
+  );
+);
+
+
+
+
          
 
 
