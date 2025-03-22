@@ -10,7 +10,22 @@ const Profile = () => {
       <View style={styles.profileCard}>
         <View style={styles.profileHeader}>
           <View style={styles.avatarContainer}>
-            
+            <View style={styles.avatarContainer}>
+             <Image
+              source={{ uri: `https://avatar.iran.liara.run/username?username=${username}` }}
+              style={styles.avatar}
+            />
+          </View>
+          <Text style={styles.username}>{username}</Text>
+        </View>
+        <TouchableOpacity style={styles.editButton}>
+          <Feather name="edit-2" size={16} color="#fff" />
+          <Text style={styles.editButtonText}>Edit Profile</Text>
+        </TouchableOpacity>
+      </View>
+      {/*Menu Card*/}
+
+
 
 
 
