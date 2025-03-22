@@ -3,16 +3,6 @@ import { View, Text, TouchableOpacity, StyleSheet, Image, Alert } from 'react-na
 import { useNavigation } from '@react-navigation/native';
 import { createConversation, initializeDb } from '../app.db.service';
 
-const generateRandomString = (length) => {
-    const lowercaseLetters = 'abcdefghijklmnopqrstuvwxyz';
-    let result = '';
-    for (let i = 0; i < length; i++) {
-        const randomIndex = Math.floor(Math.random() * lowercaseLetters.length);
-        result += lowercaseLetters[randomIndex];
-    }
-    return result;
-};
-
 export default function RebotWelcome() {
     const navigation = useNavigation();
 
@@ -33,6 +23,15 @@ export default function RebotWelcome() {
     }, []);
 
     const handleNewConversation = async () => {
+        const generateRandomString = (length) => {
+            const lowercaseLetters = 'abcdefghijklmnopqrstuvwxyz';
+            let result = '';
+            for (let i = 0; i < length; i++) {
+                const randomIndex = Math.floor(Math.random() * lowercaseLetters.length);
+                result += lowercaseLetters[randomIndex];
+            }
+            return result;
+        };
         const conversationId = generateRandomString(5);
         try {
             // Create a new conversation in the database

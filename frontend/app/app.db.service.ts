@@ -124,7 +124,7 @@ export const createConversation = async ({
     }
 };
 
-// Retrieve all messages
+// Retrieve all conversations
 export const getConversations = async ({
     onError = () => { }
 }: {
@@ -147,4 +147,30 @@ export const getConversations = async ({
         onError(error);
     }
     return [];
+};
+
+// Delete a conversation and its associated messages
+export const deleteConversation = async ({
+    conversationId,
+    onError = () => { }
+}: {
+    conversationId: string;
+    onError?: (error: any) => void;
+}) => {
+    try {
+        if (!db) await initializeDb();
+
+        if (db) {
+            // Use a positional parameter instead of a named parameter.
+            await db.runAsync('DELETE FROM conversations WHERE id = ?', [conversationId]);
+
+            // Optionally, delete associated messages if desired.
+            await db.runAsync('DELETE FROM messages WHERE conversation_id = ?', [conversationId]);
+        } else {
+            throw new Error("Database not initialized");
+        }
+    } catch (error) {
+        console.error('Error deleting conversation from database:', error);
+        onError(error);
+    }
 };
