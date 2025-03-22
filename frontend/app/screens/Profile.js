@@ -109,6 +109,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 12,
   },
+  menuItemText: {
+    color: 'white',
+    fontSize: 18,
+    marginLeft: 16,
+  }
+});
+export default Profile;
 
 
 
