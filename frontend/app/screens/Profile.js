@@ -93,6 +93,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     width: 120,
   },
+  editButtonText: {
+    color: 'white',
+    marginLeft: 6,
+  },
+  
 
 
 
