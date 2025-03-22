@@ -1,40 +1,46 @@
-import React,{useState} from 'react';
-import{View,Text,TouchabOpacity,FlatList,Image,StyleSheet} from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, TouchableOpacity, FlatList, Image, StyleSheet, ScrollView } from 'react-native';
 
-const categories=['Shorts','Videos','Suggested for you'];
-const contentData=[
-  {id:'1',text:'Believe you can and you are halfway there.',author: 'Theodore Roosevelt',image: require('./Users/nidarsanidu/Desktop/Rewire/App/frontend/app/assets/id1.jpeg')},
-  {id:'2',text:'Our greatest glory is not in never failing ,but in rising up every time we fall.',author:'Ralph Waldo Emerson',image: require('./Users/nidarsanidu/Desktop/Rewire/App/frontend/app/assets/id2.jpg')}
-  {id:'3',text:'Sometimes the smallest step in the right direction ends up being the biggest step of your life.',author:'Naeem Callaway',image: require('./Users/nidarsanidu/Desktop/Rewire/App/frontend/app/assets/id3.jpeg')}
-  {id:'4',text:'It is okay to bleed on someone who did not cut you.',author:'Toni Sorenson',image: require('./Users/nidarsanidu/Desktop/Rewire/App/frontend/app/assets/id4.jpeg')}
+const categories = ['Shorts', 'Suggest for you'];
+const contentData = [
+  { id: '1', text: "Believe you can and you're halfway there.", author: 'Theodore Roosevelt', image: require('./assets/motivation1.png') },
+  { id: '2', text: 'Our greatest glory is not in never failing, but in rising up every time we fail.', author: 'Ralph Waldo Emerson', image: require('./assets/motivation2.png') },
+  { id: '3', text: 'Sometimes the smallest step in the right direction ends up being the biggest step of your life.', author: 'Naeem Callaway', image: require('./assets/motivation3.png') },
+  { id: '4', text: "It's okay to bleed on someone who didn't cut you.", author: 'Toni Sorenson', image: require('./assets/motivation4.png') },
 ];
-const suggestedData=[...contentData];
-const MotivationalContent=()=>{
-  const[selectCategory,setSelectedCategory]=useState('Shorts');
-  return(
-    <View style={StyleSheet.container}>
-      <Text style={StyleSheet.header}>MOTIVATIONAL contentData</Text>
-      <View style={StyleSheet.categoryContainer}>
-        {categories.map(category=>(
+
+const suggestedData = [...contentData];
+
+const MotivationalContent = () => {
+  const [selectedCategory, setSelectedCategory] = useState('Shorts');
+
+  return (
+    <View style={styles.container}>
+      <Text style={styles.header}>MOTIVATIONAL CONTENT</Text>
+      <View style={styles.categoryContainer}>
+        {categories.map(category => (
           <TouchableOpacity
-          key={category}
-          style={[StyleSheet.categoryButton,selectCategory===category && styleSheet.selectedCategory]}
-          onPress={()=>setSelectedCategory(category)}
+            key={category}
+            style={[styles.categoryButton, selectedCategory === category && styles.selectedCategory]}
+            onPress={() => setSelectedCategory(category)}
           >
             <Text>{category}</Text>
           </TouchableOpacity>
         ))}
       </View>
       <ScrollView>
-      {selectedCategory === 'Shorts' && (
+        {selectedCategory === 'Shorts' && (
           <FlatList
             data={contentData}
             keyExtractor={item => item.id}
             numColumns={2}
             renderItem={({ item }) => (
+              <View style={styles.card}>
+                <Image source={item.image} style={styles.image} />
+                <Text style={styles.quote}>{item.text}</Text>
+                <Text style={styles.author}>- {item.author}</Text>
+              </View>
+            )}
+          />
+        )}
         
-      </ScrollView>
-    </View>
-  )
-}
-
