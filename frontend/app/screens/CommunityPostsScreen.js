@@ -74,6 +74,14 @@ const CommunityPostsScreen = ({ route, navigation }) => {
     navigation.navigate('SharePost', { postId });
   };
 
+  const navigateToCreatePost = () => {
+    navigation.navigate('CreatePost', { 
+      communityId, 
+      communityName,
+      onPostCreated: fetchPosts // Pass callback to refresh posts after creation
+    });
+  };
+
   const renderPostItem = ({ item }) => (
     <View style={styles.postContainer}>
       <View style={styles.postHeader}>
@@ -175,7 +183,10 @@ const CommunityPostsScreen = ({ route, navigation }) => {
           ListEmptyComponent={
             <View style={styles.emptyContainer}>
               <Text style={styles.emptyText}>No posts yet in this community</Text>
-              <TouchableOpacity style={styles.createPostButton}>
+              <TouchableOpacity 
+                style={styles.createPostButton}
+                onPress={navigateToCreatePost}
+              >
                 <Text style={styles.createPostButtonText}>Create the first post</Text>
               </TouchableOpacity>
             </View>
@@ -183,9 +194,11 @@ const CommunityPostsScreen = ({ route, navigation }) => {
         />
       )}
       
+      {/* Floating Action Button (FAB) for creating new posts */}
       <TouchableOpacity 
         style={styles.fab}
-        onPress={() => navigation.navigate('CreatePost', { communityId })}
+        onPress={navigateToCreatePost}
+        activeOpacity={0.7}
       >
         <Ionicons name="add" size={30} color={theme.colors.background} />
       </TouchableOpacity>
@@ -250,6 +263,7 @@ const getStyles = (theme) => StyleSheet.create({
   postContainer: {
     backgroundColor: theme.colors.card,
     marginVertical: 8,
+    marginHorizontal: 12,
     borderRadius: 12,
     padding: 16,
     shadowColor: '#000',
@@ -348,6 +362,7 @@ const getStyles = (theme) => StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.3,
     shadowRadius: 3,
+    zIndex: 10,
   },
   emptyContainer: {
     alignItems: 'center',
