@@ -43,4 +43,9 @@ const MotivationalContent = () => {
             )}
           />
         )}
-        
+         {selectedCategory === 'Suggest for you' && (
+          <FlatList
+            data={suggestedData}
+            keyExtractor={item => item.id}
+            numColumns={2}
+            renderItem={({ item }) => (
