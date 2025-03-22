@@ -1,41 +1,182 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import {
-    View,
     Text,
-    TextInput,
-    TouchableOpacity,
+    View,
+    Alert,
     FlatList,
-    StyleSheet,
-    KeyboardAvoidingView,
     Platform,
+    TextInput,
+    StyleSheet,
+    TouchableOpacity,
+    KeyboardAvoidingView,
+    ActivityIndicator,
 } from 'react-native';
-import { useRebot } from '../hooks/rebot-service';
+import { settings } from '../app.settings';
+import { addMessage, getMessages, initializeDb } from '../app.db.service';
 
-const RebotChatInterface = ({ userId = 'default', roomName = 'default' }) => {
-    const [message, setMessage] = React.useState('');
+const RebotChatInterface = ({ route, navigation }) => {
+    // Extract conversationId from route params
+    const { conversationId } = route.params || {};
+    const userId = 'default';
+
     const flatListRef = useRef(null);
-    const { messages: chatHistory, isConnected, sendMessage } = useRebot({
-        userId,
-        roomName
-    });
+    const [chatHistory, setChatHistory] = useState([]);
+    const [message, setMessage] = useState('');
+    const [isConnected, setIsConnected] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
+    const wsRef = useRef(null);
 
-    const handleSend = () => {
-        if (sendMessage(message)) {
-            setMessage('');
+    // Initialize database on component mount
+    useEffect(() => {
+        const setup = async () => {
+            await initializeDb();
+            if (!conversationId) {
+                Alert.alert("Error", "No conversation ID provided");
+                navigation.goBack();
+                return;
+            }
+            connectWebSocket();
+            fetchMessages();
+        };
+
+        setup();
+
+        return () => {
+            wsRef.current?.close();
+        };
+    }, [conversationId]);
+
+    const fetchMessages = async () => {
+        if (!conversationId) {
+            console.error("Cannot fetch messages: No conversation ID");
+            return;
+        }
+
+        setIsLoading(true);
+        try {
+            const prevMessages = await getMessages({
+                conversationId,
+                onError: (error) => {
+                    console.error("Error fetching messages:", error);
+                    Alert.alert("Error", "Previous conversations could not be loaded");
+                }
+            });
+            setChatHistory(prevMessages || []);
+        } catch (error) {
+            console.error('Error fetching messages:', error);
+        } finally {
+            setIsLoading(false);
         }
     };
 
-    const renderChatItem = ({ item }) => {
-        const isBot = item.sender === 'bot';
+    const connectWebSocket = () => {
+        if (!conversationId) {
+            console.error("Cannot connect WebSocket: No conversation ID");
+            return;
+        }
 
-        return (
-            <View style={[
-                styles.messageContainer,
-                isBot ? styles.botMessageContainer : styles.userMessageContainer
-            ]}>
-                <Text style={styles.messageText}>{item.text}</Text>
-            </View>
-        );
+        wsRef.current?.close();
+
+        const url = `${settings.rebotWebsocket.value}/${conversationId}/`;
+        wsRef.current = new WebSocket(url);
+
+        wsRef.current.onopen = () => {
+            setIsConnected(true);
+            sendMessage('Hello');
+        };
+
+        wsRef.current.onmessage = (event) => {
+            try {
+                const data = JSON.parse(event.data);
+                handleIncomingMessage(data);
+            } catch (error) {
+                console.error('Invalid message format:', error);
+            }
+        };
+
+        wsRef.current.onerror = (error) => {
+            console.error("WebSocket error:", error);
+            setIsConnected(false);
+            setTimeout(connectWebSocket, 5000);
+        };
+
+        wsRef.current.onclose = (event) => {
+            console.log("WebSocket closed:", event.code, event.reason);
+            setIsConnected(false);
+            setTimeout(connectWebSocket, 5000);
+        };
+    };
+
+    const handleIncomingMessage = (data) => {
+        if (!conversationId) {
+            console.error("Cannot handle incoming message: No conversation ID");
+            return;
+        }
+
+        if (data.type === 'message') {
+            const newMessage = {
+                id: Date.now().toString(),
+                conversation_id: conversationId, // Ensure correct field name
+                sender: data.sender === 'therapist' ? 'bot' : 'user',
+                text: data.content,
+                created_at: new Date().toISOString(), // Match database field name
+                status: 'delivered',
+            };
+
+            setChatHistory((prev) => [...prev, newMessage]);
+
+            // Add message to database
+            addMessage({
+                m: newMessage,
+                onError: (error) => {
+                    console.error("Failed to add message to database:", error);
+                }
+            });
+        } else if (data.type === 'error') {
+            Alert.alert('Error', data.content);
+        }
+    };
+
+    const sendMessage = (text) => {
+        if (!text.trim() || !isConnected || !wsRef.current || !conversationId) {
+            console.log("Cannot send message:", !text.trim() ? "Empty text" : !isConnected ? "Not connected" : !wsRef.current ? "No WebSocket" : "No conversation ID");
+            return false;
+        }
+
+        const messageData = {
+            type: 'message',
+            sender: userId,
+            content: text.trim(),
+        };
+
+        try {
+            wsRef.current.send(JSON.stringify(messageData));
+
+            const userMessage = {
+                id: Date.now().toString(),
+                conversation_id: conversationId, // Ensure correct field name
+                sender: 'user',
+                text: text.trim(),
+                created_at: new Date().toISOString(), // Match database field name
+                status: 'sent',
+            };
+
+            setChatHistory((prev) => [...prev, userMessage]);
+
+            // Add message to database
+            addMessage({
+                m: userMessage,
+                onError: (error) => {
+                    console.error("Failed to add user message to database:", error);
+                }
+            });
+
+            setMessage('');
+            return true;
+        } catch (error) {
+            console.error('Error sending message:', error);
+            return false;
+        }
     };
 
     useEffect(() => {
@@ -46,29 +187,53 @@ const RebotChatInterface = ({ userId = 'default', roomName = 'default' }) => {
 
     return (
         <>
-            <FlatList
-                ref={flatListRef}
-                data={chatHistory}
-                renderItem={renderChatItem}
-                keyExtractor={(item) => item.id}
-                contentContainerStyle={styles.chatContainer}
-                onContentSizeChange={() => flatListRef.current?.scrollToEnd({ animated: true })}
-            />
+            {isLoading ? (
+                <View style={styles.loadingContainer}>
+                    <ActivityIndicator size="large" color="#2D7A7A" />
+                </View>
+            ) : (
+                <FlatList
+                    ref={flatListRef}
+                    data={chatHistory}
+                    renderItem={({ item }) => (
+                        <View
+                            style={[
+                                styles.messageContainer,
+                                item.sender === 'bot' ? styles.botMessageContainer : styles.userMessageContainer,
+                            ]}
+                        >
+                            <Text style={styles.messageText}>{item.text}</Text>
+                            <Text style={styles.messageTimestamp}>
+                                {new Date(item.created_at || item.createdAt).toLocaleTimeString()}
+                            </Text>
+                            {item.sender === 'user' && (
+                                <Text style={styles.messageStatus}>{item.status}</Text>
+                            )}
+                        </View>
+                    )}
+                    keyExtractor={(item) => item.id}
+                    contentContainerStyle={styles.chatContainer}
+                />
+            )}
+
+            {!isConnected && (
+                <Text style={styles.connectionStatus}>Disconnected. Trying to reconnect...</Text>
+            )}
 
             <KeyboardAvoidingView
                 behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
                 style={styles.inputContainer}
             >
                 <View style={styles.quickReplies}>
-                    <TouchableOpacity style={styles.quickReplyButton} onPress={() => setMessage("Hello")}>
-                        <Text style={styles.quickReplyText}>Hello</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.quickReplyButton} onPress={() => setMessage("How are you?")}>
-                        <Text style={styles.quickReplyText}>How are you?</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.quickReplyButton} onPress={() => setMessage("I need help")}>
-                        <Text style={styles.quickReplyText}>I need help</Text>
-                    </TouchableOpacity>
+                    {['Hello', 'How are you?', 'I need help'].map((text) => (
+                        <TouchableOpacity
+                            key={text}
+                            style={styles.quickReplyButton}
+                            onPress={() => sendMessage(text)}
+                        >
+                            <Text style={styles.quickReplyText}>{text}</Text>
+                        </TouchableOpacity>
+                    ))}
                 </View>
 
                 <View style={styles.inputRow}>
@@ -78,12 +243,11 @@ const RebotChatInterface = ({ userId = 'default', roomName = 'default' }) => {
                         placeholderTextColor="#8D9093"
                         value={message}
                         onChangeText={setMessage}
-                        multiline={false}
                     />
                     <TouchableOpacity
                         style={[styles.sendButton, !isConnected && styles.disabledButton]}
-                        onPress={handleSend}
-                        disabled={message.trim() === '' || !isConnected}
+                        onPress={() => sendMessage(message)}
+                        disabled={!message.trim() || !isConnected}
                     >
                         <Text style={styles.sendButtonText}>➤</Text>
                     </TouchableOpacity>
@@ -94,13 +258,16 @@ const RebotChatInterface = ({ userId = 'default', roomName = 'default' }) => {
 };
 
 const styles = StyleSheet.create({
-    container: {
+    loadingContainer: {
         flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
     },
     connectionStatus: {
         color: 'red',
         fontSize: 12,
-        marginTop: 4,
+        textAlign: 'center',
+        paddingVertical: 4,
     },
     chatContainer: {
         paddingHorizontal: 16,
@@ -126,8 +293,18 @@ const styles = StyleSheet.create({
         fontSize: 16,
         color: '#333',
     },
+    messageTimestamp: {
+        fontSize: 12,
+        color: '#666',
+        marginTop: 4,
+    },
+    messageStatus: {
+        fontSize: 12,
+        color: '#666',
+        marginTop: 4,
+        textAlign: 'right',
+    },
     inputContainer: {
-        marginTop: 'auto',
         borderTopWidth: 1,
         borderTopColor: '#e1e8e8',
         backgroundColor: '#f2f7f7',

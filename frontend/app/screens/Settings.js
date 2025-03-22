@@ -3,10 +3,9 @@ import React from 'react';
 import { Icon } from '@rneui/base';
 import { ListItem } from '@rneui/base';
 import { useThemeToggle } from '../hooks/theme-service';
-import { StyleSheet, TouchableHighlight } from 'react-native';
+import { TouchableHighlight } from 'react-native';
 import { FlatList, Switch, View } from 'react-native';
 import { useNavigation, useTheme } from '@react-navigation/native';
-import { Text } from 'react-native';
 import { H1, H2 } from '../fragments/heading';
 
 
