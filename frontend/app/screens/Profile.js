@@ -1,9 +1,11 @@
 import React from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet, SafeAreaView } from 'react-native';
 import { Feather } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
 
 const Profile = () => {
   const username = "Andrew Mark";
+  const navigator = useNavigation();
 
   return (
     <SafeAreaView style={styles.container}>
@@ -36,7 +38,7 @@ const Profile = () => {
           <Text style={styles.menuItemText}>Help</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.menuItem}>
+        <TouchableOpacity style={styles.menuItem} onPress={() => navigator.navigate('SettingsNavigator', { screen: 'Settings' })}>
           <Feather name="settings" size={24} color="#fff" />
           <Text style={styles.menuItemText}>Settings</Text>
         </TouchableOpacity>
@@ -113,10 +115,9 @@ const styles = StyleSheet.create({
   },
   menuItemText: {
     color: 'white',
-    fontSize: 18,
+    fontSize: 16,
     marginLeft: 16,
   }
 });
 
 export default Profile;
- 
