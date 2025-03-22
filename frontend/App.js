@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Icon } from './app/fragments/icon';
 import { useLogin } from './app/hooks/login-service';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { ThemeProvider, useThemeToggle } from './app/hooks/theme-service';
-import { SafeAreaView, Platform, StatusBar } from 'react-native';
+import { SafeAreaView, Platform, StatusBar, Linking } from 'react-native';
 
 import Home from './app/screens/tabs/Home';
 import Login from './app/screens/Login';
@@ -16,6 +16,7 @@ import RebotWelcome from './app/screens/RebotWelcome';
 import SignupStepOne from './app/screens/signupStepOne';
 import SignupStepTwo from './app/screens/signupStepTwo';
 import ForgotPassword from './app/screens/ForgotPassword';
+import ResetPassword from './app/screens/ResetPassword';
 import RebotChatInterface from './app/screens/RebotChatInterface';
 import Settings from './app/screens/Settings';
 import About from './app/screens/About';
@@ -36,6 +37,67 @@ export default function App() {
 function AppContent() {
   const { loggedIn } = useLogin();
   const { theme } = useThemeToggle();
+  const navigationRef = useRef(null);
+
+  // Configuration for linking
+  const linking = {
+    prefixes: ['rewire://', 'https://rewire.app', 'http://localhost:8000'],
+    config: {
+      screens: {
+        ResetPassword: {
+          path: 'reset_password/:uidb64/:token',
+          parse: {
+            uidb64: (uidb64) => uidb64,
+            token: (token) => token,
+          },
+        },
+      },
+    },
+  };
+
+  // Handle deep links manually for more control (optional)
+  useEffect(() => {
+    // Function to handle incoming links
+    const handleDeepLink = ({ url }) => {
+      if (!url) return;
+      
+      // Parse the URL to extract the path and parameters
+      try {
+        const parsedUrl = new URL(url);
+        const pathSegments = parsedUrl.pathname.split('/').filter(Boolean);
+        
+        // Check if this is a reset password link
+        if (pathSegments.length >= 3 && pathSegments[0] === 'reset_password') {
+          const uidb64 = pathSegments[1];
+          const token = pathSegments[2];
+          
+          // Navigate to the ResetPassword screen with extracted parameters
+          if (navigationRef.current) {
+            navigationRef.current.navigate('ResetPassword', { uidb64, token });
+          }
+        }
+      } catch (error) {
+        console.error('Error handling deep link:', error);
+      }
+    };
+    
+    // Listen for incoming links when the app is already running
+    const subscription = Linking.addEventListener('url', handleDeepLink);
+    
+    // Check for any initial URL used to open the app
+    Linking.getInitialURL().then(url => {
+      if (url) {
+        handleDeepLink({ url });
+      }
+    }).catch(err => {
+      console.error('Error getting initial URL:', err);
+    });
+    
+    // Clean up the event listener on unmount
+    return () => {
+      subscription.remove();
+    };
+  }, []);
 
   return (
     <SafeAreaView
@@ -45,7 +107,11 @@ function AppContent() {
         paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
       }}
     >
-      <NavigationContainer theme={theme}>
+      <NavigationContainer 
+        ref={navigationRef}
+        theme={theme}
+        linking={linking}
+      >
         {loggedIn ? <BottomTabNavigator /> : <LoginNavigator />}
       </NavigationContainer>
     </SafeAreaView>
@@ -104,6 +170,7 @@ function LoginNavigator() {
       <LoginStack.Screen name="Welcome" component={Welcome} />
       <LoginStack.Screen name="Login" component={Login} />
       <LoginStack.Screen name="ForgotPassword" component={ForgotPassword} />
+      <LoginStack.Screen name="ResetPassword" component={ResetPassword} />
       <LoginStack.Screen name="SignupStepOne" component={SignupStepOne} />
       <LoginStack.Screen name="SignupStepTwo" component={SignupStepTwo} />
       <LoginStack.Screen name="MainApp" component={BottomTabNavigator} />

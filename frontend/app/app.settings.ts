@@ -6,8 +6,8 @@ const DOMAINS = {
 };
 
 const PORTS = {
-    production: 8000,
-    local: 8000
+    production: 8081,
+    local: 8081
 };
 
 const BACKEND_DOMAIN = isProduction ? DOMAINS.production : DOMAINS.local;
@@ -29,7 +29,7 @@ export const settings = {
             login: "/login",
             signupStepOne: "/signup/step-one",
             signupStepTwo: "/signup/step-two",
-            forgotPassword: "/forget-password",
+            forgotPassword: "/forget-password/",
             resetPassword: "/reset-password"
         }
     }

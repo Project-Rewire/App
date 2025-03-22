@@ -173,7 +173,8 @@ def forget_password(request):
             user = User.objects.filter(email=email).first()
             token = default_token_generator.make_token(user)
             uid = urlsafe_base64_encode(force_bytes(user.pk))
-            reset_link = f"http://localhost:8000/reset_password/{uid}/{token}/"
+            
+            reset_link = f"http://localhost:8081/reset_password/{uid}/{token}/"
 
             send_mail(
                 'Reset your password for rewire',
@@ -193,8 +194,14 @@ def forget_password(request):
 
 @api_view(['POST'])        
 @csrf_exempt
-def reset_password(request, uidb64, token):
-    if request.method == 'POST':
+def reset_password(request, uidb64=None, token=None):
+    # Now the function can handle both the form submission and the link validation
+    if request.method == 'GET':
+        # This is when the user clicks the link
+        # You can return a response or redirect to frontend
+        return JsonResponse({'valid': True, 'uidb64': uidb64, 'token': token})
+    elif request.method == 'POST':
+        # Original password reset logic
         try:
             data = json.loads(request.body)
             new_password = data['new_password']

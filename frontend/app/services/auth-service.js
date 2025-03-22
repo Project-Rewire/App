@@ -124,5 +124,26 @@ export const authService = {
       console.error('Forgot password error:', error);
       throw error;
     }
+  },
+
+  resetPassword: async (uidb64, token, newPassword) => {
+    try {
+      const response = await fetch(`${API_URL}${AUTH_ENDPOINTS.resetPassword}/${uidb64}/${token}/`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ new_password: newPassword })
+      });
+      
+      const data = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(data.error || 'Password reset failed');
+      }
+      return data;
+      
+    } catch (error) {
+      console.error('Reset password error:', error);
+      throw error;
+    }
   }
 };
