@@ -1,2 +1,4 @@
 import React,{useState} from 'react';
 import{View,Text,Touchab0pacity,FlatList,Image,StyleSheet} from 'react-native';
+
+const styles=StyleSheet.create({})
