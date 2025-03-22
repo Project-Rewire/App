@@ -11,11 +11,10 @@ import {
 import Card from "../../fragments/card";
 import { useNavigation} from "@react-navigation/native";
 import AntDesign from '@expo/vector-icons/AntDesign';
-import CommuniteCreate from "../../screens/CommuniteCreate";
-
 
 // Main community card(ReWire Community)
 export default function Community() {
+
   const navigation = useNavigation();
 
   const [joinedCommunities, setJoinedCommunities] = useState([
@@ -86,7 +85,7 @@ export default function Community() {
             style={styles.avatar}
           />
           <View style={styles.textBox}>
-            <Card.Title>{item.name}</Card.Title>
+            <Text style={styles.heading}>{item.name}</Text>
             {item.members && <Text style={styles.members}>{item.members} members</Text>}
           </View>
         </View>

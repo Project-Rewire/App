@@ -16,11 +16,23 @@ import Login from './app/screens/Login';
 import ForgotPassword from './app/screens/ForgotPassword';
 import SignupStepOne from './app/screens/signupStepOne';
 import SignupStepTwo from './app/screens/signupStepTwo';
-
+import CreateCommunity from './app/screens/CreateCommunity';
 
 const Stack = createNativeStackNavigator();
 const BottomTab = createBottomTabNavigator();
+const CommunityStack = createNativeStackNavigator();
 
+const CommunityStackGroup = () => {
+  return (
+    <CommunityStack.Navigator
+      screenOptions={{
+        headerShown: false,
+      }}>
+      <CommunityStack.Screen name="Community" component={Community} />
+      <CommunityStack.Screen name="CreateCommunity" component={CreateCommunity} />
+    </CommunityStack.Navigator>
+  );
+}
 const BottomTabGroup = () => {
   return (
     <BottomTab.Navigator
@@ -49,7 +61,7 @@ const BottomTabGroup = () => {
       <BottomTab.Screen name="Home" component={Home} />
       <BottomTab.Screen name="Tasks" component={Tasks} />
       <BottomTab.Screen name="Rebot" component={Rebot} />
-      <BottomTab.Screen name="Community" component={Community} />
+      <BottomTab.Screen name="Community" component={CommunityStackGroup} />
     </BottomTab.Navigator>
   );
 }
