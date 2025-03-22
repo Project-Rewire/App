@@ -17,7 +17,7 @@ const Login = ({ navigation }) => {
 
   const handleLogin = async () => {
     if (!email || !password) {
-      Alert.alert('Error', 'Please enter both email and password');
+      console.log('Error', 'Please enter both email and password');
       return;
     }
 
@@ -25,7 +25,7 @@ const Login = ({ navigation }) => {
     try {
       const success = await login(email, password);
       if (!success) {
-        Alert.alert('Login Failed', 'Invalid email or password');
+        console.log('Login Failed', 'Invalid email or password');
       }
     } catch (error) {
       Alert.alert('Error', error.message || 'Login failed. Please try again.');

@@ -7,7 +7,7 @@ const DOMAINS = {
 
 const PORTS = {
     production: 8081,
-    local: 8081
+    local: 8000
 };
 
 const BACKEND_DOMAIN = isProduction ? DOMAINS.production : DOMAINS.local;
