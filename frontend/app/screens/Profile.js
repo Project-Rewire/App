@@ -97,7 +97,14 @@ const styles = StyleSheet.create({
     color: 'white',
     marginLeft: 6,
   },
-  
+  menuCard: {
+    backgroundColor: '#454B54',
+    borderRadius: 12,
+    marginHorizontal: 16,
+    marginVertical: 10,
+    padding: 16,
+  },
+
 
 
 
