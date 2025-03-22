@@ -142,17 +142,17 @@ export default function RebotChatSelection() {
     }
 
     return (
-        <View style={[styles.container, { backgroundColor: colors.background }]}>
-            <H1>Your Conversations</H1>
+        <View style={[styles.container, { backgroundColor: colors.card }]}>
+            <H1>Past Conversations</H1>
 
             {conversations.length === 0 ? (
                 <View style={styles.emptyState}>
                     <Icon type="ionicon" name="chatbubble-outline" size={48} color="#666" />
                     <Text style={styles.emptyStateText}>No conversations yet</Text>
                     <TouchableHighlight
-                        style={styles.newChatButton}
+                        style={[styles.newChatButton, { backgroundColor: colors.primary }]}
                         underlayColor={colors.highlight}
-                        onPress={() => navigation.navigate("NewChat")}
+                        onPress={() => navigation.navigate("RebotWelcome")}
                     >
                         <Text style={styles.newChatButtonText}>Start a New Chat</Text>
                     </TouchableHighlight>
@@ -172,7 +172,7 @@ export default function RebotChatSelection() {
                             >
                                 <ListItem
                                     bottomDivider
-                                    containerStyle={{ backgroundColor: colors.card, borderColor: colors.border }}
+                                    containerStyle={{ backgroundColor: colors.background, borderColor: colors.border }}
                                 >
                                     <ListItem.Content style={styles.listItem}>
                                         <ListItem.Title style={{ color: colors.text }}>
@@ -236,7 +236,6 @@ const styles = StyleSheet.create({
         marginBottom: 24,
     },
     newChatButton: {
-        backgroundColor: "#2196F3",
         paddingVertical: 12,
         paddingHorizontal: 24,
         borderRadius: 8,

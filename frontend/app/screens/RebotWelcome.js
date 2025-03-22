@@ -1,10 +1,11 @@
 import React, { useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Image, Alert } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useTheme } from '@react-navigation/native';
 import { createConversation, initializeDb } from '../app.db.service';
 
 export default function RebotWelcome() {
     const navigation = useNavigation();
+    const { colors } = useTheme();
 
     // Initialize the database when the component mounts
     useEffect(() => {
@@ -60,10 +61,10 @@ export default function RebotWelcome() {
     };
 
     return (
-        <View style={styles.container}>
+        <View style={[styles.container, { backgroundColor: colors.card }]}>
             {/* Illustration container */}
             <Image
-                source={require('../assets/chatbot-healthcare-vector-v2.png')}
+                source={require('../assets/chatbot-healthcare-vector-v3.png')}
                 resizeMode="contain"
                 style={styles.illustration}
             />
@@ -73,6 +74,7 @@ export default function RebotWelcome() {
                 <TouchableOpacity
                     style={styles.newConversationButton}
                     onPress={handleNewConversation}
+                    activeOpacity={0.8}
                 >
                     <Text style={styles.newConversationText}>New Conversation</Text>
                 </TouchableOpacity>
@@ -97,7 +99,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
     },
     illustration: {
-        height: '30%',
+        height: '45%',
         width: '100%',
     },
     actionButtons: {
@@ -123,6 +125,9 @@ const styles = StyleSheet.create({
         height: 50,
         justifyContent: 'center',
         alignItems: 'center',
+        borderWidth: 1,
+        borderRadius: 8,
+        borderColor: '#16837D'
     },
     previousText: {
         color: '#16837D',
