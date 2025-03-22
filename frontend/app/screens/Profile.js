@@ -4,14 +4,14 @@ import { Feather } from '@expo/vector-icons';
 
 const Profile = () => {
   const username = "Andrew Mark";
+
   return (
     <SafeAreaView style={styles.container}>
       {/* Profile Card */}
       <View style={styles.profileCard}>
         <View style={styles.profileHeader}>
           <View style={styles.avatarContainer}>
-            <View style={styles.avatarContainer}>
-             <Image
+            <Image
               source={{ uri: `https://avatar.iran.liara.run/username?username=${username}` }}
               style={styles.avatar}
             />
@@ -23,8 +23,9 @@ const Profile = () => {
           <Text style={styles.editButtonText}>Edit Profile</Text>
         </TouchableOpacity>
       </View>
-            {/* Menu Card */}
-            <View style={styles.menuCard}>
+
+      {/* Menu Card */}
+      <View style={styles.menuCard}>
         <TouchableOpacity style={styles.menuItem}>
           <Feather name="file-text" size={24} color="#fff" />
           <Text style={styles.menuItemText}>Your Report</Text>
@@ -47,7 +48,8 @@ const Profile = () => {
       </View>
     </SafeAreaView>
   );
-);
+};
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -115,19 +117,5 @@ const styles = StyleSheet.create({
     marginLeft: 16,
   }
 });
+
 export default Profile;
-
-
-
-
-
-
-
-
-         
-
-
-
-
-
-
