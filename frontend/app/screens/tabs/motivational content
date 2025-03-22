@@ -66,5 +66,9 @@ const MotivationalContent = () => {
     header:{fontSize:20,fontWeight:'bold',textAlign:'center',marginBottom:10},
     categoryContainer:{flexDirection:'row',justifyContent:'center',marginBottom:10},
     categoryButton:{ padding: 10, marginHorizontal: 5, backgroundColor: '#ddd', borderRadius: 5 },
+    selectedCategory:{backgroundColor:'#8ac6d1'},
+    card:{flex:1,backgroundColor:'#fff',margin:5,padding:10,borderRadius:10,alignItems:'center'},
+    image:{width:150,height:200,borderRadius:10},
+    
 
   }
