@@ -1,4 +1,5 @@
 import React from 'react';
+import { useAuth } from '../hooks/jwt-auth-service';
 
 import { Icon } from '@rneui/base';
 import { ListItem } from '@rneui/base';
@@ -11,9 +12,15 @@ import { H1, H2 } from '../fragments/heading';
 
 export default function Settings() {
 
+    const { logout } = useAuth
     const { isDark, toggleTheme } = useThemeToggle();
     const { colors } = useTheme();
     const navigation = useNavigation();
+
+    
+    const handleLogout = async () => {
+        await logout();
+    };
 
     const SETTINGS = [
         {
@@ -36,6 +43,13 @@ export default function Settings() {
             iconName: 'file-text',
             iconLib: 'feather',
             callback: () => navigation.navigate("TermsAndConditions")
+        },
+        {
+            id: 's4',
+            title: 'Logout',
+            iconName: 'log-out',
+            iconLib: 'feather',
+            callback: handleLogout
         },
     ];
 

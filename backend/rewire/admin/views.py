@@ -69,6 +69,7 @@ def signup_step_two(request):
     else:
         return JsonResponse({'error': 'Invalid HTTP method'}, status=405)
 
+
 @api_view(['POST'])
 @csrf_exempt
 def login_user(request):

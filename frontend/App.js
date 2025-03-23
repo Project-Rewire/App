@@ -1,11 +1,11 @@
 import React from 'react';
 import { Icon } from './app/fragments/icon';
-import { useLogin } from './app/hooks/login-service';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { ThemeProvider, useThemeToggle } from './app/hooks/theme-service';
 import { SafeAreaView, Platform, StatusBar } from 'react-native';
+import { AuthProvider, useAuth } from './app/hooks/jwt-auth-service';
 
 import Home from './app/screens/tabs/Home';
 import Login from './app/screens/Login';
@@ -22,18 +22,26 @@ import About from './app/screens/About';
 import PrivacyPolicy from './app/screens/PrivacyPolicy';
 import TermsAndConditions from './app/screens/TermsAndConditions';
 import RebotChatSelection from './app/screens/RebotChatSelection';
+import Splash from './app/screens/Splash';
 
 export default function App() {
   return (
-    <ThemeProvider>
-      <AppContent />
-    </ThemeProvider>
+    <AuthProvider>
+      <ThemeProvider>
+        <AppContent />
+      </ThemeProvider>
+    </AuthProvider>
   );
 }
 
 function AppContent() {
-  const { loggedIn } = useLogin();
+  const auth = useAuth();
   const { theme } = useThemeToggle();
+
+ 
+  if (auth.isLoading) {
+    return <Splash />;
+  }
 
   return (
     <SafeAreaView
@@ -44,7 +52,7 @@ function AppContent() {
       }}
     >
       <NavigationContainer theme={theme}>
-        {loggedIn ? <BottomTabNavigator /> : <LoginNavigator />}
+        {auth.isLoggedIn ? <BottomTabNavigator /> : <LoginNavigator />}
       </NavigationContainer>
     </SafeAreaView>
   );
