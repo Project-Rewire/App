@@ -1,7 +1,7 @@
 from typing import List, Dict, Any, Optional
 from django.contrib.auth import get_user_model
 from django.utils import timezone
-from .models import Task, UserTask, UserScore
+from .models import DailyProgress, Task, UserTask, UserScore
 from .service import RecommendationsService
 
 User = get_user_model()

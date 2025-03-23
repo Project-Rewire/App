@@ -4,24 +4,30 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 from core.models import User
 
 class Task(models.Model):
+    """
+    Represents a task that users can complete to earn points.
+    """
     title = models.CharField(max_length=100)
     description = models.TextField()
 
-    DIFICULTY_CHOICES = [
+    DIFFICULTY_CHOICES = [
         ('EASY', 'Easy'),
         ('MEDIUM', 'Medium'),
         ('HARD', 'Hard'),
     ]
     
-    difficulty = models.CharField(max_length=10, choices = DIFICULTY_CHOICES)
+    difficulty = models.CharField(max_length=10, choices=DIFFICULTY_CHOICES)
     marks = models.IntegerField(default=1, validators=[MinValueValidator(1)])
     created_at = models.DateTimeField(auto_now_add=True)
 
-    def ___str__(self):
+    def __str__(self):
         return f"{self.title} ({self.get_difficulty_display()})"
     
 
 class UserTask(models.Model):
+    """
+    Represents a task assigned to a specific user and tracks its completion status.
+    """
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_tasks')
     task = models.ForeignKey(Task, on_delete=models.CASCADE, related_name='assigned_users')
 
@@ -46,6 +52,9 @@ class UserTask(models.Model):
     
 
 class UserScore(models.Model):
+    """
+    Tracks a user's overall score and completed tasks.
+    """
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='score')
     total_marks = models.IntegerField(default=0)
     tasks_completed = models.IntegerField(default=0)
@@ -56,6 +65,9 @@ class UserScore(models.Model):
     
     
 class DailyProgress(models.Model):
+    """
+    Tracks a user's daily progress towards their daily goal.
+    """
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='daily_progress')
     date = models.DateField(default=timezone.now)
     marks_earned = models.IntegerField(default=0)
@@ -70,10 +82,16 @@ class DailyProgress(models.Model):
 
     @property
     def percentage(self):
+        """
+        Calculate the percentage of completion towards the daily target.
+        """
         return min(100, int((self.marks_earned / self.target_marks) * 100))
         
     @property
     def status(self):
+        """
+        Return a status based on the progress made.
+        """
         if self.marks_earned > 10:
             return "ABOVE_AVERAGE"
         elif self.marks_earned >= 5:
