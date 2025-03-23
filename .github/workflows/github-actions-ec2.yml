@@ -38,4 +38,4 @@ jobs:
             sudo chmod +x /usr/local/bin/docker-compose
             cd home
             cd backend/rewire
-            sudo docker-compose up --build
+            sudo docker-compose up --build -d
