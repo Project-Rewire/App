@@ -8,8 +8,6 @@ from .serializer import CommunitySerializer, CommunityCreateSerializer, Communit
 from .models import Community, CommunityMembership, Post
 
 class IsCreatorOrReadOnly(permissions.BasePermission):
-    
-    # Custom permission to only allow creators of a community to edit it.
    
     def has_object_permission(self, request, view, obj):
         # Read permissions are allowed to any request
@@ -40,6 +38,9 @@ class CommunityViewSet(viewsets.ModelViewSet):
         if self.action == 'create':
             return CommunityCreateSerializer
         return CommunitySerializer
+    
+    def perform_create(self, serializer):
+        serializer.save(creator=self.request.user)
     
     @action(detail=True, methods=['post'])
     def join(self, request, pk=None):
@@ -101,7 +102,7 @@ class CommunityViewSet(viewsets.ModelViewSet):
         
         serializer = self.get_serializer(suggested_communities, many=True)
         return Response(serializer.data)
-
+        
 class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
