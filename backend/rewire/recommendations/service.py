@@ -11,7 +11,7 @@ OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 class RecommendationsService:
 
     def __init__(self, api_key=OPENAI_API_KEY, model: str = "gpt-4o-2024-08-06"):
-        self.openAI = OpenAI(api_key=api_key)
+        self.openai = OpenAI(api_key=api_key)
         self.model = model
 
     def generate_recommendations(self, user_id: int, difficulty: str = None, count: int = 3) -> List[Dict[str, Any]]:
@@ -85,11 +85,10 @@ class RecommendationsService:
             
         except Exception as e:
             print(f"Error generating recommendations: {str(e)}")
-            # generate tasks using pre defined fallback tasks if API call fails
             return self._generate_fallback_tasks(difficulty)
     
     # Generate fallback tasks in case the API call fails
-    def _generate_fallback_tasks(self, difficulty: Optional[str] = None) -> List[Dict[str, Any]]:
+    def _generate_fallback_tasks(self, difficulty: Optional[str] = None, count: int = 3) -> List[Dict[str, Any]]:
         fallback_tasks = [
             {
                 "title": "Practice Mindfulness for 10 Minutes",
@@ -108,12 +107,73 @@ class RecommendationsService:
                 "description": "Create and maintain a detailed journal tracking your habits, triggers, and responses for an entire week. Identify patterns and plan improvements.",
                 "difficulty": "HARD",
                 "marks": 12
+            },
+
+            # medium difiiculty
+            {
+                "title": "Digital Detox for 2 Hours",
+                "description": "Take a break from all digital devices for 2 consecutive hours. Use this time to connect with your surroundings or engage in an offline activity.",
+                "difficulty": "MEDIUM",
+                "marks": 7
+            },
+            {
+                "title": "Exercise for 30 Minutes",
+                "description": "Complete a 30-minute workout of your choice. Physical activity releases endorphins that can help reduce stress and cravings.",
+                "difficulty": "MEDIUM",
+                "marks": 5
+            },
+            {
+                "title": "Practice Urge Surfing",
+                "description": "When you feel a strong urge, observe it without acting on it. Notice how it rises and falls like a wave. Time how long it lasts.",
+                "difficulty": "MEDIUM",
+                "marks": 6
+            },
+        
+            # HARD difficulty tasks
+            {
+                "title": "Complete a Week-long Habit Tracking Journal",
+                "description": "Create and maintain a detailed journal tracking your habits, triggers, and responses for an entire week. Identify patterns and plan improvements.",
+                "difficulty": "HARD",
+                "marks": 12
+            },
+            {
+                "title": "Attend a Support Group",
+                "description": "Find and attend a local or online support group related to your specific addiction. Share your experience if you feel comfortable.",
+                "difficulty": "HARD",
+                "marks": 10
+            },
+            {
+                "title": "Identify and Avoid Triggers for a Full Day",
+                "description": "Make a list of your top five triggers and consciously avoid them for an entire day, creating alternative plans for situations where triggers are unavoidable.",
+                "difficulty": "HARD",
+                "marks": 11
             }
-        ]
+
+            ]
         
         if difficulty:
-            return [task for task in fallback_tasks if task["difficulty"] == difficulty.upper()]
-        return fallback_tasks
-
+            filtered_tasks = [task for task in fallback_tasks if task["difficulty"] == difficulty.upper()]
+            # If we have enough tasks of the requested difficulty, return the requested count
+            if len(filtered_tasks) >= count:
+                return filtered_tasks[:count]
+            # Otherwise, return all tasks of the requested difficulty
+            return filtered_tasks
+    
+        # If no difficulty is specified, return a mix of difficulties up to the requested count
+        # Take one from each difficulty to ensure variety
+        selected_tasks = []
+        difficulties = ["EASY", "MEDIUM", "HARD"]
+    
+        for diff in difficulties:
+            diff_tasks = [task for task in fallback_tasks if task["difficulty"] == diff]
+            if diff_tasks:
+                selected_tasks.append(diff_tasks[0])
+    
+        # If we still need more tasks, add additional ones
+        remaining_tasks = [t for t in fallback_tasks if t not in selected_tasks]
+        while len(selected_tasks) < count and remaining_tasks:
+            selected_tasks.append(remaining_tasks.pop(0))
+    
+        return selected_tasks[:count]
 
     
