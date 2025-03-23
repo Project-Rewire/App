@@ -12,6 +12,7 @@ from .serializers import (
     TaskRatingSerializer, RecommendationRequestSerializer, UserTaskUpdateSerializer
 )
 from .service import RecommendationsService
+from .models import DailyProgress
 
 # Get all tasks assigned to the user
 @csrf_exempt
@@ -137,6 +138,18 @@ def update_task_status(request, task_id):
             user_score.total_marks += user_task.earned_marks
             user_score.tasks_completed += 1
             user_score.save()
+
+            today = timezone.now().date()
+            daily_progress, created = DailyProgress.objects.get_or_create(
+                user=request.user,
+                date=today,
+                defaults={'target_marks': 20}
+            )
+            daily_progress.marks_earned += user_task.earned_marks
+            if daily_progress.marks_earned >= daily_progress.target_marks:
+                daily_progress.completed = True
+            daily_progress.save()
+
         else:
             return Response(
                 {'error': f'Cannot complete task with status {user_task.status}'},
@@ -254,3 +267,24 @@ def get_task_analytics(request):
     }
     
     return Response(analytics)
+
+# update daily progress
+@csrf_exempt
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_daily_progress(request):
+    today = timezone.now().date()
+    daily_progress, created = DailyProgress.objects.get_or_create(
+        user=request.user,
+        date=today,
+        defaults={'target_marks': 20}
+    )
+    
+    return Response({
+        'date': daily_progress.date,
+        'marks_earned': daily_progress.marks_earned,
+        'target_marks': daily_progress.target_marks,
+        'percentage': daily_progress.percentage,
+        'completed': daily_progress.completed,
+        'status': daily_progress.status
+    })

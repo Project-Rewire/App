@@ -13,4 +13,5 @@ urlpatterns = [
     # Task actions
     path('tasks/<int:task_id>/update/', views.update_task_status, name='update_task_status'),
     path('tasks/<int:task_id>/rate/', views.rate_task, name='rate_task'),
+    path('daily-progress/', views.get_daily_progress, name='get_daily_progress'),
 ]

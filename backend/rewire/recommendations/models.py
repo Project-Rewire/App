@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 from django.core.validators import MinValueValidator, MaxValueValidator
 from core.models import User
 
@@ -52,3 +53,30 @@ class UserScore(models.Model):
     
     def __str__(self):
         return f"{self.user.email} - {self.total_marks} marks"
+    
+    
+class DailyProgress(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='daily_progress')
+    date = models.DateField(default=timezone.now)
+    marks_earned = models.IntegerField(default=0)
+    target_marks = models.IntegerField(default=20)
+    completed = models.BooleanField(default=False)
+
+    class Meta:
+        unique_together = ('user', 'date')
+        
+    def __str__(self):
+        return f"{self.user.email} - {self.date} - {self.marks_earned}/{self.target_marks}"
+
+    @property
+    def percentage(self):
+        return min(100, int((self.marks_earned / self.target_marks) * 100))
+        
+    @property
+    def status(self):
+        if self.marks_earned > 10:
+            return "ABOVE_AVERAGE"
+        elif self.marks_earned >= 5:
+            return "AVERAGE"
+        else:
+            return "BELOW_AVERAGE"
