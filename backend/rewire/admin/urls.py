@@ -36,4 +36,5 @@ urlpatterns = [
     path('questionnaire/', include('questionnaire.urls')),
     path('recommendations/', include('recommendations.urls')),
     path('aiprofile/', include('aiprofile.urls')),
+    path('community/', include('community.urls')),
 ]

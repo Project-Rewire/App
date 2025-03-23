@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'rebot',
     'questionnaire',
     'aiprofile',
+    'community',
     'recommendations',
     'django.contrib.admin',
     'django.contrib.auth',
