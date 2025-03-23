@@ -8,9 +8,9 @@ from .serializer import CommunitySerializer, CommunityCreateSerializer, Communit
 from .models import Community, CommunityMembership, Post
 
 class IsCreatorOrReadOnly(permissions.BasePermission):
-    """
-    Custom permission to only allow creators of a community to edit it.
-    """
+    
+    # Custom permission to only allow creators of a community to edit it.
+   
     def has_object_permission(self, request, view, obj):
         # Read permissions are allowed to any request
         if request.method in permissions.SAFE_METHODS:
