@@ -61,8 +61,9 @@ def complete_task(user_id: int, task_id: int) -> bool:
         
         # Update status
         if user_task.status in ['NOT_STARTED', 'IN_PROGRESS']:
+            now = timezone.now()
             user_task.status = 'COMPLETED'
-            user_task.completed_at = timezone.now()
+            user_task.completed_at = now
             user_task.earned_marks = user_task.task.marks
             user_task.save()
             
@@ -71,6 +72,18 @@ def complete_task(user_id: int, task_id: int) -> bool:
             user_score.total_marks += user_task.earned_marks
             user_score.tasks_completed += 1
             user_score.save()
+            
+            # Update daily progress - matches the logic in the view
+            today = now.date()
+            daily_progress, created = DailyProgress.objects.get_or_create(
+                user_id=user_id,
+                date=today,
+                defaults={'target_marks': 20}
+            )
+            daily_progress.marks_earned += user_task.earned_marks
+            if daily_progress.marks_earned >= daily_progress.target_marks:
+                daily_progress.completed = True
+            daily_progress.save()
             
             return True
             
