@@ -59,31 +59,14 @@ const Step1 = ({ onNext }) => {
     <View style={styles.minimalisticStepContainer}>
       <View style={styles.logoContainer}>
         <Image
-          source={{ uri: 'https://placeholder.com/logo' }} // Replace with your actual logo URL
+          source={require('../assets/rewire-icon.png')} // Update with your actual logo filename
           style={styles.logoImage}
         />
-        <View style={styles.leafOverlay}>
-          <Image
-            source={{ uri: 'https://placeholder.com/leaf' }} // Replace with actual leaf asset
-            style={[styles.leaf, styles.leafTopLeft]}
-          />
-          <Image
-            source={{ uri: 'https://placeholder.com/leaf' }} // Replace with actual leaf asset
-            style={[styles.leaf, styles.leafTopRight]}
-          />
-          <Image
-            source={{ uri: 'https://placeholder.com/leaf' }} // Replace with actual leaf asset
-            style={[styles.leaf, styles.leafBottomLeft]}
-          />
-          <Image
-            source={{ uri: 'https://placeholder.com/leaf' }} // Replace with actual leaf asset
-            style={[styles.leaf, styles.leafBottomRight]}
-          />
-        </View>
+       
       </View>
-      
+    < View ></View>
       <Text style={styles.appName}>ReWire</Text>
-      <Text style={styles.tagline}>Heal the mind, heal the life</Text>
+      <Text style={styles.tagline}>Heal the mind, Heal the life</Text>
       
       <View style={styles.welcomeContent}>
         <Text style={styles.welcomeTitle}>Breaking free from addiction starts today</Text>
@@ -109,7 +92,7 @@ const Step2 = ({ onNext }) => {
   return (
     <View style={styles.stepContainer}>
       <Text style={styles.stepTitle}>How We'll Help You</Text>
-      <Text style={styles.quote}>"You're not alone. Here's how Rewire supports you every step of the way:"</Text>
+      <Text style={styles.quote}>"You're not alone. Here's how Rewire supports you, every step of the way:"</Text>
       
       <View style={styles.featureCards}>
         <FeatureCard 
@@ -173,7 +156,7 @@ const Step3 = ({ onNext }) => {
         <WhyRewireItem 
           icon="lock" 
           color="#40c4ff"
-          title="Safe & Private" 
+          title="Safety & Privacy" 
           description="No one knows who you are unless you choose to share."
         />
         <WhyRewireItem 
@@ -276,6 +259,7 @@ const styles = StyleSheet.create({
   stepContainer: {
     flex: 1,
     padding: 16,
+    alignItems: 'center', // Center align all step containers
   },
   logoContainer: {
     width: 200,
@@ -284,10 +268,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 24,
     position: 'relative',
+    
   },
   logoImage: {
-    width: 120,
-    height: 120,
+    width: 200,
+    height: 200,
     resizeMode: 'contain',
   },
   leafOverlay: {
@@ -326,11 +311,13 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#40c4ff',
     marginBottom: 4,
+    textAlign: 'center', // Ensure centered text
   },
   tagline: {
     fontSize: 16,
     color: '#666',
     marginBottom: 48,
+    textAlign: 'center', // Ensure centered text
   },
   welcomeContent: {
     width: '100%',
@@ -371,6 +358,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#333',
     marginBottom: 12,
+    textAlign: 'center', // Center align titles
   },
   quote: {
     fontSize: 16,
@@ -378,9 +366,12 @@ const styles = StyleSheet.create({
     color: '#666',
     marginBottom: 24,
     lineHeight: 24,
+    textAlign: 'center', // Center align quotes
+    width: '90%', // Give some margin on the sides
   },
   featureCards: {
     marginBottom: 24,
+    width: '100%', // Full width for cards
   },
   featureCard: {
     backgroundColor: '#fff',
@@ -423,9 +414,11 @@ const styles = StyleSheet.create({
     color: '#666',
     marginBottom: 24,
     textAlign: 'center',
+    width: '90%', // Give some margin on the sides
   },
   whyRewireContainer: {
     marginBottom: 24,
+    width: '100%', // Full width for items
   },
   whyRewireItem: {
     flexDirection: 'row',
@@ -513,6 +506,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#333',
     marginBottom: 12,
+    textAlign: 'center', // Center align section titles
   },
   actionCard: {
     backgroundColor: '#fff',
