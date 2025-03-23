@@ -1,400 +1,593 @@
 import React, { useState } from 'react';
-import { 
-  StyleSheet, 
-  View, 
-  Text, 
-  TouchableOpacity, 
+import {
   SafeAreaView,
   ScrollView,
-  TextInput,
-  StatusBar
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Image,
 } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { LinearGradient } from 'expo-linear-gradient';
+import { MaterialIcons, FontAwesome, Ionicons } from '@expo/vector-icons';
 
-// Mock logo component
-const Logo = () => (
-  <View style={styles.logoContainer}>
-    <View style={styles.logoCircle}>
-      <Text style={styles.logoText}>R</Text>
-    </View>
-    <Text style={styles.logoFullText}>Rewire</Text>
-  </View>
-);
+const RewireApp = () => {
+  const [currentStep, setCurrentStep] = useState(1);
 
-// 1. Welcome Screen
-const WelcomeScreen = ({ navigation }) => {
+  const goToNextStep = () => {
+    setCurrentStep(currentStep + 1);
+  };
+
+  const renderStep = () => {
+    switch (currentStep) {
+      case 1:
+        return <Step1 onNext={goToNextStep} />;
+      case 2:
+        return <Step2 onNext={goToNextStep} />;
+      case 3:
+        return <Step3 onNext={goToNextStep} />;
+     
+      default:
+        return <Step1 onNext={goToNextStep} />;
+    }
+  };
+
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="dark-content" />
-      <View style={styles.content}>
-        <Logo />
-        <Text style={styles.tagline}>Your personalized journey to recovery</Text>
-        <Text style={styles.description}>
-          Join thousands on their path to recovery with AI-powered support tailored just for you
-        </Text>
-        
-        <TouchableOpacity 
-          style={styles.primaryButton}
-          onPress={() => navigation.navigate('Privacy')}
-        >
-          <Text style={styles.primaryButtonText}>Get Started</Text>
-        </TouchableOpacity>
-        
-        <TouchableOpacity 
-          style={styles.secondaryButton}
-          onPress={() => navigation.navigate('SignIn')}
-        >
-          <Text style={styles.secondaryButtonText}>I already have an account</Text>
-        </TouchableOpacity>
-      </View>
-    </SafeAreaView>
-  );
-};
-
-// 2. Privacy Assurance Screen
-const PrivacyScreen = ({ navigation }) => {
-  return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="dark-content" />
-      <View style={styles.content}>
-        <View style={styles.headerContainer}>
-          <Text style={styles.headerText}>Privacy & Security</Text>
-        </View>
-        
-        <View style={styles.privacyCard}>
-          <View style={styles.privacyIconContainer}>
-            <Text style={styles.privacyIconText}>🔒</Text>
-          </View>
-          <Text style={styles.privacyTitle}>Your privacy matters to us</Text>
-          <Text style={styles.privacyText}>
-            All your data is encrypted and stored securely. Your identity remains anonymous in communities.
-          </Text>
-          <Text style={styles.privacyText}>
-            The information you share is only used to personalize your recovery journey.
-          </Text>
-        </View>
-        
-        <TouchableOpacity 
-          style={styles.primaryButton}
-          onPress={() => navigation.navigate('Purpose')}
-        >
-          <Text style={styles.primaryButtonText}>Continue</Text>
-        </TouchableOpacity>
-        
-        <TouchableOpacity 
-          style={styles.textLink}
-          onPress={() => navigation.navigate('PrivacyPolicy')}
-        >
-          <Text style={styles.linkText}>Read our full Privacy Policy</Text>
-        </TouchableOpacity>
-      </View>
-    </SafeAreaView>
-  );
-};
-
-// 3. Purpose Selection Screen
-const PurposeScreen = ({ navigation }) => {
-  const [selectedPurpose, setSelectedPurpose] = useState(null);
-  
-  const purposes = [
-    "I want to overcome an addiction",
-    "I'm supporting someone with addiction",
-    "I'm exploring options for recovery",
-    "Other"
-  ];
-  
-  const [otherReason, setOtherReason] = useState("");
-  
-  return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="dark-content" />
-      <View style={styles.content}>
-        <View style={styles.headerContainer}>
-          <Text style={styles.headerText}>What brings you to Rewire?</Text>
-        </View>
-        
-        <ScrollView style={styles.optionsContainer}>
-          {purposes.map((purpose, index) => (
-            <TouchableOpacity 
-              key={index}
-              style={[
-                styles.optionCard,
-                selectedPurpose === index ? styles.selectedOption : {}
-              ]}
-              onPress={() => setSelectedPurpose(index)}
-            >
-              <Text style={styles.optionText}>{purpose}</Text>
-              {selectedPurpose === index && (
-                <View style={styles.checkmark}>
-                  <Text style={styles.checkmarkText}>✓</Text>
-                </View>
-              )}
-            </TouchableOpacity>
-          ))}
-          
-          {selectedPurpose === 3 && (
-            <TextInput
-              style={styles.textInput}
-              placeholder="Please specify..."
-              value={otherReason}
-              onChangeText={setOtherReason}
-              multiline
-            />
+      <ScrollView contentContainerStyle={styles.scrollContainer}>
+        <View style={styles.header}>
+          <Text style={styles.logo}>Rewire</Text>
+          {currentStep < 4 && (
+            <View style={styles.stepIndicator}>
+              <Text style={styles.stepText}>Step {currentStep} of 3</Text>
+              <View style={styles.stepDots}>
+                <View style={[styles.dot, currentStep === 1 && styles.activeDot]} />
+                <View style={[styles.dot, currentStep === 2 && styles.activeDot]} />
+                <View style={[styles.dot, currentStep === 3 && styles.activeDot]} />
+              </View>
+            </View>
           )}
-        </ScrollView>
-        
-        <View style={styles.navigationButtons}>
-          <TouchableOpacity 
-            style={styles.backButton}
-            onPress={() => navigation.goBack()}
-          >
-            <Text style={styles.backButtonText}>Back</Text>
-          </TouchableOpacity>
-          
-          <TouchableOpacity 
-            style={[
-              styles.primaryButton,
-              styles.nextButton,
-              selectedPurpose === null ? styles.disabledButton : {}
-            ]}
-            disabled={selectedPurpose === null}
-            onPress={() => navigation.navigate('AddictionType')}
-          >
-            <Text style={styles.primaryButtonText}>Next</Text>
-          </TouchableOpacity>
         </View>
-      </View>
+        {renderStep()}
+      </ScrollView>
     </SafeAreaView>
   );
 };
 
-// Create the navigator
-const Stack = createNativeStackNavigator();
-
-// Main App
-const App = () => {
+const Step1 = ({ onNext }) => {
   return (
-    <NavigationContainer>
-      <Stack.Navigator 
-        initialRouteName="Welcome"
-        screenOptions={{
-          headerShown: false,
-        }}
-      >
-        <Stack.Screen name="Welcome" component={WelcomeScreen} />
-        <Stack.Screen name="Privacy" component={PrivacyScreen} />
-        <Stack.Screen name="Purpose" component={PurposeScreen} />
-        {/* Additional screens would be added here */}
-      </Stack.Navigator>
-    </NavigationContainer>
+    <View style={styles.minimalisticStepContainer}>
+      <View style={styles.logoContainer}>
+        <Image
+          source={{ uri: 'https://placeholder.com/logo' }} // Replace with your actual logo URL
+          style={styles.logoImage}
+        />
+        <View style={styles.leafOverlay}>
+          <Image
+            source={{ uri: 'https://placeholder.com/leaf' }} // Replace with actual leaf asset
+            style={[styles.leaf, styles.leafTopLeft]}
+          />
+          <Image
+            source={{ uri: 'https://placeholder.com/leaf' }} // Replace with actual leaf asset
+            style={[styles.leaf, styles.leafTopRight]}
+          />
+          <Image
+            source={{ uri: 'https://placeholder.com/leaf' }} // Replace with actual leaf asset
+            style={[styles.leaf, styles.leafBottomLeft]}
+          />
+          <Image
+            source={{ uri: 'https://placeholder.com/leaf' }} // Replace with actual leaf asset
+            style={[styles.leaf, styles.leafBottomRight]}
+          />
+        </View>
+      </View>
+      
+      <Text style={styles.appName}>ReWire</Text>
+      <Text style={styles.tagline}>Heal the mind, heal the life</Text>
+      
+      <View style={styles.welcomeContent}>
+        <Text style={styles.welcomeTitle}>Breaking free from addiction starts today</Text>
+        
+        <View style={styles.minimalisticBulletPoints}>
+          <Text style={styles.minimalisticBulletText}>
+            No judgments. No pressure. Just a step-by-step journey designed for you.
+          </Text>
+          <Text style={styles.minimalisticBulletText}>
+            Let's create a personalized recovery plan that fits into your daily life.
+          </Text>
+        </View>
+      </View>
+      
+      <TouchableOpacity style={styles.minimalisticButton} onPress={onNext}>
+        <Text style={styles.minimalisticButtonText}>Get Started</Text>
+      </TouchableOpacity>
+    </View>
   );
 };
 
-// Styles
+const Step2 = ({ onNext }) => {
+  return (
+    <View style={styles.stepContainer}>
+      <Text style={styles.stepTitle}>How We'll Help You</Text>
+      <Text style={styles.quote}>"You're not alone. Here's how Rewire supports you every step of the way:"</Text>
+      
+      <View style={styles.featureCards}>
+        <FeatureCard 
+          icon="clipboard-check" 
+          title="A Personalized Recovery Plan" 
+          description="Small, achievable steps from Day 1."
+        />
+        <FeatureCard 
+          icon="users" 
+          title="A Community That Understands" 
+          description="Anonymous support from people on the same journey."
+        />
+        <FeatureCard 
+          icon="user-md" 
+          title="Real Experts, Real Help" 
+          description="Book sessions with trained counselors and therapists."
+        />
+        <FeatureCard 
+          icon="shield-alt" 
+          title="Stay Strong with Urge Shield" 
+          description="AI-driven motivation, instant help, and emergency support."
+        />
+        <FeatureCard 
+          icon="chart-line" 
+          title="Track Progress & Celebrate Wins" 
+          description="See how far you've come and stay motivated."
+        />
+      </View>
+      
+      <Text style={styles.insightText}>
+        <MaterialIcons name="lightbulb" size={16} color="#40c4ff" />
+        {" The hardest part is starting. We'll make the rest easier."}
+      </Text>
+      
+      <TouchableOpacity style={styles.minimalisticButton} onPress={onNext}>
+        <Text style={styles.minimalisticButtonText}>Next</Text>
+      </TouchableOpacity>
+    </View>
+  );
+};
+
+const Step3 = ({ onNext }) => {
+  return (
+    <View style={styles.stepContainer}>
+      <Text style={styles.stepTitle}>Why Rewire?</Text>
+      <Text style={styles.quote}>"Most people fail to quit because they do it alone. But with Rewire, you'll always have:"</Text>
+      
+      <View style={styles.whyRewireContainer}>
+        <WhyRewireItem 
+          icon="timer-24" 
+          color="#40c4ff"
+          title="24/7 AI Assistance" 
+          description="Need motivation or a distraction? We're here."
+        />
+        <WhyRewireItem 
+          icon="check-circle" 
+          color="#26a69a"
+          title="Daily Check-ins" 
+          description="Simple tasks to keep you focused and consistent."
+        />
+        <WhyRewireItem 
+          icon="lock" 
+          color="#40c4ff"
+          title="Safe & Private" 
+          description="No one knows who you are unless you choose to share."
+        />
+        <WhyRewireItem 
+          icon="lifebuoy" 
+          color="#26a69a"
+          title="Emergency Lifeline Support" 
+          description="Access national helplines when you need immediate help."
+        />
+      </View>
+      
+      <Text style={styles.insightText}>
+        <MaterialIcons name="rocket" size={16} color="#40c4ff" />
+        {" Your journey to recovery starts now."}
+      </Text>
+      
+      <TouchableOpacity style={styles.minimalisticButton} onPress={onNext}>
+        <Text style={styles.minimalisticButtonText}>Let's Begin!</Text>
+      </TouchableOpacity>
+    </View>
+  );
+};
+
+
+
+const FeatureCard = ({ icon, title, description }) => {
+  return (
+    <View style={styles.featureCard}>
+      <View style={styles.featureIconContainer}>
+        <FontAwesome name={icon} size={24} color="#40c4ff" />
+      </View>
+      <View style={styles.featureContent}>
+        <Text style={styles.featureTitle}>{title}</Text>
+        <Text style={styles.featureDescription}>{description}</Text>
+      </View>
+    </View>
+  );
+};
+
+const WhyRewireItem = ({ icon, color, title, description }) => {
+  return (
+    <View style={styles.whyRewireItem}>
+      <View style={[styles.whyRewireIcon, { backgroundColor: color }]}>
+        <MaterialIcons name={icon} size={24} color="#fff" />
+      </View>
+      <View style={styles.whyRewireContent}>
+        <Text style={styles.whyRewireTitle}>{title}</Text>
+        <Text style={styles.whyRewireDescription}>{description}</Text>
+      </View>
+    </View>
+  );
+};
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#f8f9fa',
   },
-  content: {
+  scrollContainer: {
+    flexGrow: 1,
+  },
+  header: {
+    padding: 16,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  logo: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#40c4ff',
+  },
+  stepIndicator: {
+    alignItems: 'flex-end',
+  },
+  stepText: {
+    fontSize: 14,
+    color: '#666',
+    marginBottom: 4,
+  },
+  stepDots: {
+    flexDirection: 'row',
+  },
+  dot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: '#ddd',
+    marginHorizontal: 4,
+  },
+  activeDot: {
+    backgroundColor: '#40c4ff',
+  },
+  minimalisticStepContainer: {
     flex: 1,
     padding: 24,
-    alignItems: 'center',
+    backgroundColor: '#fff',
     justifyContent: 'center',
+    alignItems: 'center',
+  },
+  stepContainer: {
+    flex: 1,
+    padding: 16,
   },
   logoContainer: {
-    alignItems: 'center',
-    marginBottom: 32,
-  },
-  logoCircle: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    backgroundColor: '#6200EE',
+    width: 200,
+    height: 200,
     justifyContent: 'center',
     alignItems: 'center',
+    marginBottom: 24,
+    position: 'relative',
   },
-  logoText: {
-    fontSize: 42,
-    fontWeight: 'bold',
-    color: 'white',
+  logoImage: {
+    width: 120,
+    height: 120,
+    resizeMode: 'contain',
   },
-  logoFullText: {
-    fontSize: 28,
+  leafOverlay: {
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
+  },
+  leaf: {
+    width: 60,
+    height: 60,
+    resizeMode: 'contain',
+    position: 'absolute',
+  },
+  leafTopLeft: {
+    top: 0,
+    left: 0,
+    transform: [{ rotate: '-45deg' }],
+  },
+  leafTopRight: {
+    top: 0,
+    right: 0,
+    transform: [{ rotate: '45deg' }],
+  },
+  leafBottomLeft: {
+    bottom: 0,
+    left: 0,
+    transform: [{ rotate: '-135deg' }],
+  },
+  leafBottomRight: {
+    bottom: 0,
+    right: 0,
+    transform: [{ rotate: '135deg' }],
+  },
+  appName: {
+    fontSize: 36,
     fontWeight: 'bold',
-    color: '#333',
-    marginTop: 8,
+    color: '#40c4ff',
+    marginBottom: 4,
   },
   tagline: {
-    fontSize: 24,
-    fontWeight: '600',
-    color: '#333',
-    textAlign: 'center',
-    marginBottom: 16,
+    fontSize: 16,
+    color: '#666',
+    marginBottom: 48,
   },
-  description: {
+  welcomeContent: {
+    width: '100%',
+    alignItems: 'center',
+    marginBottom: 40,
+  },
+  welcomeTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#333',
+    marginBottom: 24,
+    textAlign: 'center',
+  },
+  minimalisticBulletPoints: {
+    width: '100%',
+  },
+  minimalisticBulletText: {
     fontSize: 16,
     color: '#666',
     textAlign: 'center',
-    marginBottom: 48,
+    marginBottom: 16,
     lineHeight: 24,
   },
-  primaryButton: {
-    backgroundColor: '#6200EE',
-    paddingVertical: 16,
-    paddingHorizontal: 24,
+  minimalisticButton: {
+    backgroundColor: '#40c4ff',
     borderRadius: 8,
-    width: '100%',
+    paddingVertical: 16,
+    paddingHorizontal: 32,
+    alignSelf: 'center',
+  },
+  minimalisticButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  stepTitle: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: '#333',
+    marginBottom: 12,
+  },
+  quote: {
+    fontSize: 16,
+    fontStyle: 'italic',
+    color: '#666',
+    marginBottom: 24,
+    lineHeight: 24,
+  },
+  featureCards: {
+    marginBottom: 24,
+  },
+  featureCard: {
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  featureIconContainer: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: '#f0f7ff',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 16,
+  },
+  featureContent: {
+    flex: 1,
+  },
+  featureTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#333',
+    marginBottom: 4,
+  },
+  featureDescription: {
+    fontSize: 14,
+    color: '#666',
+  },
+  insightText: {
+    fontSize: 16,
+    fontStyle: 'italic',
+    color: '#666',
+    marginBottom: 24,
+    textAlign: 'center',
+  },
+  whyRewireContainer: {
+    marginBottom: 24,
+  },
+  whyRewireItem: {
+    flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 16,
   },
-  primaryButtonText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  secondaryButton: {
-    paddingVertical: 16,
-    paddingHorizontal: 24,
-    borderRadius: 8,
-    width: '100%',
+  whyRewireIcon: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    justifyContent: 'center',
     alignItems: 'center',
-    borderWidth: 1,
-    borderColor: '#6200EE',
+    marginRight: 16,
   },
-  secondaryButtonText: {
-    color: '#6200EE',
+  whyRewireContent: {
+    flex: 1,
+  },
+  whyRewireTitle: {
     fontSize: 16,
-    fontWeight: '500',
+    fontWeight: 'bold',
+    color: '#333',
+    marginBottom: 4,
   },
-  headerContainer: {
-    marginBottom: 32,
+  whyRewireDescription: {
+    fontSize: 14,
+    color: '#666',
+  },
+  dashboardContainer: {
+    flex: 1,
+    padding: 16,
+  },
+  dashboardHeader: {
+    flexDirection: 'row',
     alignItems: 'center',
+    marginBottom: 24,
   },
-  headerText: {
+  dashboardLogo: {
+    width: 32,
+    height: 32,
+    marginRight: 8,
+  },
+  dashboardAppName: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#40c4ff',
+  },
+  welcomeText: {
     fontSize: 24,
     fontWeight: 'bold',
     color: '#333',
-    textAlign: 'center',
+    marginBottom: 24,
   },
-  privacyCard: {
-    backgroundColor: '#F5F5F7',
-    padding: 24,
+  statsContainer: {
+    flexDirection: 'row',
+    marginBottom: 24,
+  },
+  statCard: {
+    flex: 1,
+    backgroundColor: '#fff',
     borderRadius: 12,
-    marginBottom: 32,
+    padding: 16,
+    marginHorizontal: 4,
     alignItems: 'center',
-    width: '100%',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 2,
   },
-  privacyIconContainer: {
-    width: 64,
-    height: 64,
-    borderRadius: 32,
-    backgroundColor: '#E1D8F5',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 16,
+  statTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#40c4ff',
+    marginBottom: 4,
   },
-  privacyIconText: {
-    fontSize: 32,
+  statLabel: {
+    fontSize: 14,
+    color: '#666',
   },
-  privacyTitle: {
+  todayActions: {
+    marginBottom: 24,
+  },
+  sectionTitle: {
     fontSize: 18,
     fontWeight: 'bold',
     color: '#333',
     marginBottom: 12,
   },
-  privacyText: {
-    fontSize: 16,
-    color: '#666',
-    textAlign: 'center',
-    marginBottom: 8,
-    lineHeight: 24,
-  },
-  textLink: {
-    marginTop: 8,
-    padding: 8,
-  },
-  linkText: {
-    color: '#6200EE',
-    fontSize: 14,
-    fontWeight: '500',
-  },
-  optionsContainer: {
-    width: '100%',
-    marginBottom: 24,
-  },
-  optionCard: {
-    backgroundColor: '#F5F5F7',
-    padding: 20,
+  actionCard: {
+    backgroundColor: '#fff',
     borderRadius: 12,
+    padding: 16,
     marginBottom: 12,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 2,
   },
-  selectedOption: {
-    backgroundColor: '#EDE7F6',
-    borderWidth: 2,
-    borderColor: '#6200EE',
+  actionIconContainer: {
+    marginRight: 16,
   },
-  optionText: {
-    fontSize: 16,
-    color: '#333',
+  actionContent: {
     flex: 1,
   },
-  checkmark: {
-    width: 24,
-    height: 24,
-    borderRadius: 12,
-    backgroundColor: '#6200EE',
-    justifyContent: 'center',
+  actionTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#333',
+    marginBottom: 4,
+  },
+  actionDescription: {
+    fontSize: 14,
+    color: '#666',
+  },
+  urgeShieldContainer: {
+    marginBottom: 36,
     alignItems: 'center',
   },
-  checkmarkText: {
-    color: 'white',
-    fontWeight: 'bold',
-  },
-  textInput: {
-    backgroundColor: 'white',
-    borderWidth: 1,
-    borderColor: '#DDD',
+  urgeShieldButton: {
+    backgroundColor: '#26a69a',
     borderRadius: 8,
-    padding: 16,
-    marginTop: 8,
-    marginBottom: 16,
-    fontSize: 16,
-    width: '100%',
-  },
-  navigationButtons: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    width: '100%',
-    marginTop: 8,
-  },
-  backButton: {
     paddingVertical: 16,
     paddingHorizontal: 24,
-    borderRadius: 8,
-    alignItems: 'center',
+    flexDirection: 'row',
     justifyContent: 'center',
-    flex: 1,
-    marginRight: 8,
-    borderWidth: 1,
-    borderColor: '#DDD',
+    alignItems: 'center',
+    width: '80%',
+    marginVertical: 12,
   },
-  backButtonText: {
-    color: '#666',
+  urgeShieldText: {
+    color: '#fff',
     fontSize: 16,
-    fontWeight: '500',
-  },
-  nextButton: {
-    flex: 1,
+    fontWeight: 'bold',
     marginLeft: 8,
   },
-  disabledButton: {
-    backgroundColor: '#DDD',
-  }
+  urgeShieldDescription: {
+    fontSize: 14,
+    color: '#666',
+    textAlign: 'center',
+  },
+  bottomNav: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    borderTopWidth: 1,
+    borderTopColor: '#eee',
+    paddingTop: 16,
+  },
+  navItem: {
+    alignItems: 'center',
+  },
+  navText: {
+    fontSize: 12,
+    color: '#888',
+    marginTop: 4,
+  },
+  activeNavText: {
+    color: '#40c4ff',
+    fontWeight: 'bold',
+  },
 });
 
-export default App;
+export default RewireApp;
