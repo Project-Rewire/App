@@ -2,7 +2,7 @@ from typing import List, Dict, Any, Optional
 from django.contrib.auth import get_user_model
 from django.utils import timezone
 from .models import Task, UserTask, UserScore
-from .service import RecommendationService
+from .service import RecommendationsService
 
 User = get_user_model()
 
@@ -13,11 +13,11 @@ def generate_task_for_user(user_id: int, difficulty: Optional[str] = None) -> Li
         user = User.objects.get(id=user_id)
         
         # Generate recommendations
-        service = RecommendationService()
+        service = RecommendationsService()
         recommendations = service.generate_recommendations(
             user_id=user_id,
             difficulty=difficulty,
-            count=3  # Default to 3 recommendations
+            count=3 
         )
         
         # Create and assign tasks
