@@ -28,7 +28,7 @@ const RewireApp = () => {
         return <Step3 onNext={goToNextStep} />;
      
       default:
-        return <Step1 onNext={goToNextStep} />;
+        return <Step1 onNext={goToNextStep} />;// change this to the next page .yasith.
     }
   };
 
@@ -275,37 +275,7 @@ const styles = StyleSheet.create({
     height: 200,
     resizeMode: 'contain',
   },
-  leafOverlay: {
-    position: 'absolute',
-    width: '100%',
-    height: '100%',
-  },
-  leaf: {
-    width: 60,
-    height: 60,
-    resizeMode: 'contain',
-    position: 'absolute',
-  },
-  leafTopLeft: {
-    top: 0,
-    left: 0,
-    transform: [{ rotate: '-45deg' }],
-  },
-  leafTopRight: {
-    top: 0,
-    right: 0,
-    transform: [{ rotate: '45deg' }],
-  },
-  leafBottomLeft: {
-    bottom: 0,
-    left: 0,
-    transform: [{ rotate: '-135deg' }],
-  },
-  leafBottomRight: {
-    bottom: 0,
-    right: 0,
-    transform: [{ rotate: '135deg' }],
-  },
+ 
   appName: {
     fontSize: 36,
     fontWeight: 'bold',
