@@ -7,10 +7,11 @@
  * Note:
  *  To connect to a local backend instead of production: Set isProduction to false
  */
-const isProduction = false;
+
+const isProduction = true;
 
 const DOMAINS = {
-    production: "ec2-13-217-166-117.compute-1.amazonaws.com",
+    production: "ec2-34-203-202-203.compute-1.amazonaws.com",
     local: "10.0.2.2"
 };
 
