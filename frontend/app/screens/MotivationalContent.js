@@ -35,52 +35,51 @@ const MotivationalContent = () => {
   const [selectedCategory, setSelectedCategory] = useState('Shorts');
 
   return (
-    <ScrollView>
-      <View style={styles.container}>
-        <Text style={styles.header}>MOTIVATIONAL CONTENT</Text>
-        <View style={styles.categoryContainer}>
-          {categories.map(category => (
-            <TouchableOpacity
-              key={category}
-              style={[styles.categoryButton, selectedCategory === category && styles.selectedCategory]}
-              onPress={() => setSelectedCategory(category)}
-            >
-              <Text>{category}</Text>
-            </TouchableOpacity>
-          ))}
-        </View>
-        {selectedCategory === 'Shorts' && (
-          <FlatList
-            data={contentData}
-            keyExtractor={item => item.id}
-            numColumns={2}
-            renderItem={({ item }) => (
-              <View style={styles.card}>
-                <Image source={item.image} style={styles.image} />
-                <Text style={styles.quote}>{item.text}</Text>
-                <Text style={styles.author}>- {item.author}</Text>
-              </View>
-            )}
-          />
-        )}
-        {selectedCategory === 'Suggest for you' && (
-          <FlatList
-            data={suggestedData}
-            keyExtractor={item => item.id}
-            numColumns={2}
-            renderItem={({ item }) => (
-              <View style={styles.card}>
-                <Image source={item.image} style={styles.image} />
-                <Text style={styles.quote}>{item.text}</Text>
-                <Text style={styles.author}>- {item.author}</Text>
-              </View>
-            )}
-          />
-        )}
+    <View style={styles.container}>
+      <Text style={styles.header}>MOTIVATIONAL CONTENT</Text>
+      <View style={styles.categoryContainer}>
+        {categories.map(category => (
+          <TouchableOpacity
+            key={category}
+            style={[styles.categoryButton, selectedCategory === category && styles.selectedCategory]}
+            onPress={() => setSelectedCategory(category)}
+          >
+            <Text>{category}</Text>
+          </TouchableOpacity>
+        ))}
       </View>
-    </ScrollView>
+      {selectedCategory === 'Shorts' && (
+        <FlatList
+          data={contentData}
+          keyExtractor={item => item.id}
+          numColumns={2}
+          renderItem={({ item }) => (
+            <View style={styles.card}>
+              <Image source={item.image} style={styles.image} />
+              <Text style={styles.quote}>{item.text}</Text>
+              <Text style={styles.author}>- {item.author}</Text>
+            </View>
+          )}
+        />
+      )}
+      {selectedCategory === 'Suggest for you' && (
+        <FlatList
+          data={suggestedData}
+          keyExtractor={item => item.id}
+          numColumns={2}
+          renderItem={({ item }) => (
+            <View style={styles.card}>
+              <Image source={item.image} style={styles.image} />
+              <Text style={styles.quote}>{item.text}</Text>
+              <Text style={styles.author}>- {item.author}</Text>
+            </View>
+          )}
+        />
+      )}
+    </View>
   );
 };
+
 const styles = StyleSheet.create({
   container: { flex: 1, padding: 10, backgroundColor: '#f8f8f8' },
   header: { fontSize: 20, fontWeight: 'bold', textAlign: 'center', marginBottom: 10 },

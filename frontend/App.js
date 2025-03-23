@@ -23,6 +23,8 @@ import PrivacyPolicy from './app/screens/PrivacyPolicy';
 import TermsAndConditions from './app/screens/TermsAndConditions';
 import RebotChatSelection from './app/screens/RebotChatSelection';
 import Splash from './app/screens/Splash';
+import Profile from './app/screens/Profile';
+import MotivationalContent from './app/screens/MotivationalContent';
 
 export default function App() {
   return (
@@ -122,7 +124,8 @@ function HomeNavigator() {
   return (
     <HomeStack.Navigator screenOptions={{ headerShown: false }}>
       <HomeStack.Screen name="HomeScreen" component={Home} />
-      <HomeStack.Screen name="SettingsNavigator" component={SettingsNavigator} />
+      <HomeStack.Screen name="ProfileNavigator" component={ProfileNavigator} />
+      <HomeStack.Screen name="MotivationalContentNavigator" component={MotivationalContentNavigator} />
     </HomeStack.Navigator>
   );
 }
@@ -138,6 +141,26 @@ function SettingsNavigator() {
     </SettingsStack.Navigator>
   );
 }
+
+const ProfileStack = createNativeStackNavigator();
+function ProfileNavigator() {
+  return (
+    <ProfileStack.Navigator screenOptions={{ headerShown: false }}>
+      <ProfileStack.Screen name="Profile" component={Profile} />
+      <ProfileStack.Screen name="SettingsNavigator" component={SettingsNavigator} />
+    </ProfileStack.Navigator>
+  );
+}
+
+const MotivationalContentStack = createNativeStackNavigator();
+function MotivationalContentNavigator() {
+  return (
+    <MotivationalContentStack.Navigator screenOptions={{ headerShown: false }}>
+      <MotivationalContentStack.Screen name="Motivational Content" component={MotivationalContent} />
+    </MotivationalContentStack.Navigator>
+  );
+}
+
 
 const RebotStack = createNativeStackNavigator();
 function RebotNavigator() {
