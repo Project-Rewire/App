@@ -1,7 +1,6 @@
 import * as SQLite from 'expo-sqlite';
 import { Message, Conversation } from "./app.db.models";
 
-// Create a module-level variable for the database
 let db: SQLite.SQLiteDatabase | null = null;
 
 export const initializeDb = async () => {
@@ -161,10 +160,7 @@ export const deleteConversation = async ({
         if (!db) await initializeDb();
 
         if (db) {
-            // Use a positional parameter instead of a named parameter.
             await db.runAsync('DELETE FROM conversations WHERE id = ?', [conversationId]);
-
-            // Optionally, delete associated messages if desired.
             await db.runAsync('DELETE FROM messages WHERE conversation_id = ?', [conversationId]);
         } else {
             throw new Error("Database not initialized");
