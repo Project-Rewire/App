@@ -1,4 +1,4 @@
-/*
+/**
  * App Configuration
  * -----------------
  * This file contains all development-level app configurations.
@@ -48,12 +48,6 @@ export const settings: Settings = {
             signupStepTwo: `http://${BACKEND_URL}/signup/step-two`,
             forgotPassword: `http://${BACKEND_URL}/forget-password/`,
             resetPassword: `http://${BACKEND_URL}/reset-password`,
-        }
-    },
-    questionnaireEndPoints: {
-        isUserVisible: false,
-        value: {
-            getQuestions: `http://${BACKEND_URL}/questionnaire/`
         }
     }
 };

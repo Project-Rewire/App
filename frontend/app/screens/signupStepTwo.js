@@ -25,7 +25,7 @@ const SignupStepTwo = ({ navigation, route }) => {
                 user_name: username
             });
             if (response.data.message === 'User created successfully') {
-                navigation.navigate('Questionnaire');
+                navigation.navigate('Login');
             }
         } catch (error) {
             console.error('Signup failed:', error);
