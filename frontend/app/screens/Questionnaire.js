@@ -9,18 +9,20 @@ import {
     ActivityIndicator,
 } from 'react-native';
 import { useQuestionnaire } from '../hooks/questionnaire-service';
+import { useNavigation, useTheme } from '@react-navigation/native';
 
-export default function Questionnaire({ onComplete }) {
+export default function Questionnaire() {
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [responses, setResponses] = useState({});
     const { questions } = useQuestionnaire();
+    const navigation = useNavigation();
 
     // Add a loading state while questions are being fetched
     if (!questions || questions.length === 0) {
         return (
             <SafeAreaView style={styles.container}>
                 <View style={[styles.contentContainer, styles.loadingContainer]}>
-                    <ActivityIndicator size="large" color="#176B87" />
+                    <ActivityIndicator size="large" color="#16837D" />
                     <Text style={styles.loadingText}>Loading questions...</Text>
                 </View>
             </SafeAreaView>
@@ -64,7 +66,7 @@ export default function Questionnaire({ onComplete }) {
     const handleNext = () => {
         if (isLastQuestion) {
             // If it's the last question, call the completion handler
-            onComplete(responses);
+            navigation.navigate('Login');
         } else {
             // Otherwise, move to the next question
             setCurrentQuestionIndex(currentQuestionIndex + 1);
@@ -166,7 +168,7 @@ const styles = StyleSheet.create({
         marginBottom: 10,
     },
     answerButtonSelected: {
-        borderColor: '#176B87',
+        borderColor: '#16837D',
         backgroundColor: '#f0f9ff',
     },
     answerText: {
@@ -178,11 +180,11 @@ const styles = StyleSheet.create({
         alignItems: 'flex-start',
     },
     backButtonText: {
-        color: '#176B87',
+        color: '#16837D',
         fontSize: 16,
     },
     nextButton: {
-        backgroundColor: '#176B87',
+        backgroundColor: '#16837D',
         padding: 15,
         alignItems: 'center',
         margin: 20,
