@@ -13,3 +13,8 @@ class AIProfile(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     addiction_type  = models.CharField(max_length=30)
     addiction_duration_months = models.IntegerField()
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['user'], name='unique_ai_profile_user')
+        ]

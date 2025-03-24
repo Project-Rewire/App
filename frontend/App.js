@@ -25,6 +25,7 @@ import RebotChatSelection from './app/screens/RebotChatSelection';
 import Splash from './app/screens/Splash';
 import Profile from './app/screens/Profile';
 import MotivationalContent from './app/screens/MotivationalContent';
+import Questionnaire from './app/screens/Questionnaire';
 
 export default function App() {
   return (
@@ -40,7 +41,7 @@ function AppContent() {
   const auth = useAuth();
   const { theme } = useThemeToggle();
 
- 
+
   if (auth.isLoading) {
     return <Splash />;
   }
@@ -114,6 +115,7 @@ function LoginNavigator() {
       <LoginStack.Screen name="ForgotPassword" component={ForgotPassword} />
       <LoginStack.Screen name="SignupStepOne" component={SignupStepOne} />
       <LoginStack.Screen name="SignupStepTwo" component={SignupStepTwo} />
+      <LoginStack.Screen name="Questionnaire" component={Questionnaire} />
       <LoginStack.Screen name="MainApp" component={BottomTabNavigator} />
     </LoginStack.Navigator>
   );
