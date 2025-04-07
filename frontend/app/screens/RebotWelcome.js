@@ -1,28 +1,72 @@
-import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import React, { useEffect } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, Image, Alert } from 'react-native';
+import { useNavigation, useTheme } from '@react-navigation/native';
+import { createConversation, initializeDb } from '../app.db.service';
 
 export default function RebotWelcome() {
     const navigation = useNavigation();
+    const { colors } = useTheme();
 
-    const handleNewConversation = () => {
-        navigation.navigate('RebotChatInterface');
+    // Initialize the database when the component mounts
+    useEffect(() => {
+        const setupDb = async () => {
+            try {
+                const success = await initializeDb();
+                if (!success) {
+                    console.warn("Database initialization may have failed");
+                }
+            } catch (error) {
+                console.error("Failed to initialize database:", error);
+            }
+        };
+
+        setupDb();
+    }, []);
+
+    const handleNewConversation = async () => {
+        const generateRandomString = (length) => {
+            const lowercaseLetters = 'abcdefghijklmnopqrstuvwxyz';
+            let result = '';
+            for (let i = 0; i < length; i++) {
+                const randomIndex = Math.floor(Math.random() * lowercaseLetters.length);
+                result += lowercaseLetters[randomIndex];
+            }
+            return result;
+        };
+        const conversationId = generateRandomString(5);
+        try {
+            // Create a new conversation in the database
+            await createConversation({
+                conversation: {
+                    id: conversationId,
+                    created_at: new Date().toISOString(),
+                },
+                onError: (error) => {
+                    console.error('Error creating conversation:', error);
+                    Alert.alert('Error', 'Failed to create a new conversation.');
+                    return;
+                },
+            });
+
+            // Navigate to the chat interface with the new conversationId
+            navigation.navigate('RebotChatInterface', { conversationId });
+        } catch (error) {
+            console.error('Error handling new conversation:', error);
+            Alert.alert('Error', 'Something went wrong. Please try again.');
+        }
     };
 
     const handlePreviousConversations = () => {
-        console.log("Pressed Previous Conversations");
+        navigation.navigate('RebotChatSelection');
     };
 
     return (
-        <View style={{ flex: 1, padding: 16, alignItems: 'center', justifyContent: 'space-evenly' }}>
-
+        <View style={[styles.container, { backgroundColor: colors.card }]}>
             {/* Illustration container */}
             <Image
-                source={require('../assets/chatbot-healthcare-vector-v2.png')}
+                source={require('../assets/chatbot-healthcare-vector-v3.png')}
                 resizeMode="contain"
-                style={{
-                    height: '30%'
-                }}
+                style={styles.illustration}
             />
 
             {/* Action buttons */}
@@ -30,6 +74,7 @@ export default function RebotWelcome() {
                 <TouchableOpacity
                     style={styles.newConversationButton}
                     onPress={handleNewConversation}
+                    activeOpacity={0.8}
                 >
                     <Text style={styles.newConversationText}>New Conversation</Text>
                 </TouchableOpacity>
@@ -42,23 +87,25 @@ export default function RebotWelcome() {
                 </TouchableOpacity>
             </View>
         </View>
-
     );
-};
+}
 
 const styles = StyleSheet.create({
-    illustrationContainer: {
-        width: '100%',
-        height: "45%",
+    container: {
+        flex: 1,
+        padding: 16,
         alignItems: 'center',
-        justifyContent: 'center',
+        justifyContent: 'space-evenly',
+        backgroundColor: '#fff',
+    },
+    illustration: {
+        height: '45%',
+        width: '100%',
     },
     actionButtons: {
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        gap: 4,
-        width: "100%"
+        width: '100%',
+        alignItems: 'center',
+        gap: 16,
     },
     newConversationButton: {
         backgroundColor: '#16837D',
@@ -67,7 +114,6 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         justifyContent: 'center',
         alignItems: 'center',
-        marginBottom: 16,
     },
     newConversationText: {
         color: 'white',
@@ -79,6 +125,9 @@ const styles = StyleSheet.create({
         height: 50,
         justifyContent: 'center',
         alignItems: 'center',
+        borderWidth: 1,
+        borderRadius: 8,
+        borderColor: '#16837D'
     },
     previousText: {
         color: '#16837D',

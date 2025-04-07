@@ -1,11 +1,11 @@
 import React from 'react';
 import { Icon } from './app/fragments/icon';
-import { useLogin } from './app/hooks/login-service';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { ThemeProvider, useThemeToggle } from './app/hooks/theme-service';
 import { SafeAreaView, Platform, StatusBar } from 'react-native';
+import { AuthProvider, useAuth } from './app/hooks/jwt-auth-service';
 
 import Home from './app/screens/tabs/Home';
 import Login from './app/screens/Login';
@@ -21,18 +21,29 @@ import Settings from './app/screens/Settings';
 import About from './app/screens/About';
 import PrivacyPolicy from './app/screens/PrivacyPolicy';
 import TermsAndConditions from './app/screens/TermsAndConditions';
+import RebotChatSelection from './app/screens/RebotChatSelection';
+import Splash from './app/screens/Splash';
+import Profile from './app/screens/Profile';
+import MotivationalContent from './app/screens/MotivationalContent';
 
 export default function App() {
   return (
-    <ThemeProvider>
-      <AppContent />
-    </ThemeProvider>
+    <AuthProvider>
+      <ThemeProvider>
+        <AppContent />
+      </ThemeProvider>
+    </AuthProvider>
   );
 }
 
 function AppContent() {
-  const { loggedIn } = useLogin();
+  const auth = useAuth();
   const { theme } = useThemeToggle();
+
+ 
+  if (auth.isLoading) {
+    return <Splash />;
+  }
 
   return (
     <SafeAreaView
@@ -43,7 +54,7 @@ function AppContent() {
       }}
     >
       <NavigationContainer theme={theme}>
-        {loggedIn ? <BottomTabNavigator /> : <LoginNavigator />}
+        {auth.isLoggedIn ? <BottomTabNavigator /> : <LoginNavigator />}
       </NavigationContainer>
     </SafeAreaView>
   );
@@ -113,7 +124,8 @@ function HomeNavigator() {
   return (
     <HomeStack.Navigator screenOptions={{ headerShown: false }}>
       <HomeStack.Screen name="HomeScreen" component={Home} />
-      <HomeStack.Screen name="SettingsNavigator" component={SettingsNavigator} />
+      <HomeStack.Screen name="ProfileNavigator" component={ProfileNavigator} />
+      <HomeStack.Screen name="MotivationalContentNavigator" component={MotivationalContentNavigator} />
     </HomeStack.Navigator>
   );
 }
@@ -130,12 +142,33 @@ function SettingsNavigator() {
   );
 }
 
+const ProfileStack = createNativeStackNavigator();
+function ProfileNavigator() {
+  return (
+    <ProfileStack.Navigator screenOptions={{ headerShown: false }}>
+      <ProfileStack.Screen name="Profile" component={Profile} />
+      <ProfileStack.Screen name="SettingsNavigator" component={SettingsNavigator} />
+    </ProfileStack.Navigator>
+  );
+}
+
+const MotivationalContentStack = createNativeStackNavigator();
+function MotivationalContentNavigator() {
+  return (
+    <MotivationalContentStack.Navigator screenOptions={{ headerShown: false }}>
+      <MotivationalContentStack.Screen name="Motivational Content" component={MotivationalContent} />
+    </MotivationalContentStack.Navigator>
+  );
+}
+
+
 const RebotStack = createNativeStackNavigator();
 function RebotNavigator() {
   return (
     <RebotStack.Navigator screenOptions={{ headerShown: false }}>
       <RebotStack.Screen name="RebotWelcome" component={RebotWelcome} />
       <RebotStack.Screen name="RebotChatInterface" component={RebotChatInterface} />
+      <RebotStack.Screen name="RebotChatSelection" component={RebotChatSelection} />
     </RebotStack.Navigator>
   );
 }

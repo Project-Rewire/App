@@ -6,17 +6,24 @@ from .models import UserTask, UserScore
 
 @receiver(post_save, sender=User)
 def create_user_score(sender, instance, created, **kwargs):
+    """
+    Create a UserScore when a new User is created.
+    """
     if created:
         UserScore.objects.create(user=instance)
 
 
 @receiver(post_save, sender=UserTask)
 def update_user_stats(sender, instance, **kwargs):
+    """
+    Update UserScore when a UserTask is completed.
+    """
     if instance.status == 'COMPLETED' and instance.earned_marks:
         # Get or create user score
         user_score, created = UserScore.objects.get_or_create(user=instance.user)
         
-        # Update stats
+        # Update stats by recalculating from all completed tasks
+        # This approach ensures consistency even if there are concurrent updates
         user_tasks = UserTask.objects.filter(user=instance.user, status='COMPLETED')
         
         # Calculate totals

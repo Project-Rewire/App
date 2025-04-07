@@ -1,86 +1,79 @@
 import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  StyleSheet,
-  Image,
-} from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, Alert, ActivityIndicator } from 'react-native';
 import { useLogin } from '../hooks/login-service';
+import { useAuth } from '../hooks/jwt-auth-service';
 
 const Login = ({ navigation }) => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const { login } = useLogin();
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
+    const auth = useAuth();
 
-  const handleLogin = async () => {
-    try {
-      await login(email, password);
-      // Navigation will be handled by App.js based on login state
-    } catch (error) {
-      // Handle login error
-      console.error('Login failed:', error);
-    }
-  };
+    const handleLogin = async () => {
+        if (!email || !password) {
+            Alert.alert('Error', 'Please enter both email and password');
+            return;
+        }
+        
+        setIsLoading(true);
+        try {
+            await auth.login(email, password);
+        } catch (error) {
+            Alert.alert('Login Failed', error.message || 'Please check your credentials and try again');
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
-  return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Login</Text>
-      
-      {/* Login illustration */}
-      <View style={styles.imageContainer}>
-        <Image
-          source={require('../assets/login-illustration.png')}
-          style={styles.image}
-          resizeMode="contain"
-        />
-      </View>
-
-      {/* Login form */}
-      <View style={styles.formContainer}>
-        <TextInput
-          style={styles.input}
-          placeholder="Enter Your email"
-          value={email}
-          onChangeText={setEmail}
-          keyboardType="email-address"
-          autoCapitalize="none"
-          placeholderTextColor="#A9A9A9"
-        />
-
-        <TextInput
-          style={styles.input}
-          placeholder="Enter your password"
-          value={password}
-          onChangeText={setPassword}
-          secureTextEntry
-          placeholderTextColor="#A9A9A9"
-        />
-
-        <TouchableOpacity 
-          onPress={() => navigation.navigate('ForgotPassword')}
-          style={styles.forgotPasswordContainer}
-        >
-          <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity 
-          style={styles.loginButton}
-          onPress={handleLogin}
-        >
-          <Text style={styles.loginButtonText}>Login</Text>
-        </TouchableOpacity>
-
-        <View style={styles.signupContainer}>
-          <Text style={styles.signupText}>Don't have an Account? </Text>
-          <TouchableOpacity onPress={() => navigation.navigate('SignupStepOne')}>
-            <Text style={styles.signupLink}>Sign up here</Text>
-          </TouchableOpacity>
+    return (
+        <View style={styles.container}>
+            <Text style={styles.title}>Login</Text>
+            <View style={styles.imageContainer}>
+                <Image source={require('../assets/login-illustration.png')} style={styles.image} resizeMode="contain" />
+            </View>
+            <View style={styles.formContainer}>
+                <TextInput
+                    style={styles.input}
+                    placeholder="Enter Your email"
+                    value={email}
+                    onChangeText={setEmail}
+                    keyboardType="email-address"
+                    autoCapitalize="none"
+                    placeholderTextColor="#A9A9A9"
+                    editable={!isLoading}
+                />
+                <TextInput
+                    style={styles.input}
+                    placeholder="Enter your password"
+                    value={password}
+                    onChangeText={setPassword}
+                    secureTextEntry
+                    placeholderTextColor="#A9A9A9"
+                    editable={!isLoading}
+                />
+                <TouchableOpacity onPress={() => navigation.navigate('ForgotPassword')} style={styles.forgotPasswordContainer} disabled={isLoading}>
+                    <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
+                </TouchableOpacity>
+                <TouchableOpacity 
+                    style={[styles.loginButton, isLoading && styles.disabledButton]} 
+                    onPress={handleLogin}
+                    disabled={isLoading}
+                >
+                    {isLoading ? (
+                        <ActivityIndicator color="#fff" />
+                    ) : (
+                        <Text style={styles.loginButtonText}>Login</Text>
+                    )}
+                </TouchableOpacity>
+                <View style={styles.signupContainer}>
+                    <Text style={styles.signupText}>Don't have an Account? </Text>
+                    <TouchableOpacity onPress={() => navigation.navigate('SignupStepOne')} disabled={isLoading}>
+                        <Text style={styles.signupLink}>Sign up here</Text>
+                    </TouchableOpacity>
+                </View>
+            </View>
         </View>
-      </View>
-    </View>
-  );
+    );
 };
 
 const styles = StyleSheet.create({
@@ -152,6 +145,9 @@ const styles = StyleSheet.create({
     color: '#16837D',
     fontSize: 14,
   },
+    disabledButton: {
+        opacity: 0.7,
+    }
 });
 
 export default Login;

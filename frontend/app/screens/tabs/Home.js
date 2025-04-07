@@ -52,11 +52,11 @@ export default function Home() {
           <H1 style={styles.headerGreeting}>{getGreeting()}</H1>
           <Avatar
             name={userName}
-            radius={30}
+            radius={26}
             backgroundColor='#74007a'
             color='#fff'
             opacity={0.9}
-            onPress={() => navigation.navigate('SettingsNavigator', { screen: 'Settings' })}
+            onPress={() => navigation.navigate('ProfileNavigator', { screen: 'Profile' })}
           />
         </View>
 
@@ -79,7 +79,7 @@ export default function Home() {
         )}
 
         {/* Quick Actions */}
-        <View style={styles.quickActionCardContainer} accessibilityRole="menubar">
+        <ScrollView horizontal={true} contentContainerStyle={styles.quickActionCardContainer}>
           <Card style={[styles.quickActionCard, {
             borderWidth: 0.5,
             borderColor: colors.border,
@@ -99,7 +99,17 @@ export default function Home() {
               <Text style={{ color: colors.text }}>Your Report</Text>
             </Card.Content>
           </Card>
-        </View>
+
+          <Card style={[styles.quickActionCard, {
+            borderWidth: 0.5,
+            borderColor: colors.border,
+          }]} onPress={() => navigation.navigate('MotivationalContentNavigator', { screen: 'MotivationalContent' })}>
+            <Card.Content style={styles.quickActionCardContent}>
+              <Icon type='material' name='stars' color={colors.primary} />
+              <Text style={{ color: colors.text }}>Motivational Content</Text>
+            </Card.Content>
+          </Card>
+        </ScrollView>
 
         <H2 style={styles.h2}>Your Progress</H2>
         <View style={styles.progressCardsContainer}>
@@ -177,7 +187,7 @@ const styles = StyleSheet.create({
   },
   quickActionCard: {
     padding: 16,
-    width: '48%'
+    // width: '48%'
   },
   quickActionCardContent: {
     display: 'flex',
